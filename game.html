@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch! Love — Game</title>
+  <!--
+    디자인/문구는 원본 유지, 스토리는 내장 상수로 입력, 추후 JSON import/export 지원
+    단일 HTML 파일로 완결. 외부 라이브러리/번들러 불가.
+  -->
+  <style>
+    /* ==================== Styles ==================== */
+    :root {
+      --color-1: #A1C3D1;
+      --color-2: #B39BC8;
+      --color-3: #F0EBF4;
+      --color-4: #F172A1;
+      --color-5: #E64398;
+      --color-success: #44cc44;
+      --color-failure: #ff4444;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--color-3) 0%, #fff 100%);
+      min-height: 100vh;
+      padding: 0;
+      color: #333;
+    }
+
+    /* TopBar */
+    .topbar {
+      background: linear-gradient(90deg, var(--color-1), var(--color-2));
+      color: white;
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar h1 {
+      font-size: 1.5rem;
+      margin-right: auto;
+      font-weight: 600;
+    }
+
+    .topbar button, .topbar input[type="file"] {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      background: white;
+      color: #333;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .topbar button:hover {
+      background: var(--color-3);
+      transform: translateY(-1px);
+    }
+
+    .topbar label {
+      padding: 0.5rem 1rem;
+      background: white;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .topbar label:hover {
+      background: var(--color-3);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Card */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    /* Start Screen */
+    .start-screen {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .start-screen h2 {
+      font-size: 2.5rem;
+      color: var(--color-5);
+      margin-bottom: 1rem;
+    }
+
+    .start-screen p {
+      font-size: 1.2rem;
+      color: var(--color-2);
+      cursor: pointer;
+      padding: 1rem;
+      transition: all 0.3s;
+      border-radius: var(--radius);
+    }
+
+    .start-screen p:hover {
+      background: var(--color-3);
+      transform: scale(1.05);
+    }
+
+    /* Game Screen */
+    .game-screen {
+      display: none;
+    }
+
+    .breadcrumb {
+      background: var(--color-3);
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .scene-title {
+      font-size: 2rem;
+      color: var(--color-5);
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    .scene-content {
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      white-space: pre-wrap;
+      color: #555;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .choice-btn {
+      padding: 1.5rem;
+      border: 2px solid var(--color-4);
+      border-radius: var(--radius);
+      background: white;
+      color: #333;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      background: var(--color-4);
+      color: white;
+      transform: translateX(8px);
+    }
+
+    .choice-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: #ccc;
+    }
+
+    .choice-btn:focus {
+      outline: 3px solid var(--color-5);
+      outline-offset: 2px;
+    }
+
+    /* Ending Screen */
+    .ending-screen {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .ending-screen.success {
+      background: linear-gradient(135deg, var(--color-success), #66dd66);
+      color: white;
+    }
+
+    .ending-screen.failure {
+      background: linear-gradient(135deg, var(--color-failure), #ff6666);
+      color: white;
+    }
+
+    .ending-screen.normal {
+      background: linear-gradient(135deg, var(--color-4), var(--color-5));
+      color: white;
+    }
+
+    .ending-screen h3 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .ending-code {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .ending-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .ending-summary {
+      line-height: 1.6;
+      opacity: 0.95;
+      margin-bottom: 2rem;
+    }
+
+    .restart-btn {
+      padding: 1rem 2rem;
+      border: 2px solid white;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .restart-btn:hover {
+      background: white;
+      color: var(--color-5);
+      transform: translateY(-2px);
+    }
+
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Alert */
+    .alert {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: white;
+      border: 2px solid var(--color-5);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      max-width: 400px;
+    }
+
+    .alert.error {
+      border-color: var(--color-failure);
+      background: #ffe5e5;
+    }
+
+    .alert.success {
+      border-color: var(--color-success);
+      background: #e5ffe5;
+    }
+  </style>
+</head>
+<body>
+  <!-- TopBar -->
+  <div class="topbar">
+    <h1 id="game-title">Catch! Love</h1>
+    <button id="btn-export" aria-label="JSON 내보내기">💾 내보내기</button>
+    <label aria-label="JSON 불러오기">
+      📂 불러오기
+      <input type="file" id="input-import" accept=".json" style="display: none;">
+    </label>
+  </div>
+
+  <!-- Container -->
+  <div class="container">
+    <!-- Start Screen -->
+    <div class="card start-screen" id="start-screen">
+      <h2>Catch! Love</h2>
+      <p id="start-trigger">click to begin journey</p>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="card game-screen" id="game-screen">
+      <div class="breadcrumb" id="crumbs"></div>
+      <h1 class="scene-title" id="scene-title"></h1>
+      <div class="scene-content" id="scene-content"></div>
+      <div class="choices">
+        <button class="choice-btn" id="choiceA" aria-label="선택지 A"></button>
+        <button class="choice-btn" id="choiceB" aria-label="선택지 B"></button>
+      </div>
+    </div>
+
+    <!-- Ending Screen -->
+    <div class="card ending-screen" id="ending-screen">
+      <h3>THE END</h3>
+      <div class="ending-code" id="ending-code"></div>
+      <div class="ending-title" id="ending-title"></div>
+      <div class="ending-summary" id="ending-summary"></div>
+      <button class="restart-btn" id="restart-btn" aria-label="처음으로">처음으로</button>
+    </div>
+  </div>
+
+  <script>
+    // ==================== STORY DATA ====================
+    /*
+      병합 규칙(Merge Rules):
+      1. Scene 병합: scene.id 기준
+         - 존재하면: 빈 값이 아닌 필드만 덮어쓰기
+         - 없으면: scenes 배열에 추가
+      2. Choice 병합: choice.id 기준
+         - 존재하면: label, outcome, nextSceneId 갱신
+         - 없으면: 해당 씬의 choices[index] 교체
+      3. startSceneId, title은 incoming 값이 있으면 갱신
+    */
+
+    let STORY = {
+      title: "Catch! Love",
+      startSceneId: "S001",
+      scenes: [
+        {
+          id: "S001",
+          name: "학교 복도에서",
+          content: "방과 후 조용한 복도를 걷고 있는데, 앞에서 누군가 다가온다.\n그것은 당신이 오래전부터 마음에 두고 있던 그 사람이다.\n\n\"잠깐... 시간 괜찮아?\"",
+          isEnding: false,
+          choices: [
+            {
+              id: "C001A",
+              label: "\"응, 괜찮아. 무슨 일이야?\"",
+              outcome: "continue",
+              nextSceneId: "S002"
+            },
+            {
+              id: "C001B",
+              label: "\"미안, 급한 일이 있어서...\"",
+              outcome: "continue",
+              nextSceneId: "S003"
+            }
+          ]
+        },
+        {
+          id: "S002",
+          name: "고백을 듣다",
+          content: "\"사실은... 네게 하고 싶은 말이 있어.\"\n\n그 사람은 잠시 망설이더니 용기를 내어 말한다.\n\n\"나... 너를 좋아해. 오래전부터.\"\n\n심장이 뛴다. 이 순간을 어떻게 보낼 것인가?",
+          isEnding: false,
+          choices: [
+            {
+              id: "C002A",
+              label: "\"나도... 너를 좋아해.\"",
+              outcome: "success",
+              nextSceneId: ""
+            },
+            {
+              id: "C002B",
+              label: "\"고마운데... 친구로 지내고 싶어.\"",
+              outcome: "failure",
+              nextSceneId: ""
+            }
+          ]
+        },
+        {
+          id: "S003",
+          name: "놓친 기회",
+          content: "\"아... 그래. 알았어.\"\n\n그 사람은 아쉬운 표정으로 돌아선다.\n\n며칠 후, 그 사람이 다른 누군가와 함께 웃으며 걷는 모습을 본다.\n\n당신은 그때의 선택을 후회한다.",
+          isEnding: true,
+          endingInfo: {
+            code: "END-MISS",
+            title: "놓친 사랑",
+            summary: "때로는 용기 있는 선택이 필요한 순간이 있다.\n당신은 그 순간을 놓쳤다."
+          },
+          choices: [
+            { id: "C003A", label: "", outcome: "continue", nextSceneId: "" },
+            { id: "C003B", label: "", outcome: "continue", nextSceneId: "" }
+          ]
+        }
+      ]
+    };
+
+    // ==================== STATE ====================
+    let currentSceneId = null;
+    let crumbs = [];
+    let lastEnding = null;
+
+    // ==================== HELPERS ====================
+    function qs(sel) {
+      return document.querySelector(sel);
+    }
+
+    function showAlert(message, type = 'error') {
+      const existing = qs('.alert');
+      if (existing) existing.remove();
+
+      const alert = document.createElement('div');
+      alert.className = `alert ${type}`;
+      alert.textContent = message;
+      document.body.appendChild(alert);
+
+      setTimeout(() => alert.remove(), 4000);
+    }
+
+    function downloadJSON(obj, filename) {
+      const json = JSON.stringify(obj, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function validate(story) {
+      const errors = [];
+
+      // Check startSceneId exists
+      if (!story.startSceneId) {
+        errors.push('시작 씬 ID가 없습니다.');
+      } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
+        errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
+      }
+
+      // Check each scene
+      story.scenes.forEach(scene => {
+        // Check choices length
+        if (!scene.choices || scene.choices.length !== 2) {
+          errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+        }
+
+        // Check choice validity
+        if (scene.choices) {
+          scene.choices.forEach((choice, idx) => {
+            if (choice.outcome === 'continue' && !choice.nextSceneId) {
+              errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
+            }
+
+            if (choice.outcome === 'continue' && choice.nextSceneId) {
+              if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
+                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
+              }
+            }
+          });
+        }
+      });
+
+      return errors;
+    }
+
+    function mergeStory(base, incoming) {
+      // Merge title and startSceneId
+      if (incoming.title) base.title = incoming.title;
+      if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
+
+      // Merge scenes
+      if (incoming.scenes && Array.isArray(incoming.scenes)) {
+        incoming.scenes.forEach(inScene => {
+          const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
+
+          if (existingIdx >= 0) {
+            // Merge existing scene
+            const existing = base.scenes[existingIdx];
+
+            if (inScene.name) existing.name = inScene.name;
+            if (inScene.content !== undefined) existing.content = inScene.content;
+            if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
+            if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
+
+            // Merge choices
+            if (inScene.choices && Array.isArray(inScene.choices)) {
+              inScene.choices.forEach((inChoice, idx) => {
+                if (idx < 2) {
+                  const existingChoice = existing.choices[idx];
+                  if (existingChoice && existingChoice.id === inChoice.id) {
+                    // Update existing choice
+                    if (inChoice.label) existingChoice.label = inChoice.label;
+                    if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
+                    if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
+                  } else {
+                    // Replace choice
+                    existing.choices[idx] = inChoice;
+                  }
+                }
+              });
+            }
+          } else {
+            // Add new scene
+            base.scenes.push(inScene);
+          }
+        });
+      }
+
+      return base;
+    }
+
+    function findScene(sceneId) {
+      return STORY.scenes.find(s => s.id === sceneId);
+    }
+
+    // ==================== RENDER ====================
+    function showStartScreen() {
+      qs('#start-screen').classList.remove('hidden');
+      qs('#game-screen').classList.add('hidden');
+      qs('#ending-screen').classList.add('hidden');
+      currentSceneId = null;
+      crumbs = [];
+      lastEnding = null;
+    }
+
+    function showGameScreen(sceneId) {
+      const scene = findScene(sceneId);
+      if (!scene) {
+        showAlert(`씬 ${sceneId}을(를) 찾을 수 없습니다. 시작으로 돌아갑니다.`);
+        showStartScreen();
+        return;
+      }
+
+      currentSceneId = sceneId;
+      crumbs.push(scene.name);
+
+      qs('#start-screen').classList.add('hidden');
+      qs('#game-screen').classList.remove('hidden');
+      qs('#ending-screen').classList.add('hidden');
+
+      // Render breadcrumb
+      qs('#crumbs').textContent = crumbs.join(' → ');
+
+      // Render scene
+      qs('#scene-title').textContent = scene.name || '(제목 없음)';
+      qs('#scene-content').textContent = scene.content || '';
+
+      // Render choices
+      const choiceA = scene.choices[0] || {};
+      const choiceB = scene.choices[1] || {};
+
+      qs('#choiceA').textContent = choiceA.label || '선택지 A';
+      qs('#choiceB').textContent = choiceB.label || '선택지 B';
+
+      // Check if ending scene
+      if (scene.isEnding) {
+        qs('#choiceA').disabled = true;
+        qs('#choiceB').disabled = true;
+        // Show ending immediately
+        setTimeout(() => {
+          showEndingScreen('normal', scene.endingInfo);
+        }, 1000);
+      } else {
+        qs('#choiceA').disabled = false;
+        qs('#choiceB').disabled = false;
+      }
+
+      // Attach choice handlers
+      qs('#choiceA').onclick = () => handleChoice(choiceA);
+      qs('#choiceB').onclick = () => handleChoice(choiceB);
+    }
+
+    function handleChoice(choice) {
+      if (!choice || !choice.outcome) return;
+
+      switch (choice.outcome) {
+        case 'continue':
+          if (choice.nextSceneId) {
+            showGameScreen(choice.nextSceneId);
+          } else {
+            showAlert('다음 씬이 지정되지 않았습니다.');
+          }
+          break;
+
+        case 'success':
+          showEndingScreen('success', {
+            title: '성공 엔딩',
+            summary: '당신은 성공적으로 사랑을 쟁취했습니다!'
+          });
+          break;
+
+        case 'failure':
+          showEndingScreen('failure', {
+            title: '실패 엔딩',
+            summary: '아쉽지만 이번에는 인연이 아니었나봅니다...'
+          });
+          break;
+      }
+    }
+
+    function showEndingScreen(type, endingInfo = {}) {
+      qs('#start-screen').classList.add('hidden');
+      qs('#game-screen').classList.add('hidden');
+      qs('#ending-screen').classList.remove('hidden');
+
+      const endingScreen = qs('#ending-screen');
+      endingScreen.className = 'card ending-screen ' + type;
+
+      qs('#ending-code').textContent = endingInfo.code ? `CODE: ${endingInfo.code}` : '';
+      qs('#ending-title').textContent = endingInfo.title || '';
+      qs('#ending-summary').textContent = endingInfo.summary || '';
+
+      lastEnding = { type, endingInfo };
+    }
+
+    // ==================== EXPORT/IMPORT ====================
+    function exportJSON() {
+      const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
+      downloadJSON(STORY, filename);
+      showAlert('JSON을 내보냈습니다.', 'success');
+    }
+
+    function importJSON(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const incoming = JSON.parse(e.target.result);
+
+          // Validate incoming JSON
+          const errors = validate(incoming);
+          if (errors.length > 0) {
+            showAlert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
+            return;
+          }
+
+          // Merge
+          STORY = mergeStory(STORY, incoming);
+
+          // Update title
+          qs('#game-title').textContent = STORY.title;
+
+          // Refresh current view
+          if (currentSceneId) {
+            const scene = findScene(currentSceneId);
+            if (!scene) {
+              showAlert('현재 씬이 삭제되었습니다. 시작으로 돌아갑니다.');
+              showStartScreen();
+            } else {
+              showGameScreen(currentSceneId);
+            }
+          }
+
+          showAlert('JSON을 성공적으로 병합했습니다.', 'success');
+        } catch (err) {
+          showAlert('JSON 파싱 실패: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ==================== EVENT HANDLERS ====================
+    function init() {
+      // Validate initial story
+      const errors = validate(STORY);
+      if (errors.length > 0) {
+        showAlert('초기 스토리 유효성 검사 실패:\n' + errors.join('\n'));
+        return;
+      }
+
+      // Update title
+      qs('#game-title').textContent = STORY.title;
+
+      // Start screen trigger
+      qs('#start-trigger').addEventListener('click', () => {
+        showGameScreen(STORY.startSceneId);
+      });
+
+      // Keyboard support for start
+      qs('#start-trigger').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          showGameScreen(STORY.startSceneId);
+        }
+      });
+      qs('#start-trigger').setAttribute('tabindex', '0');
+
+      // Restart button
+      qs('#restart-btn').addEventListener('click', showStartScreen);
+
+      // Export button
+      qs('#btn-export').addEventListener('click', exportJSON);
+
+      // Import button
+      qs('#input-import').addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          importJSON(e.target.files[0]);
+          e.target.value = ''; // Reset input
+        }
+      });
+
+      // Keyboard support for choices
+      document.addEventListener('keydown', (e) => {
+        if (qs('#game-screen').classList.contains('hidden')) return;
+
+        if (e.key === '1' || e.key === 'a' || e.key === 'A') {
+          qs('#choiceA').click();
+        } else if (e.key === '2' || e.key === 'b' || e.key === 'B') {
+          qs('#choiceB').click();
+        }
+      });
+
+      // Show start screen
+      showStartScreen();
+    }
+
+    // ==================== BOOT ====================
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
