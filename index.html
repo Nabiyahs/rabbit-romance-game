@@ -12,6 +12,8 @@
       --color-3: #F0EBF4;
       --color-4: #F172A1;
       --color-5: #E64398;
+      --color-success: #44cc44;
+      --color-failure: #ff4444;
       --shadow: 0 2px 8px rgba(0,0,0,0.1);
       --radius: 8px;
     }
@@ -196,6 +198,16 @@
       color: white;
     }
 
+    .badge-success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .badge-failure {
+      background: var(--color-failure);
+      color: white;
+    }
+
     .scene-item-choices {
       font-size: 0.8rem;
       color: #666;
@@ -274,7 +286,8 @@
       resize: vertical;
     }
 
-    .form-group input[type="checkbox"] {
+    .form-group input[type="checkbox"],
+    .form-group input[type="radio"] {
       width: auto;
       margin-right: 0.5rem;
     }
@@ -294,6 +307,31 @@
     .checkbox-group {
       display: flex;
       align-items: center;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .radio-option:hover {
+      background: var(--color-3);
+    }
+
+    .radio-option label {
+      cursor: pointer;
+      margin-bottom: 0 !important;
+      font-weight: normal !important;
     }
 
     .ending-info {
@@ -326,6 +364,10 @@
     .choice-card h4 {
       color: var(--color-5);
       margin-bottom: 0.75rem;
+    }
+
+    .choice-type-scene {
+      margin-top: 0.5rem;
     }
 
     /* Player */
@@ -426,9 +468,20 @@
     .player-ending {
       text-align: center;
       padding: 2rem;
-      background: linear-gradient(135deg, var(--color-4), var(--color-5));
-      color: white;
       border-radius: var(--radius);
+      color: white;
+    }
+
+    .player-ending.success {
+      background: linear-gradient(135deg, var(--color-success), #66dd66);
+    }
+
+    .player-ending.failure {
+      background: linear-gradient(135deg, var(--color-failure), #ff6666);
+    }
+
+    .player-ending.normal {
+      background: linear-gradient(135deg, var(--color-4), var(--color-5));
     }
 
     .player-ending h3 {
@@ -612,9 +665,19 @@
 
     function ensureTwo(arr) {
       while (arr.length < 2) {
-        arr.push({ id: '', label: '', nextSceneId: '', note: '' });
+        arr.push({ id: '', label: '', type: 'scene', nextSceneId: '', note: '' });
       }
       return arr.slice(0, 2);
+    }
+
+    function getChoiceDisplay(choice) {
+      if (choice.type === 'success') {
+        return '[성공 엔딩]';
+      } else if (choice.type === 'failure') {
+        return '[실패 엔딩]';
+      } else {
+        return choice.nextSceneId || '?';
+      }
     }
 
     // ==================== Renderers ====================
@@ -656,7 +719,7 @@
         const choiceA = choices[0];
         const choiceB = choices[1];
 
-        const choiceText = `A: ${choiceA.label || '(없음)'} → ${choiceA.nextSceneId || '?'}<br>B: ${choiceB.label || '(없음)'} → ${choiceB.nextSceneId || '?'}`;
+        const choiceText = `A: ${choiceA.label || '(없음)'} → ${getChoiceDisplay(choiceA)}<br>B: ${choiceB.label || '(없음)'} → ${getChoiceDisplay(choiceB)}`;
 
         div.innerHTML = `
           <div class="scene-item-header">
@@ -782,6 +845,23 @@
               <input type="text" id="edit-choice-a-label" value="${choiceA.label || ''}">
             </div>
             <div class="form-group">
+              <label>타입</label>
+              <div class="radio-group">
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-a-type-scene" name="choice-a-type" value="scene" ${(choiceA.type || 'scene') === 'scene' ? 'checked' : ''}>
+                  <label for="edit-choice-a-type-scene">다음 씬으로 진행</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-a-type-success" name="choice-a-type" value="success" ${choiceA.type === 'success' ? 'checked' : ''}>
+                  <label for="edit-choice-a-type-success">성공 엔딩</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-a-type-failure" name="choice-a-type" value="failure" ${choiceA.type === 'failure' ? 'checked' : ''}>
+                  <label for="edit-choice-a-type-failure">실패 엔딩</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group choice-type-scene" id="choice-a-scene-select" ${(choiceA.type || 'scene') !== 'scene' ? 'style="display:none;"' : ''}>
               <label>다음 씬</label>
               <select id="edit-choice-a-next">
                 <option value="">선택 안함</option>
@@ -801,6 +881,23 @@
               <input type="text" id="edit-choice-b-label" value="${choiceB.label || ''}">
             </div>
             <div class="form-group">
+              <label>타입</label>
+              <div class="radio-group">
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-b-type-scene" name="choice-b-type" value="scene" ${(choiceB.type || 'scene') === 'scene' ? 'checked' : ''}>
+                  <label for="edit-choice-b-type-scene">다음 씬으로 진행</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-b-type-success" name="choice-b-type" value="success" ${choiceB.type === 'success' ? 'checked' : ''}>
+                  <label for="edit-choice-b-type-success">성공 엔딩</label>
+                </div>
+                <div class="radio-option">
+                  <input type="radio" id="edit-choice-b-type-failure" name="choice-b-type" value="failure" ${choiceB.type === 'failure' ? 'checked' : ''}>
+                  <label for="edit-choice-b-type-failure">실패 엔딩</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group choice-type-scene" id="choice-b-scene-select" ${(choiceB.type || 'scene') !== 'scene' ? 'style="display:none;"' : ''}>
               <label>다음 씬</label>
               <select id="edit-choice-b-next">
                 <option value="">선택 안함</option>
@@ -832,6 +929,24 @@
       byId('edit-choice-b-label').addEventListener('input', updateScene);
       byId('edit-choice-b-next').addEventListener('change', updateScene);
       byId('edit-choice-b-note').addEventListener('input', updateScene);
+
+      // Choice type handlers
+      ['a', 'b'].forEach(choice => {
+        ['scene', 'success', 'failure'].forEach(type => {
+          const radio = byId(`edit-choice-${choice}-type-${type}`);
+          if (radio) {
+            radio.addEventListener('change', () => {
+              const sceneSelect = byId(`choice-${choice}-scene-select`);
+              if (type === 'scene') {
+                sceneSelect.style.display = 'block';
+              } else {
+                sceneSelect.style.display = 'none';
+              }
+              updateScene();
+            });
+          }
+        });
+      });
     }
 
     function renderPlayer() {
@@ -839,6 +954,24 @@
 
       if (!playerSceneId) {
         container.innerHTML = '<p style="opacity: 0.8;">\'시작\' 버튼을 눌러 플레이를 시작하세요</p>';
+        return;
+      }
+
+      // Check if it's a special ending
+      if (playerSceneId === '__SUCCESS__' || playerSceneId === '__FAILURE__') {
+        const endingType = playerSceneId === '__SUCCESS__' ? 'success' : 'failure';
+        const endingTitle = playerSceneId === '__SUCCESS__' ? '성공 엔딩' : '실패 엔딩';
+        const breadcrumb = playerPath.length > 0
+          ? `<div class="player-breadcrumb">경로: ${playerPath.join(' → ')}</div>`
+          : '';
+
+        container.innerHTML = `
+          ${breadcrumb}
+          <div class="player-ending ${endingType}">
+            <h3>THE END</h3>
+            <div class="player-ending-title">${endingTitle}</div>
+          </div>
+        `;
         return;
       }
 
@@ -865,7 +998,7 @@
       if (scene.isEnding) {
         // Ending display
         sceneHTML += `
-          <div class="player-ending">
+          <div class="player-ending normal">
             <h3>THE END</h3>
             ${scene.endingInfo?.code ? `<div class="player-ending-code">CODE: ${scene.endingInfo.code}</div>` : ''}
             ${scene.endingInfo?.title ? `<div class="player-ending-title">${scene.endingInfo.title}</div>` : ''}
@@ -879,9 +1012,11 @@
 
         choices.forEach((choice, idx) => {
           const label = choice.label || `선택지 ${String.fromCharCode(65 + idx)}`;
-          const disabled = !choice.nextSceneId ? 'disabled' : '';
+          const type = choice.type || 'scene';
+          const disabled = (type === 'scene' && !choice.nextSceneId) ? 'disabled' : '';
+
           sceneHTML += `
-            <button class="player-choice-btn" data-next="${choice.nextSceneId}" ${disabled}>
+            <button class="player-choice-btn" data-type="${type}" data-next="${choice.nextSceneId || ''}" ${disabled}>
               ${label}
             </button>
           `;
@@ -895,12 +1030,20 @@
       // Attach choice handlers
       container.querySelectorAll('.player-choice-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
           const nextId = btn.dataset.next;
-          if (nextId) {
-            playerPath.push(scene.name || scene.id);
+
+          playerPath.push(scene.name || scene.id);
+
+          if (type === 'success') {
+            playerSceneId = '__SUCCESS__';
+          } else if (type === 'failure') {
+            playerSceneId = '__FAILURE__';
+          } else if (nextId) {
             playerSceneId = nextId;
-            renderPlayer();
           }
+
+          renderPlayer();
         });
       });
     }
@@ -930,8 +1073,8 @@
         isEnding: false,
         content: 'TODO',
         choices: [
-          { id: choiceIds[0], label: 'TODO', nextSceneId: '', note: '' },
-          { id: choiceIds[1], label: 'TODO', nextSceneId: '', note: '' }
+          { id: choiceIds[0], label: 'TODO', type: 'scene', nextSceneId: '', note: '' },
+          { id: choiceIds[1], label: 'TODO', type: 'scene', nextSceneId: '', note: '' }
         ],
         createdAt: nowISO(),
         updatedAt: nowISO(),
@@ -1018,12 +1161,28 @@
       }
 
       const choices = ensureTwo(scene.choices || []);
+
+      // Choice A
       choices[0].label = byId('edit-choice-a-label').value;
-      choices[0].nextSceneId = byId('edit-choice-a-next').value;
       choices[0].note = byId('edit-choice-a-note').value;
+      const typeA = document.querySelector('input[name="choice-a-type"]:checked')?.value || 'scene';
+      choices[0].type = typeA;
+      if (typeA === 'scene') {
+        choices[0].nextSceneId = byId('edit-choice-a-next').value;
+      } else {
+        choices[0].nextSceneId = '';
+      }
+
+      // Choice B
       choices[1].label = byId('edit-choice-b-label').value;
-      choices[1].nextSceneId = byId('edit-choice-b-next').value;
       choices[1].note = byId('edit-choice-b-note').value;
+      const typeB = document.querySelector('input[name="choice-b-type"]:checked')?.value || 'scene';
+      choices[1].type = typeB;
+      if (typeB === 'scene') {
+        choices[1].nextSceneId = byId('edit-choice-b-next').value;
+      } else {
+        choices[1].nextSceneId = '';
+      }
 
       scene.choices = choices;
       scene.updatedAt = nowISO();
@@ -1086,7 +1245,16 @@
         // Check nextSceneId validity
         const choices = ensureTwo(scene.choices || []);
         choices.forEach((choice, idx) => {
-          if (choice.nextSceneId && !findScene(choice.nextSceneId)) {
+          const type = choice.type || 'scene';
+
+          if (type === 'scene' && !choice.nextSceneId) {
+            results.push({
+              type: 'error',
+              msg: `씬 ${scene.id}, 선택지 ${String.fromCharCode(65 + idx)}: 타입이 '다음 씬'인데 씬이 지정되지 않았습니다`
+            });
+          }
+
+          if (type === 'scene' && choice.nextSceneId && !findScene(choice.nextSceneId)) {
             results.push({
               type: 'error',
               msg: `씬 ${scene.id}, 선택지 ${String.fromCharCode(65 + idx)}: 존재하지 않는 씬 참조 (${choice.nextSceneId})`
@@ -1110,7 +1278,8 @@
 
           const choices = ensureTwo(scene.choices || []);
           choices.forEach(c => {
-            if (c.nextSceneId && !reachable.has(c.nextSceneId)) {
+            const type = c.type || 'scene';
+            if (type === 'scene' && c.nextSceneId && !reachable.has(c.nextSceneId)) {
               queue.push(c.nextSceneId);
             }
           });
@@ -1197,8 +1366,8 @@
         isEnding: false,
         content: 'TODO: 시작 씬 내용을 작성하세요',
         choices: [
-          { id: 'C001A', label: 'TODO', nextSceneId: 'S002', note: '' },
-          { id: 'C001B', label: 'TODO', nextSceneId: 'S003', note: '' }
+          { id: 'C001A', label: 'TODO', type: 'scene', nextSceneId: 'S002', note: '' },
+          { id: 'C001B', label: 'TODO', type: 'scene', nextSceneId: 'S003', note: '' }
         ],
         createdAt: nowISO(),
         updatedAt: nowISO(),
@@ -1211,8 +1380,8 @@
         isEnding: false,
         content: 'TODO: 중간 씬 내용을 작성하세요',
         choices: [
-          { id: 'C002A', label: 'TODO', nextSceneId: 'S003', note: '' },
-          { id: 'C002B', label: 'TODO', nextSceneId: 'S001', note: '' }
+          { id: 'C002A', label: '성공적으로 해결', type: 'success', nextSceneId: '', note: '' },
+          { id: 'C002B', label: '실패하고 포기', type: 'failure', nextSceneId: '', note: '' }
         ],
         createdAt: nowISO(),
         updatedAt: nowISO(),
@@ -1230,8 +1399,8 @@
         },
         content: 'TODO: 엔딩 씬 내용을 작성하세요',
         choices: [
-          { id: 'C003A', label: 'TODO', nextSceneId: '', note: '' },
-          { id: 'C003B', label: 'TODO', nextSceneId: '', note: '' }
+          { id: 'C003A', label: 'TODO', type: 'scene', nextSceneId: '', note: '' },
+          { id: 'C003B', label: 'TODO', type: 'scene', nextSceneId: '', note: '' }
         ],
         createdAt: nowISO(),
         updatedAt: nowISO(),
