@@ -586,14 +586,17 @@
     }
 
     .flow-tree {
-      font-family: monospace;
-      font-size: 0.85rem;
-      line-height: 1.8;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
       overflow-x: auto;
-      padding: 1rem;
+      padding: 1.5rem;
       background: #fafafa;
       border: 1px solid #ddd;
       border-radius: var(--radius);
+      white-space: pre;
+      max-height: 600px;
+      overflow-y: auto;
     }
 
     .flow-node {
@@ -825,35 +828,44 @@
       const scenes = [];
       const timestamp = nowISO();
 
-      // 시작 씬 (1개)
+      // ===== 발단 (Exposition) =====
+
+      // 시작 씬 (1개) - 운명적 첫만남
       scenes.push({
         id: 'S001',
-        name: '시작',
+        name: '【발단】운명적 첫만남',
         isEnding: false,
-        content: 'TODO: 시작 씬 내용을 작성하세요 (3-4문장)',
+        content: 'TODO: 첫만남 씬 - 주인공과 상대방이 처음 만나는 순간. 첫인상이 중요합니다. (3-4문장)',
         choices: [
-          { id: 'C001A', label: 'TODO: 선택지 A', type: 'scene', nextSceneId: 'S002', note: '' },
-          { id: 'C001B', label: 'TODO: 선택지 B', type: 'scene', nextSceneId: 'S003', note: '' }
+          { id: 'C001A', label: '적극적으로 말을 건다', type: 'scene', nextSceneId: 'S002', note: '적극적 루트' },
+          { id: 'C001B', label: '조용히 관찰한다', type: 'scene', nextSceneId: 'S003', note: '신중한 루트' }
         ],
         createdAt: timestamp,
         updatedAt: timestamp,
         isArchived: false
       });
 
-      // 초반 씬 (3개)
+      // 초반 씬 (3개) - 발단: 첫인상, 재회, 관심
+      const earlyScenes = [
+        { name: '【발단】첫인상과 호기심', content: '첫만남 이후 상대방에 대한 호기심이 생긴다. 다시 만날 수 있을까?' },
+        { name: '【발단】우연한 재회', content: '예상치 못한 장소에서 다시 만나게 된다. 이것은 우연일까, 운명일까?' },
+        { name: '【발단】관심의 시작', content: '상대방의 매력을 발견하고 조금씩 관심이 생기기 시작한다.' }
+      ];
+
       for (let i = 2; i <= 4; i++) {
         const id = `S00${i}`;
+        const sceneData = earlyScenes[i-2];
         const nextA = i === 2 ? 'S005' : i === 3 ? 'S006' : 'S007';
         const nextB = i === 2 ? 'S006' : i === 3 ? 'S007' : 'S008';
 
         scenes.push({
           id,
-          name: `초반 씬 ${i-1}`,
+          name: sceneData.name,
           isEnding: false,
-          content: `TODO: 초반 씬 ${i-1} 내용 (3-4문장)`,
+          content: `TODO: ${sceneData.content} (3-4문장)`,
           choices: [
-            { id: `C00${i}A`, label: 'TODO: 선택지 A', type: 'scene', nextSceneId: nextA, note: '' },
-            { id: `C00${i}B`, label: 'TODO: 선택지 B', type: 'scene', nextSceneId: nextB, note: '' }
+            { id: `C00${i}A`, label: '먼저 다가간다', type: 'scene', nextSceneId: nextA, note: '' },
+            { id: `C00${i}B`, label: '자연스러운 상황을 기다린다', type: 'scene', nextSceneId: nextB, note: '' }
           ],
           createdAt: timestamp,
           updatedAt: timestamp,
@@ -861,21 +873,38 @@
         });
       }
 
+      // ===== 전개 (Rising Action) =====
+
       // 중반 분기 씬 (12개: S005-S016)
+      const developmentScenes = [
+        { name: '【전개】첫 대화', content: '진지한 대화를 나누며 서로를 알아간다. 공통점을 발견한다.' },
+        { name: '【전개】공통 관심사 발견', content: '같은 취미나 관심사를 발견하고 친밀감이 생긴다.' },
+        { name: '【전개】친밀감 형성', content: '자연스럽게 시간을 함께 보내며 점점 가까워진다.' },
+        { name: '【전개】호감의 신호', content: '상대방의 작은 행동에서 호감의 신호를 느낀다.' },
+        { name: '【전개】작은 오해', content: '사소한 오해가 생기지만 곧 풀린다. 관계가 더 단단해진다.' },
+        { name: '【전개】설레는 순간', content: '우연히 손이 닿거나 눈이 마주치는 설레는 순간.' },
+        { name: '【전개】특별한 약속', content: '둘만의 특별한 약속을 만든다. 관계가 진전된다.' },
+        { name: '【전개】데이트 제안', content: '용기를 내어 데이트를 제안하거나 제안받는다.' },
+        { name: '【전개】마음의 확신', content: '상대방에 대한 마음이 확실해진다. 이건 사랑일까?' },
+        { name: '【전개】주변의 시선', content: '주변 사람들이 두 사람의 관계를 눈치채기 시작한다.' },
+        { name: '【전개】더 가까워지고 싶은 마음', content: '상대방을 더 알고 싶고, 더 가까워지고 싶은 마음이 커진다.' },
+        { name: '【전개】고백 준비', content: '이제 고백해야 할 때인가? 용기를 내야 한다.' }
+      ];
+
       for (let i = 5; i <= 16; i++) {
         const id = `S0${String(i).padStart(2, '0')}`;
-        const num = i - 4;
+        const sceneData = developmentScenes[i-5];
         const nextA = i <= 14 ? `S0${String(i + 2).padStart(2, '0')}` : 'S017';
         const nextB = i <= 14 ? `S0${String(i + 3).padStart(2, '0')}` : 'S018';
 
         scenes.push({
           id,
-          name: `중반 씬 ${num}`,
+          name: sceneData.name,
           isEnding: false,
-          content: `TODO: 중반 씬 ${num} 내용 (3-4문장)`,
+          content: `TODO: ${sceneData.content} (3-4문장)`,
           choices: [
-            { id: `C0${String(i).padStart(2, '0')}A`, label: 'TODO: 선택지 A', type: 'scene', nextSceneId: nextA, note: '' },
-            { id: `C0${String(i).padStart(2, '0')}B`, label: 'TODO: 선택지 B', type: 'scene', nextSceneId: nextB, note: '' }
+            { id: `C0${String(i).padStart(2, '0')}A`, label: '솔직하게 마음을 표현한다', type: 'scene', nextSceneId: nextA, note: '' },
+            { id: `C0${String(i).padStart(2, '0')}B`, label: '조금 더 신중하게 행동한다', type: 'scene', nextSceneId: nextB, note: '' }
           ],
           createdAt: timestamp,
           updatedAt: timestamp,
@@ -883,35 +912,56 @@
         });
       }
 
-      // 후반 씬 (9개: S017-S025)
+      // ===== 위기 (Climax Rising) =====
+
+      // 후반 씬 (9개: S017-S025) - 위기와 절정
+      const crisisScenes = [
+        { name: '【위기】예상치 못한 장애물', content: '관계를 방해하는 예상치 못한 문제가 발생한다.' },
+        { name: '【위기】큰 오해', content: '심각한 오해가 생겨 관계에 금이 간다. 어떻게 풀어야 할까?' },
+        { name: '【위기】삼각관계', content: '제3자의 등장으로 관계가 복잡해진다.' },
+        { name: '【위기】갈등과 고민', content: '서로의 차이로 갈등이 생긴다. 이대로 괜찮을까?' },
+        { name: '【위기】이별 위기', content: '관계가 끝날 위기에 처한다. 마지막 선택의 순간.' },
+        { name: '【위기】진실의 순간', content: '진실을 밝혀야 하는 순간. 용기를 낼 수 있을까?' },
+        { name: '【위기】마지막 기회', content: '관계를 회복할 마지막 기회. 무엇을 선택할 것인가?' },
+        { name: '【절정】고백', content: '모든 것을 걸고 진심을 고백한다. 결정적인 순간.' },
+        { name: '【절정】운명의 선택', content: '두 사람의 미래가 결정되는 순간. 어떤 대답을 들을까?' }
+      ];
+
       for (let i = 17; i <= 25; i++) {
         const id = `S0${i}`;
-        const num = i - 16;
+        const sceneData = crisisScenes[i-17];
         let nextA, nextB, typeA = 'scene', typeB = 'scene';
+        let labelA, labelB;
 
         if (i <= 23) {
           nextA = `S0${i + 1}`;
           nextB = `S0${i + 2}`;
+          labelA = '진심으로 다가간다';
+          labelB = '거리를 둔다';
         } else if (i === 24) {
           typeA = 'success';
           typeB = 'failure';
           nextA = '';
           nextB = '';
+          labelA = '사랑을 선택한다';
+          labelB = '현실을 선택한다';
         } else {
           typeA = 'success';
           typeB = 'failure';
           nextA = '';
           nextB = '';
+          labelA = '함께하기로 결심한다';
+          labelB = '포기하고 떠난다';
         }
 
         scenes.push({
           id,
-          name: `후반 씬 ${num}`,
+          name: sceneData.name,
           isEnding: false,
-          content: `TODO: 후반 씬 ${num} 내용 (3-4문장)`,
+          content: `TODO: ${sceneData.content} (3-4문장)`,
           choices: [
-            { id: `C0${i}A`, label: 'TODO: 선택지 A', type: typeA, nextSceneId: nextA, note: '' },
-            { id: `C0${i}B`, label: 'TODO: 선택지 B', type: typeB, nextSceneId: nextB, note: '' }
+            { id: `C0${i}A`, label: labelA, type: typeA, nextSceneId: nextA, note: '' },
+            { id: `C0${i}B`, label: labelB, type: typeB, nextSceneId: nextB, note: '' }
           ],
           createdAt: timestamp,
           updatedAt: timestamp,
@@ -919,13 +969,15 @@
         });
       }
 
+      // ===== 결말 (Resolution) =====
+
       // 엔딩 씬 (5개: S026-S030)
       const endings = [
-        { code: 'END-SUCCESS-1', title: '진정한 사랑', summary: '성공 엔딩 1' },
-        { code: 'END-SUCCESS-2', title: '행복한 결말', summary: '성공 엔딩 2' },
-        { code: 'END-FAILURE-1', title: '놓친 기회', summary: '실패 엔딩 1' },
-        { code: 'END-FAILURE-2', title: '쓴 이별', summary: '실패 엔딩 2' },
-        { code: 'END-NEUTRAL', title: '새로운 시작', summary: '중립 엔딩' }
+        { code: 'END-SUCCESS-1', title: '【결말】진정한 사랑', summary: '두 사람은 모든 시련을 이겨내고 함께하기로 약속한다. 진정한 사랑의 시작.' },
+        { code: 'END-SUCCESS-2', title: '【결말】행복한 시작', summary: '서로의 마음을 확인하고 새로운 시작을 맞이한다. 앞으로가 더 기대된다.' },
+        { code: 'END-FAILURE-1', title: '【결말】놓친 기회', summary: '용기를 내지 못해 기회를 놓쳤다. 아쉬움만 남는다.' },
+        { code: 'END-FAILURE-2', title: '【결말】쓴 이별', summary: '결국 서로 다른 길을 선택했다. 이것이 최선이었을까?' },
+        { code: 'END-NEUTRAL', title: '【결말】좋은 친구', summary: '연인은 되지 못했지만 좋은 친구로 남기로 했다. 이것도 하나의 인연.' }
       ];
 
       for (let i = 0; i < 5; i++) {
@@ -959,7 +1011,7 @@
       refreshStartSelect();
       renderStoryFlow();
 
-      alert(`추천 구조 템플릿이 생성되었습니다!\n\n총 ${scenes.length}개 씬:\n- 시작: 1개\n- 초반: 3개\n- 중반: 12개\n- 후반: 9개\n- 엔딩: 5개\n\n이제 각 씬의 내용을 작성하세요.`);
+      alert(`로맨스 스토리 구조 템플릿이 생성되었습니다!\n\n총 ${scenes.length}개 씬:\n━━━━━━━━━━━━━━━━━━━━\n【발단】 시작~초반 (4씬)\n  • 운명적 첫만남\n  • 첫인상과 재회\n  • 관심의 시작\n\n【전개】 중반 (12씬)\n  • 대화와 친밀감 형성\n  • 호감 신호와 설레임\n  • 데이트 제안\n\n【위기】 후반 (7씬)\n  • 장애물과 오해\n  • 삼각관계와 갈등\n  • 이별 위기\n\n【절정】 (2씬)\n  • 고백\n  • 운명의 선택\n\n【결말】 엔딩 (5씬)\n  • 성공 엔딩 2개\n  • 실패 엔딩 2개\n  • 중립 엔딩 1개\n━━━━━━━━━━━━━━━━━━━━\n\n각 씬의 TODO를 참고하여\n3-4문장으로 내용을 작성하세요.`);
     }
 
     // ==================== Story Flow Visualizer ====================
@@ -1058,8 +1110,8 @@
 
       choices.forEach((choice, idx) => {
         const isLast = idx === choices.length - 1;
-        const choicePrefix = isLast ? '└─' : '├─';
-        const nextPrefix = isLast ? '   ' : '│  ';
+        const choicePrefix = isLast ? '└──' : '├──';
+        const nextPrefix = isLast ? '    ' : '│   ';
 
         const choiceClasses = ['flow-node'];
         if (choice.type === 'success') choiceClasses.push('success-choice');
@@ -1069,23 +1121,23 @@
         html += `${prefix}${choicePrefix} <span class="${choiceClasses.join(' ')}">[${String.fromCharCode(65 + idx)}] ${label}</span>`;
 
         if (choice.type === 'success') {
-          html += ' → <span class="flow-node success-choice">[성공 엔딩]</span>\n';
+          html += ' ➜ <span class="flow-node success-choice">✓ 성공 엔딩</span>\n';
         } else if (choice.type === 'failure') {
-          html += ' → <span class="flow-node failure-choice">[실패 엔딩]</span>\n';
+          html += ' ➜ <span class="flow-node failure-choice">✗ 실패 엔딩</span>\n';
         } else if (choice.nextSceneId) {
           const nextScene = findScene(choice.nextSceneId);
           if (nextScene) {
-            html += '\n';
+            html += ' ➜\n';
             if (visited.has(nextScene.id)) {
-              html += `${prefix}${nextPrefix}<span class="flow-node" data-scene-id="${nextScene.id}">⤴ ${nextScene.id} (순환 참조)</span>\n`;
+              html += `${prefix}${nextPrefix}<span class="flow-node" data-scene-id="${nextScene.id}">↻ ${nextScene.id} (순환)</span>\n`;
             } else {
               html += buildFlowTree(nextScene, prefix + nextPrefix, visited, depth + 1);
             }
           } else {
-            html += ` → <span style="color: #888;">[씬 없음: ${choice.nextSceneId}]</span>\n`;
+            html += ` ➜ <span style="color: #888;">[씬 없음: ${choice.nextSceneId}]</span>\n`;
           }
         } else {
-          html += ' → <span style="color: #888;">[연결 안됨]</span>\n';
+          html += ' ➜ <span style="color: #888;">[연결 안됨]</span>\n';
         }
       });
 
