@@ -1,335 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catch! Love — Game</title>
-  <!--
-    디자인/문구는 원본 유지, 스토리는 내장 상수로 입력, 추후 JSON import/export 지원
-    단일 HTML 파일로 완결. 외부 라이브러리/번들러 불가.
-  -->
-  <style>
-    /* ==================== Styles ==================== */
-    :root {
-      --color-1: #A1C3D1;
-      --color-2: #B39BC8;
-      --color-3: #F0EBF4;
-      --color-4: #F172A1;
-      --color-5: #E64398;
-      --color-success: #44cc44;
-      --color-failure: #ff4444;
-      --shadow: 0 2px 8px rgba(0,0,0,0.1);
-      --radius: 8px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch! Love - Game</title>
+    <!--
+      디자인/문구는 원본 유지, 스토리는 내장 상수로 입력, JSON import/export 지원
+      단일 HTML 파일로 완결. 외부 라이브러리/번들러 불가.
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, var(--color-3) 0%, #fff 100%);
-      min-height: 100vh;
-      padding: 0;
-      color: #333;
-    }
-
-    /* TopBar */
-    .topbar {
-      background: linear-gradient(90deg, var(--color-1), var(--color-2));
-      color: white;
-      padding: 1rem 1.5rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .topbar h1 {
-      font-size: 1.5rem;
-      margin-right: auto;
-      font-weight: 600;
-    }
-
-    .topbar button, .topbar input[type="file"] {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: var(--radius);
-      background: white;
-      color: #333;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .topbar button:hover {
-      background: var(--color-3);
-      transform: translateY(-1px);
-    }
-
-    .topbar label {
-      padding: 0.5rem 1rem;
-      background: white;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .topbar label:hover {
-      background: var(--color-3);
-      transform: translateY(-1px);
-    }
-
-    /* Container */
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    /* Card */
-    .card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 1rem;
-    }
-
-    /* Start Screen */
-    .start-screen {
-      text-align: center;
-      padding: 4rem 2rem;
-    }
-
-    .start-screen h2 {
-      font-size: 2.5rem;
-      color: var(--color-5);
-      margin-bottom: 1rem;
-    }
-
-    .start-screen p {
-      font-size: 1.2rem;
-      color: var(--color-2);
-      cursor: pointer;
-      padding: 1rem;
-      transition: all 0.3s;
-      border-radius: var(--radius);
-    }
-
-    .start-screen p:hover {
-      background: var(--color-3);
-      transform: scale(1.05);
-    }
-
-    /* Game Screen */
-    .game-screen {
-      display: none;
-    }
-
-    .breadcrumb {
-      background: var(--color-3);
-      padding: 0.75rem;
-      border-radius: var(--radius);
-      margin-bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    .scene-title {
-      font-size: 2rem;
-      color: var(--color-5);
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-    }
-
-    .scene-content {
-      line-height: 1.8;
-      margin-bottom: 2rem;
-      white-space: pre-wrap;
-      color: #555;
-    }
-
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .choice-btn {
-      padding: 1.5rem;
-      border: 2px solid var(--color-4);
-      border-radius: var(--radius);
-      background: white;
-      color: #333;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      text-align: left;
-    }
-
-    .choice-btn:hover:not(:disabled) {
-      background: var(--color-4);
-      color: white;
-      transform: translateX(8px);
-    }
-
-    .choice-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      border-color: #ccc;
-    }
-
-    .choice-btn:focus {
-      outline: 3px solid var(--color-5);
-      outline-offset: 2px;
-    }
-
-    /* Ending Screen */
-    .ending-screen {
-      display: none;
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-
-    .ending-screen.success {
-      background: linear-gradient(135deg, var(--color-success), #66dd66);
-      color: white;
-    }
-
-    .ending-screen.failure {
-      background: linear-gradient(135deg, var(--color-failure), #ff6666);
-      color: white;
-    }
-
-    .ending-screen.normal {
-      background: linear-gradient(135deg, var(--color-4), var(--color-5));
-      color: white;
-    }
-
-    .ending-screen h3 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .ending-code {
-      font-size: 0.9rem;
-      opacity: 0.9;
-      margin-bottom: 0.5rem;
-    }
-
-    .ending-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .ending-summary {
-      line-height: 1.6;
-      opacity: 0.95;
-      margin-bottom: 2rem;
-    }
-
-    .restart-btn {
-      padding: 1rem 2rem;
-      border: 2px solid white;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.2);
-      color: white;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .restart-btn:hover {
-      background: white;
-      color: var(--color-5);
-      transform: translateY(-2px);
-    }
-
-    /* Hidden */
-    .hidden {
-      display: none !important;
-    }
-
-    /* Alert */
-    .alert {
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: white;
-      border: 2px solid var(--color-5);
-      border-radius: var(--radius);
-      padding: 1rem 1.5rem;
-      box-shadow: var(--shadow);
-      z-index: 1000;
-      max-width: 400px;
-    }
-
-    .alert.error {
-      border-color: var(--color-failure);
-      background: #ffe5e5;
-    }
-
-    .alert.success {
-      border-color: var(--color-success);
-      background: #e5ffe5;
-    }
-  </style>
-</head>
-<body>
-  <!-- TopBar -->
-  <div class="topbar">
-    <h1 id="game-title">Catch! Love</h1>
-    <button id="btn-export" aria-label="JSON 내보내기">💾 내보내기</button>
-    <label aria-label="JSON 불러오기">
-      📂 불러오기
-      <input type="file" id="input-import" accept=".json" style="display: none;">
-    </label>
-  </div>
-
-  <!-- Container -->
-  <div class="container">
-    <!-- Start Screen -->
-    <div class="card start-screen" id="start-screen">
-      <h2>Catch! Love</h2>
-      <p id="start-trigger">click to begin journey</p>
-    </div>
-
-    <!-- Game Screen -->
-    <div class="card game-screen" id="game-screen">
-      <div class="breadcrumb" id="crumbs"></div>
-      <h1 class="scene-title" id="scene-title"></h1>
-      <div class="scene-content" id="scene-content"></div>
-      <div class="choices">
-        <button class="choice-btn" id="choiceA" aria-label="선택지 A"></button>
-        <button class="choice-btn" id="choiceB" aria-label="선택지 B"></button>
-      </div>
-    </div>
-
-    <!-- Ending Screen -->
-    <div class="card ending-screen" id="ending-screen">
-      <h3>THE END</h3>
-      <div class="ending-code" id="ending-code"></div>
-      <div class="ending-title" id="ending-title"></div>
-      <div class="ending-summary" id="ending-summary"></div>
-      <button class="restart-btn" id="restart-btn" aria-label="처음으로">처음으로</button>
-    </div>
-  </div>
-
-  <script>
-    // ==================== STORY DATA ====================
-    /*
       병합 규칙(Merge Rules):
       1. Scene 병합: scene.id 기준
          - 존재하면: 빈 값이 아닌 필드만 덮어쓰기
@@ -338,391 +16,1028 @@
          - 존재하면: label, outcome, nextSceneId 갱신
          - 없으면: 해당 씬의 choices[index] 교체
       3. startSceneId, title은 incoming 값이 있으면 갱신
-    */
-
-    let STORY = {
-      title: "Catch! Love",
-      startSceneId: "S001",
-      scenes: [
-        {
-          id: "S001",
-          name: "학교 복도에서",
-          content: "방과 후 조용한 복도를 걷고 있는데, 앞에서 누군가 다가온다.\n그것은 당신이 오래전부터 마음에 두고 있던 그 사람이다.\n\n\"잠깐... 시간 괜찮아?\"",
-          isEnding: false,
-          choices: [
-            {
-              id: "C001A",
-              label: "\"응, 괜찮아. 무슨 일이야?\"",
-              outcome: "continue",
-              nextSceneId: "S002"
-            },
-            {
-              id: "C001B",
-              label: "\"미안, 급한 일이 있어서...\"",
-              outcome: "continue",
-              nextSceneId: "S003"
-            }
-          ]
-        },
-        {
-          id: "S002",
-          name: "고백을 듣다",
-          content: "\"사실은... 네게 하고 싶은 말이 있어.\"\n\n그 사람은 잠시 망설이더니 용기를 내어 말한다.\n\n\"나... 너를 좋아해. 오래전부터.\"\n\n심장이 뛴다. 이 순간을 어떻게 보낼 것인가?",
-          isEnding: false,
-          choices: [
-            {
-              id: "C002A",
-              label: "\"나도... 너를 좋아해.\"",
-              outcome: "success",
-              nextSceneId: ""
-            },
-            {
-              id: "C002B",
-              label: "\"고마운데... 친구로 지내고 싶어.\"",
-              outcome: "failure",
-              nextSceneId: ""
-            }
-          ]
-        },
-        {
-          id: "S003",
-          name: "놓친 기회",
-          content: "\"아... 그래. 알았어.\"\n\n그 사람은 아쉬운 표정으로 돌아선다.\n\n며칠 후, 그 사람이 다른 누군가와 함께 웃으며 걷는 모습을 본다.\n\n당신은 그때의 선택을 후회한다.",
-          isEnding: true,
-          endingInfo: {
-            code: "END-MISS",
-            title: "놓친 사랑",
-            summary: "때로는 용기 있는 선택이 필요한 순간이 있다.\n당신은 그 순간을 놓쳤다."
-          },
-          choices: [
-            { id: "C003A", label: "", outcome: "continue", nextSceneId: "" },
-            { id: "C003B", label: "", outcome: "continue", nextSceneId: "" }
-          ]
-        }
-      ]
-    };
-
-    // ==================== STATE ====================
-    let currentSceneId = null;
-    let crumbs = [];
-    let lastEnding = null;
-
-    // ==================== HELPERS ====================
-    function qs(sel) {
-      return document.querySelector(sel);
-    }
-
-    function showAlert(message, type = 'error') {
-      const existing = qs('.alert');
-      if (existing) existing.remove();
-
-      const alert = document.createElement('div');
-      alert.className = `alert ${type}`;
-      alert.textContent = message;
-      document.body.appendChild(alert);
-
-      setTimeout(() => alert.remove(), 4000);
-    }
-
-    function downloadJSON(obj, filename) {
-      const json = JSON.stringify(obj, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function validate(story) {
-      const errors = [];
-
-      // Check startSceneId exists
-      if (!story.startSceneId) {
-        errors.push('시작 씬 ID가 없습니다.');
-      } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
-        errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
-      }
-
-      // Check each scene
-      story.scenes.forEach(scene => {
-        // Check choices length
-        if (!scene.choices || scene.choices.length !== 2) {
-          errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        // Check choice validity
-        if (scene.choices) {
-          scene.choices.forEach((choice, idx) => {
-            if (choice.outcome === 'continue' && !choice.nextSceneId) {
-              errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
-            }
-
-            if (choice.outcome === 'continue' && choice.nextSceneId) {
-              if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
-                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
-              }
-            }
-          });
+        body {
+            font-family: 'Lato', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-      });
 
-      return errors;
-    }
+        /* ==================== Utility Bar ==================== */
+        .utility-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
 
-    function mergeStory(base, incoming) {
-      // Merge title and startSceneId
-      if (incoming.title) base.title = incoming.title;
-      if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
+        .utility-bar button,
+        .utility-bar label {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #E64398;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #E64398;
+            transition: all 0.2s;
+            font-family: 'Lato', sans-serif;
+        }
 
-      // Merge scenes
-      if (incoming.scenes && Array.isArray(incoming.scenes)) {
-        incoming.scenes.forEach(inScene => {
-          const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
+        .utility-bar button:hover,
+        .utility-bar label:hover {
+            background: #E64398;
+            color: white;
+        }
 
-          if (existingIdx >= 0) {
-            // Merge existing scene
-            const existing = base.scenes[existingIdx];
+        .utility-bar input[type="file"] {
+            display: none;
+        }
 
-            if (inScene.name) existing.name = inScene.name;
-            if (inScene.content !== undefined) existing.content = inScene.content;
-            if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
-            if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
+        /* ==================== Common ==================== */
+        .screen {
+            display: none;
+        }
 
-            // Merge choices
-            if (inScene.choices && Array.isArray(inScene.choices)) {
-              inScene.choices.forEach((inChoice, idx) => {
-                if (idx < 2) {
-                  const existingChoice = existing.choices[idx];
-                  if (existingChoice && existingChoice.id === inChoice.id) {
-                    // Update existing choice
-                    if (inChoice.label) existingChoice.label = inChoice.label;
-                    if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
-                    if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
-                  } else {
-                    // Replace choice
-                    existing.choices[idx] = inChoice;
-                  }
+        .screen.active {
+            display: block;
+        }
+
+        /* ==================== Main Game Screen ==================== */
+        #main-screen {
+            background: #F0EBF4;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .wave-decoration {
+            position: absolute;
+            z-index: 0;
+        }
+
+        .wave-top-left {
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 150px;
+            background: #A1C3D1;
+            border-radius: 0 0 100% 0;
+            opacity: 0.4;
+        }
+
+        .wave-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 350px;
+            height: 180px;
+            background: #B39BC8;
+            border-radius: 100% 0 0 0;
+            opacity: 0.4;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .game-title {
+            font-size: 42px;
+            color: #E64398;
+            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header::before,
+        .header::after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header::before {
+            left: calc(50% - 200px);
+        }
+
+        .header::after {
+            right: calc(50% - 200px);
+        }
+
+        .scene-container {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(179, 155, 200, 0.2);
+            border: 4px solid #F172A1;
+        }
+
+        .scene-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #A1C3D1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-image-placeholder::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: #B39BC8;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .scene-image-placeholder span {
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .scene-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #5a5a5a;
+            text-align: center;
+            padding: 30px;
+            background: #F0EBF4;
+            border-radius: 15px;
+            border-left: 6px solid #E64398;
+            font-weight: 400;
+            white-space: pre-wrap;
+        }
+
+        .choices-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .choice-card {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(161, 195, 209, 0.2);
+            border: 4px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .choice-card:nth-child(1) {
+            border-color: #A1C3D1;
+        }
+
+        .choice-card:nth-child(1):hover {
+            border-color: #F172A1;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(241, 114, 161, 0.3);
+        }
+
+        .choice-card:nth-child(1):hover::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 1;
+        }
+
+        .choice-card:nth-child(2) {
+            border-color: #B39BC8;
+        }
+
+        .choice-card:nth-child(2):hover {
+            border-color: #E64398;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(230, 67, 152, 0.3);
+        }
+
+        .choice-card:nth-child(2):hover::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 1;
+        }
+
+        .choice-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .choice-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 25px;
+            display: block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .choice-card:nth-child(1) .choice-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .choice-card:nth-child(2) .choice-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .choice-label {
+            font-size: 14px;
+            color: #B39BC8;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .choice-text {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .choice-card:hover .choice-text {
+            color: #E64398;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .choices-container {
+                flex-direction: column;
+            }
+        }
+
+        /* ==================== Ending Success Screen ==================== */
+        #ending-success-screen {
+            background: #F172A1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-celebration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .celebrate-wave {
+            position: absolute;
+            width: 130%;
+            left: -15%;
+        }
+
+        .celebrate-wave-1 {
+            background: #E64398;
+            height: 140px;
+            top: 10%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .celebrate-wave-2 {
+            background: #B39BC8;
+            height: 160px;
+            top: 35%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .celebrate-wave-3 {
+            background: #A1C3D1;
+            height: 180px;
+            bottom: 15%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .ending-container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            border-radius: 35px;
+            padding: 70px 60px;
+            box-shadow: 0 25px 70px rgba(230, 67, 152, 0.4);
+            text-align: center;
+            border: 6px solid #E64398;
+            z-index: 10;
+            position: relative;
+        }
+
+        .ending-container::before,
+        .ending-container::after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .ending-container::before {
+            top: 25px;
+            left: 25px;
+        }
+
+        .ending-container::after {
+            bottom: 25px;
+            right: 25px;
+        }
+
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .story-text-area {
+            background: #F0EBF4;
+            border: 5px solid #F172A1;
+            border-radius: 25px;
+            padding: 50px;
+            min-height: 280px;
+            margin-bottom: 50px;
+            font-size: 18px;
+            line-height: 1.9;
+            color: #666;
+            text-align: left;
+            font-weight: 400;
+            white-space: pre-wrap;
+        }
+
+        .story-text-area::before {
+            content: '[Your beautiful love story concludes here...]';
+            color: #F172A1;
+            font-style: italic;
+            display: block;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .ending-message {
+            font-size: 64px;
+            color: #E64398;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+        }
+
+        .congratulations {
+            font-size: 24px;
+            color: #E64398;
+            font-style: italic;
+            margin-top: 25px;
+            font-weight: 400;
+        }
+
+        .success-decoration {
+            margin-top: 40px;
+            padding: 30px;
+            background: #B39BC8;
+            border-radius: 20px;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 10px 30px rgba(179, 155, 200, 0.3);
+            font-weight: 400;
+        }
+
+        .hearts-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .hearts-row .heart-icon {
+            width: 32px;
+            height: 32px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .hearts-row .heart-icon:nth-child(1) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(2) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(3) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(4) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(5) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        /* ==================== Ending Failure Screen ==================== */
+        #ending-failure-screen {
+            background: #A1C3D1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #ending-failure-screen .ending-container {
+            border-color: #B39BC8;
+        }
+
+        #ending-failure-screen .ending-container::before,
+        #ending-failure-screen .ending-container::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        #ending-failure-screen .icon-container {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            width: 80px;
+            height: 80px;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        #ending-failure-screen .story-text-area {
+            border-color: #B39BC8;
+            padding: 40px;
+            min-height: 250px;
+            margin-bottom: 40px;
+        }
+
+        #ending-failure-screen .story-text-area::before {
+            content: '[Story text will appear here]';
+            color: #B39BC8;
+        }
+
+        #ending-failure-screen .ending-message {
+            font-size: 48px;
+            color: #A1C3D1;
+            letter-spacing: 6px;
+        }
+
+        .encouragement {
+            font-size: 20px;
+            color: #B39BC8;
+            font-style: italic;
+            margin-top: 20px;
+            font-weight: 400;
+        }
+
+        .retry-hint {
+            margin-top: 40px;
+            padding: 25px;
+            background: #F172A1;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .wave-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .bg-wave {
+            position: absolute;
+            width: 120%;
+            left: -10%;
+        }
+
+        .bg-wave-1 {
+            background: #B39BC8;
+            height: 150px;
+            top: 20%;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .bg-wave-2 {
+            background: #F172A1;
+            height: 120px;
+            bottom: 25%;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Restart button for ending screens */
+        .restart-button {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: #E64398;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Lato', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .restart-button:hover {
+            background: #F172A1;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(230, 67, 152, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Utility Bar -->
+    <div class="utility-bar">
+        <button id="btn-export" aria-label="JSON 내보내기">💾 Export</button>
+        <label aria-label="JSON 불러오기">
+            📂 Import
+            <input type="file" id="input-import" accept=".json">
+        </label>
+    </div>
+
+    <!-- Main Game Screen -->
+    <div id="main-screen" class="screen active">
+        <div class="wave-decoration wave-top-left"></div>
+        <div class="wave-decoration wave-bottom-right"></div>
+
+        <div class="game-container">
+            <div class="header">
+                <h1 class="game-title">💕 CATCH! LOVE 💕</h1>
+            </div>
+
+            <div class="scene-container">
+                <div class="scene-image-placeholder">
+                    <span>SCENE IMAGE</span>
+                </div>
+                <div class="scene-text" id="scene-content"></div>
+            </div>
+
+            <div class="choices-container">
+                <div class="choice-card" id="choice-a" data-choice="0">
+                    <div class="choice-content">
+                        <div class="choice-icon"></div>
+                        <div class="choice-label">Option A</div>
+                        <div class="choice-text" id="choice-a-text"></div>
+                    </div>
+                </div>
+
+                <div class="choice-card" id="choice-b" data-choice="1">
+                    <div class="choice-content">
+                        <div class="choice-icon"></div>
+                        <div class="choice-label">Option B</div>
+                        <div class="choice-text" id="choice-b-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ending Success Screen -->
+    <div id="ending-success-screen" class="screen">
+        <div class="wave-celebration">
+            <div class="celebrate-wave celebrate-wave-1"></div>
+            <div class="celebrate-wave celebrate-wave-2"></div>
+            <div class="celebrate-wave celebrate-wave-3"></div>
+        </div>
+
+        <div class="ending-container">
+            <div class="icon-container"></div>
+
+            <div class="story-text-area" id="success-story-text"></div>
+
+            <div class="hearts-row">
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+            </div>
+
+            <div class="ending-message">THE END</div>
+
+            <div class="congratulations">
+                Congratulations! You've caught love! 🎉
+            </div>
+
+            <div class="success-decoration">
+                True love conquers all. Your hearts are now forever intertwined! 💑
+            </div>
+
+            <button class="restart-button" id="restart-success">Restart Journey</button>
+        </div>
+    </div>
+
+    <!-- Ending Failure Screen -->
+    <div id="ending-failure-screen" class="screen">
+        <div class="wave-background">
+            <div class="bg-wave bg-wave-1"></div>
+            <div class="bg-wave bg-wave-2"></div>
+        </div>
+
+        <div class="ending-container">
+            <div class="icon-container"></div>
+
+            <div class="story-text-area" id="failure-story-text"></div>
+
+            <div class="ending-message">MAYBE NEXT TIME...</div>
+
+            <div class="encouragement">
+                Every ending is a new beginning. Try again? 💫
+            </div>
+
+            <div class="retry-hint">
+                Love is a journey of many paths. Choose differently and discover new possibilities! 🌈
+            </div>
+
+            <button class="restart-button" id="restart-failure">Restart Journey</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== STORY DATA ====================
+        let STORY = {
+            title: "Catch! Love",
+            startSceneId: "S001",
+            scenes: [
+                {
+                    id: "S001",
+                    name: "학교 복도에서",
+                    content: "방과 후 조용한 복도를 걷고 있는데, 앞에서 누군가 다가온다.\n그것은 당신이 오래전부터 마음에 두고 있던 그 사람이다.\n\n\"잠깐... 시간 괜찮아?\"",
+                    isEnding: false,
+                    choices: [
+                        {
+                            id: "C001A",
+                            label: "\"응, 괜찮아. 무슨 일이야?\"",
+                            outcome: "continue",
+                            nextSceneId: "S002"
+                        },
+                        {
+                            id: "C001B",
+                            label: "\"미안, 급한 일이 있어서...\"",
+                            outcome: "continue",
+                            nextSceneId: "S003"
+                        }
+                    ]
+                },
+                {
+                    id: "S002",
+                    name: "고백을 듣다",
+                    content: "\"사실은... 네게 하고 싶은 말이 있어.\"\n\n그 사람은 잠시 망설이더니 용기를 내어 말한다.\n\n\"나... 너를 좋아해. 오래전부터.\"\n\n심장이 뛴다. 이 순간을 어떻게 보낼 것인가?",
+                    isEnding: false,
+                    choices: [
+                        {
+                            id: "C002A",
+                            label: "\"나도... 너를 좋아해.\"",
+                            outcome: "success",
+                            nextSceneId: ""
+                        },
+                        {
+                            id: "C002B",
+                            label: "\"고마운데... 친구로 지내고 싶어.\"",
+                            outcome: "failure",
+                            nextSceneId: ""
+                        }
+                    ]
+                },
+                {
+                    id: "S003",
+                    name: "놓친 기회",
+                    content: "\"아... 그래. 알았어.\"\n\n그 사람은 아쉬운 표정으로 돌아선다.\n\n며칠 후, 그 사람이 다른 누군가와 함께 웃으며 걷는 모습을 본다.\n\n당신은 그때의 선택을 후회한다.",
+                    isEnding: true,
+                    endingInfo: {
+                        code: "END-MISS",
+                        title: "놓친 사랑",
+                        summary: "때로는 용기 있는 선택이 필요한 순간이 있다.\n당신은 그 순간을 놓쳤다."
+                    },
+                    choices: [
+                        { id: "C003A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C003B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
                 }
-              });
+            ]
+        };
+
+        // ==================== STATE ====================
+        let currentSceneId = null;
+        let crumbs = [];
+
+        // ==================== HELPERS ====================
+        function qs(sel) {
+            return document.querySelector(sel);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            qs('#' + screenId).classList.add('active');
+        }
+
+        function findScene(sceneId) {
+            return STORY.scenes.find(s => s.id === sceneId);
+        }
+
+        function validate(story) {
+            const errors = [];
+
+            if (!story.startSceneId) {
+                errors.push('시작 씬 ID가 없습니다.');
+            } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
+                errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
             }
-          } else {
-            // Add new scene
-            base.scenes.push(inScene);
-          }
-        });
-      }
 
-      return base;
-    }
+            story.scenes.forEach(scene => {
+                if (!scene.choices || scene.choices.length !== 2) {
+                    errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+                }
 
-    function findScene(sceneId) {
-      return STORY.scenes.find(s => s.id === sceneId);
-    }
+                if (scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.outcome === 'continue' && !choice.nextSceneId) {
+                            errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
+                        }
 
-    // ==================== RENDER ====================
-    function showStartScreen() {
-      qs('#start-screen').classList.remove('hidden');
-      qs('#game-screen').classList.add('hidden');
-      qs('#ending-screen').classList.add('hidden');
-      currentSceneId = null;
-      crumbs = [];
-      lastEnding = null;
-    }
+                        if (choice.outcome === 'continue' && choice.nextSceneId) {
+                            if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
+                                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
+                            }
+                        }
+                    });
+                }
+            });
 
-    function showGameScreen(sceneId) {
-      const scene = findScene(sceneId);
-      if (!scene) {
-        showAlert(`씬 ${sceneId}을(를) 찾을 수 없습니다. 시작으로 돌아갑니다.`);
-        showStartScreen();
-        return;
-      }
+            return errors;
+        }
 
-      currentSceneId = sceneId;
-      crumbs.push(scene.name);
+        function mergeStory(base, incoming) {
+            if (incoming.title) base.title = incoming.title;
+            if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
 
-      qs('#start-screen').classList.add('hidden');
-      qs('#game-screen').classList.remove('hidden');
-      qs('#ending-screen').classList.add('hidden');
+            if (incoming.scenes && Array.isArray(incoming.scenes)) {
+                incoming.scenes.forEach(inScene => {
+                    const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
 
-      // Render breadcrumb
-      qs('#crumbs').textContent = crumbs.join(' → ');
+                    if (existingIdx >= 0) {
+                        const existing = base.scenes[existingIdx];
 
-      // Render scene
-      qs('#scene-title').textContent = scene.name || '(제목 없음)';
-      qs('#scene-content').textContent = scene.content || '';
+                        if (inScene.name) existing.name = inScene.name;
+                        if (inScene.content !== undefined) existing.content = inScene.content;
+                        if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
+                        if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
 
-      // Render choices
-      const choiceA = scene.choices[0] || {};
-      const choiceB = scene.choices[1] || {};
+                        if (inScene.choices && Array.isArray(inScene.choices)) {
+                            inScene.choices.forEach((inChoice, idx) => {
+                                if (idx < 2) {
+                                    const existingChoice = existing.choices[idx];
+                                    if (existingChoice && existingChoice.id === inChoice.id) {
+                                        if (inChoice.label) existingChoice.label = inChoice.label;
+                                        if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
+                                        if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
+                                    } else {
+                                        existing.choices[idx] = inChoice;
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        base.scenes.push(inScene);
+                    }
+                });
+            }
 
-      qs('#choiceA').textContent = choiceA.label || '선택지 A';
-      qs('#choiceB').textContent = choiceB.label || '선택지 B';
+            return base;
+        }
 
-      // Check if ending scene
-      if (scene.isEnding) {
-        qs('#choiceA').disabled = true;
-        qs('#choiceB').disabled = true;
-        // Show ending immediately
-        setTimeout(() => {
-          showEndingScreen('normal', scene.endingInfo);
-        }, 1000);
-      } else {
-        qs('#choiceA').disabled = false;
-        qs('#choiceB').disabled = false;
-      }
+        function downloadJSON(obj, filename) {
+            const json = JSON.stringify(obj, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-      // Attach choice handlers
-      qs('#choiceA').onclick = () => handleChoice(choiceA);
-      qs('#choiceB').onclick = () => handleChoice(choiceB);
-    }
+        // ==================== GAME LOGIC ====================
+        function startGame() {
+            currentSceneId = STORY.startSceneId;
+            crumbs = [];
+            showScene(currentSceneId);
+        }
 
-    function handleChoice(choice) {
-      if (!choice || !choice.outcome) return;
-
-      switch (choice.outcome) {
-        case 'continue':
-          if (choice.nextSceneId) {
-            showGameScreen(choice.nextSceneId);
-          } else {
-            showAlert('다음 씬이 지정되지 않았습니다.');
-          }
-          break;
-
-        case 'success':
-          showEndingScreen('success', {
-            title: '성공 엔딩',
-            summary: '당신은 성공적으로 사랑을 쟁취했습니다!'
-          });
-          break;
-
-        case 'failure':
-          showEndingScreen('failure', {
-            title: '실패 엔딩',
-            summary: '아쉽지만 이번에는 인연이 아니었나봅니다...'
-          });
-          break;
-      }
-    }
-
-    function showEndingScreen(type, endingInfo = {}) {
-      qs('#start-screen').classList.add('hidden');
-      qs('#game-screen').classList.add('hidden');
-      qs('#ending-screen').classList.remove('hidden');
-
-      const endingScreen = qs('#ending-screen');
-      endingScreen.className = 'card ending-screen ' + type;
-
-      qs('#ending-code').textContent = endingInfo.code ? `CODE: ${endingInfo.code}` : '';
-      qs('#ending-title').textContent = endingInfo.title || '';
-      qs('#ending-summary').textContent = endingInfo.summary || '';
-
-      lastEnding = { type, endingInfo };
-    }
-
-    // ==================== EXPORT/IMPORT ====================
-    function exportJSON() {
-      const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
-      downloadJSON(STORY, filename);
-      showAlert('JSON을 내보냈습니다.', 'success');
-    }
-
-    function importJSON(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const incoming = JSON.parse(e.target.result);
-
-          // Validate incoming JSON
-          const errors = validate(incoming);
-          if (errors.length > 0) {
-            showAlert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
-            return;
-          }
-
-          // Merge
-          STORY = mergeStory(STORY, incoming);
-
-          // Update title
-          qs('#game-title').textContent = STORY.title;
-
-          // Refresh current view
-          if (currentSceneId) {
-            const scene = findScene(currentSceneId);
+        function showScene(sceneId) {
+            const scene = findScene(sceneId);
             if (!scene) {
-              showAlert('현재 씬이 삭제되었습니다. 시작으로 돌아갑니다.');
-              showStartScreen();
-            } else {
-              showGameScreen(currentSceneId);
+                alert(`씬 ${sceneId}을(를) 찾을 수 없습니다. 시작으로 돌아갑니다.`);
+                startGame();
+                return;
             }
-          }
 
-          showAlert('JSON을 성공적으로 병합했습니다.', 'success');
-        } catch (err) {
-          showAlert('JSON 파싱 실패: ' + err.message);
+            currentSceneId = sceneId;
+            crumbs.push(scene.name);
+
+            // Check if ending scene
+            if (scene.isEnding) {
+                showEndingScreen('failure', scene.endingInfo?.summary || scene.content);
+                return;
+            }
+
+            showScreen('main-screen');
+
+            qs('#scene-content').textContent = scene.content || '';
+
+            const choices = scene.choices || [];
+            qs('#choice-a-text').textContent = choices[0]?.label || 'Option A';
+            qs('#choice-b-text').textContent = choices[1]?.label || 'Option B';
+
+            // Store choice data
+            qs('#choice-a').dataset.outcome = choices[0]?.outcome || 'continue';
+            qs('#choice-a').dataset.nextSceneId = choices[0]?.nextSceneId || '';
+            qs('#choice-b').dataset.outcome = choices[1]?.outcome || 'continue';
+            qs('#choice-b').dataset.nextSceneId = choices[1]?.nextSceneId || '';
         }
-      };
-      reader.readAsText(file);
-    }
 
-    // ==================== EVENT HANDLERS ====================
-    function init() {
-      // Validate initial story
-      const errors = validate(STORY);
-      if (errors.length > 0) {
-        showAlert('초기 스토리 유효성 검사 실패:\n' + errors.join('\n'));
-        return;
-      }
+        function handleChoice(choiceElement) {
+            const outcome = choiceElement.dataset.outcome;
+            const nextSceneId = choiceElement.dataset.nextSceneId;
 
-      // Update title
-      qs('#game-title').textContent = STORY.title;
+            switch (outcome) {
+                case 'continue':
+                    if (nextSceneId) {
+                        showScene(nextSceneId);
+                    } else {
+                        alert('다음 씬이 지정되지 않았습니다.');
+                    }
+                    break;
 
-      // Start screen trigger
-      qs('#start-trigger').addEventListener('click', () => {
-        showGameScreen(STORY.startSceneId);
-      });
+                case 'success':
+                    showEndingScreen('success', '당신은 용기를 내어 진심을 전했고, 그 사람도 같은 마음이었다.\n\n두 사람은 손을 잡고 함께 걷기 시작한다.\n\n이것이 진정한 사랑의 시작이다.');
+                    break;
 
-      // Keyboard support for start
-      qs('#start-trigger').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          showGameScreen(STORY.startSceneId);
+                case 'failure':
+                    showEndingScreen('failure', '\"고맙지만... 나는 너를 친구로만 생각해.\"\n\n그 사람의 말에 당신의 마음은 무너진다.\n\n어색한 침묵이 흐르고, 두 사람은 서로 다른 방향으로 걸어간다.');
+                    break;
+            }
         }
-      });
-      qs('#start-trigger').setAttribute('tabindex', '0');
 
-      // Restart button
-      qs('#restart-btn').addEventListener('click', showStartScreen);
-
-      // Export button
-      qs('#btn-export').addEventListener('click', exportJSON);
-
-      // Import button
-      qs('#input-import').addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          importJSON(e.target.files[0]);
-          e.target.value = ''; // Reset input
+        function showEndingScreen(type, storyText) {
+            if (type === 'success') {
+                showScreen('ending-success-screen');
+                qs('#success-story-text').textContent = storyText || '';
+            } else {
+                showScreen('ending-failure-screen');
+                qs('#failure-story-text').textContent = storyText || '';
+            }
         }
-      });
 
-      // Keyboard support for choices
-      document.addEventListener('keydown', (e) => {
-        if (qs('#game-screen').classList.contains('hidden')) return;
-
-        if (e.key === '1' || e.key === 'a' || e.key === 'A') {
-          qs('#choiceA').click();
-        } else if (e.key === '2' || e.key === 'b' || e.key === 'B') {
-          qs('#choiceB').click();
+        function restartGame() {
+            currentSceneId = null;
+            crumbs = [];
+            startGame();
         }
-      });
 
-      // Show start screen
-      showStartScreen();
-    }
+        // ==================== EXPORT/IMPORT ====================
+        function exportJSON() {
+            const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
+            downloadJSON(STORY, filename);
+            alert('JSON을 내보냈습니다.');
+        }
 
-    // ==================== BOOT ====================
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+        function importJSON(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const incoming = JSON.parse(e.target.result);
+
+                    const errors = validate(incoming);
+                    if (errors.length > 0) {
+                        alert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
+                        return;
+                    }
+
+                    STORY = mergeStory(STORY, incoming);
+                    alert('JSON을 성공적으로 병합했습니다.');
+                } catch (err) {
+                    alert('JSON 파싱 실패: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==================== EVENT HANDLERS ====================
+        function init() {
+            const errors = validate(STORY);
+            if (errors.length > 0) {
+                alert('초기 스토리 유효성 검사 실패:\n' + errors.join('\n'));
+                return;
+            }
+
+            // Choice handlers
+            qs('#choice-a').addEventListener('click', function() {
+                handleChoice(this);
+            });
+
+            qs('#choice-b').addEventListener('click', function() {
+                handleChoice(this);
+            });
+
+            // Restart buttons
+            qs('#restart-success').addEventListener('click', restartGame);
+            qs('#restart-failure').addEventListener('click', restartGame);
+
+            // Export button
+            qs('#btn-export').addEventListener('click', exportJSON);
+
+            // Import button
+            qs('#input-import').addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    importJSON(e.target.files[0]);
+                    e.target.value = '';
+                }
+            });
+
+            // Start game automatically
+            startGame();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
