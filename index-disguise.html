@@ -547,6 +547,123 @@
     .hidden {
       display: none;
     }
+
+    /* Story Flow Visualizer */
+    .story-flow {
+      background: white;
+      color: #333;
+      min-height: 400px;
+      border: 1px solid #ccc;
+    }
+
+    .story-flow h2 {
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .flow-controls {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .flow-controls button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #999;
+      border-radius: var(--radius);
+      background: white;
+      color: #333;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .flow-controls button:hover {
+      background: var(--color-3);
+    }
+
+    .flow-tree {
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      padding: 1rem;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+
+    .flow-node {
+      cursor: pointer;
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      display: inline-block;
+      margin: 0.15rem 0;
+    }
+
+    .flow-node:hover {
+      background: #e0e0e0;
+    }
+
+    .flow-node.start {
+      font-weight: 700;
+      color: var(--color-5);
+    }
+
+    .flow-node.ending {
+      color: var(--color-4);
+      font-weight: 600;
+    }
+
+    .flow-node.success-choice {
+      color: var(--color-success);
+    }
+
+    .flow-node.failure-choice {
+      color: var(--color-failure);
+    }
+
+    .flow-stats {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--color-3);
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+
+    .flow-stats h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-5);
+    }
+
+    .flow-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .flow-stat-item {
+      padding: 0.75rem;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+    }
+
+    .flow-stat-label {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+
+    .flow-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-5);
+    }
   </style>
 </head>
 <body>
@@ -556,6 +673,7 @@
   <div class="topbar">
     <h1>Catch! Love — Editor</h1>
     <button id="btn-add-scene" aria-label="새 씬 추가">➕ 새 씬</button>
+    <button id="btn-generate-template" aria-label="추천 템플릿 생성">📋 추천 구조 생성</button>
     <select id="select-start-scene" aria-label="시작 씬 선택">
       <option value="">시작 씬 선택</option>
     </select>
@@ -566,6 +684,7 @@
       <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="JSON 불러오기">
     </label>
     <button id="btn-play" aria-label="플레이 모드 시작">▶ 플레이</button>
+    <button id="btn-toggle-flow" aria-label="스토리 구조 보기">🗺️ 스토리 구조</button>
   </div>
 
   <!-- Main Container -->
@@ -604,6 +723,18 @@
         </div>
         <div id="player-content">
           <p style="opacity: 0.8;">'시작' 버튼을 눌러 플레이를 시작하세요</p>
+        </div>
+      </div>
+
+      <!-- Story Flow Visualizer -->
+      <div id="story-flow-panel" class="card story-flow hidden">
+        <h2>스토리 구조</h2>
+        <div class="flow-controls">
+          <button id="btn-refresh-flow">새로고침</button>
+          <button id="btn-expand-all">전체 펼치기</button>
+        </div>
+        <div id="flow-content">
+          <p style="color: #999; text-align: center; padding: 2rem;">스토리 구조를 불러오는 중...</p>
         </div>
       </div>
 
@@ -680,6 +811,345 @@
       } else {
         return choice.nextSceneId || '?';
       }
+    }
+
+    // ==================== Template Generator ====================
+
+    function generateTemplateStory() {
+      if (game.scenes.length > 0) {
+        if (!confirm('현재 씬들이 모두 삭제됩니다. 계속하시겠습니까?')) {
+          return;
+        }
+      }
+
+      const scenes = [];
+      const timestamp = nowISO();
+
+      // 시작 씬 (1개)
+      scenes.push({
+        id: 'S001',
+        name: '시작',
+        isEnding: false,
+        content: 'TODO: 시작 씬 내용을 작성하세요 (3-4문장)',
+        choices: [
+          { id: 'C001A', label: 'TODO: 선택지 A', type: 'scene', nextSceneId: 'S002', note: '' },
+          { id: 'C001B', label: 'TODO: 선택지 B', type: 'scene', nextSceneId: 'S003', note: '' }
+        ],
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        isArchived: false
+      });
+
+      // 초반 씬 (3개)
+      for (let i = 2; i <= 4; i++) {
+        const id = `S00${i}`;
+        const nextA = i === 2 ? 'S005' : i === 3 ? 'S006' : 'S007';
+        const nextB = i === 2 ? 'S006' : i === 3 ? 'S007' : 'S008';
+
+        scenes.push({
+          id,
+          name: `초반 씬 ${i-1}`,
+          isEnding: false,
+          content: `TODO: 초반 씬 ${i-1} 내용 (3-4문장)`,
+          choices: [
+            { id: `C00${i}A`, label: 'TODO: 선택지 A', type: 'scene', nextSceneId: nextA, note: '' },
+            { id: `C00${i}B`, label: 'TODO: 선택지 B', type: 'scene', nextSceneId: nextB, note: '' }
+          ],
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isArchived: false
+        });
+      }
+
+      // 중반 분기 씬 (12개: S005-S016)
+      for (let i = 5; i <= 16; i++) {
+        const id = `S0${String(i).padStart(2, '0')}`;
+        const num = i - 4;
+        const nextA = i <= 14 ? `S0${String(i + 2).padStart(2, '0')}` : 'S017';
+        const nextB = i <= 14 ? `S0${String(i + 3).padStart(2, '0')}` : 'S018';
+
+        scenes.push({
+          id,
+          name: `중반 씬 ${num}`,
+          isEnding: false,
+          content: `TODO: 중반 씬 ${num} 내용 (3-4문장)`,
+          choices: [
+            { id: `C0${String(i).padStart(2, '0')}A`, label: 'TODO: 선택지 A', type: 'scene', nextSceneId: nextA, note: '' },
+            { id: `C0${String(i).padStart(2, '0')}B`, label: 'TODO: 선택지 B', type: 'scene', nextSceneId: nextB, note: '' }
+          ],
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isArchived: false
+        });
+      }
+
+      // 후반 씬 (9개: S017-S025)
+      for (let i = 17; i <= 25; i++) {
+        const id = `S0${i}`;
+        const num = i - 16;
+        let nextA, nextB, typeA = 'scene', typeB = 'scene';
+
+        if (i <= 23) {
+          nextA = `S0${i + 1}`;
+          nextB = `S0${i + 2}`;
+        } else if (i === 24) {
+          typeA = 'success';
+          typeB = 'failure';
+          nextA = '';
+          nextB = '';
+        } else {
+          typeA = 'success';
+          typeB = 'failure';
+          nextA = '';
+          nextB = '';
+        }
+
+        scenes.push({
+          id,
+          name: `후반 씬 ${num}`,
+          isEnding: false,
+          content: `TODO: 후반 씬 ${num} 내용 (3-4문장)`,
+          choices: [
+            { id: `C0${i}A`, label: 'TODO: 선택지 A', type: typeA, nextSceneId: nextA, note: '' },
+            { id: `C0${i}B`, label: 'TODO: 선택지 B', type: typeB, nextSceneId: nextB, note: '' }
+          ],
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isArchived: false
+        });
+      }
+
+      // 엔딩 씬 (5개: S026-S030)
+      const endings = [
+        { code: 'END-SUCCESS-1', title: '진정한 사랑', summary: '성공 엔딩 1' },
+        { code: 'END-SUCCESS-2', title: '행복한 결말', summary: '성공 엔딩 2' },
+        { code: 'END-FAILURE-1', title: '놓친 기회', summary: '실패 엔딩 1' },
+        { code: 'END-FAILURE-2', title: '쓴 이별', summary: '실패 엔딩 2' },
+        { code: 'END-NEUTRAL', title: '새로운 시작', summary: '중립 엔딩' }
+      ];
+
+      for (let i = 0; i < 5; i++) {
+        const sceneNum = 26 + i;
+        const id = `S0${sceneNum}`;
+
+        scenes.push({
+          id,
+          name: endings[i].title,
+          isEnding: true,
+          endingInfo: endings[i],
+          content: `TODO: ${endings[i].title} 엔딩 내용 (3-4문장)`,
+          choices: [
+            { id: `C0${sceneNum}A`, label: '', type: 'scene', nextSceneId: '', note: '' },
+            { id: `C0${sceneNum}B`, label: '', type: 'scene', nextSceneId: '', note: '' }
+          ],
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          isArchived: false
+        });
+      }
+
+      game.scenes = scenes;
+      game.startSceneId = 'S001';
+      game.updatedAt = timestamp;
+
+      currentSceneId = null;
+
+      renderSceneList();
+      renderEditor();
+      refreshStartSelect();
+      renderStoryFlow();
+
+      alert(`추천 구조 템플릿이 생성되었습니다!\n\n총 ${scenes.length}개 씬:\n- 시작: 1개\n- 초반: 3개\n- 중반: 12개\n- 후반: 9개\n- 엔딩: 5개\n\n이제 각 씬의 내용을 작성하세요.`);
+    }
+
+    // ==================== Story Flow Visualizer ====================
+
+    function renderStoryFlow() {
+      const container = byId('flow-content');
+
+      if (game.scenes.length === 0) {
+        container.innerHTML = '<p style="color: #999; text-align: center; padding: 2rem;">씬이 없습니다. 씬을 추가하거나 추천 구조를 생성하세요.</p>';
+        return;
+      }
+
+      // Build tree structure
+      let html = '<div class="flow-tree">';
+
+      const startScene = findScene(game.startSceneId);
+      if (!startScene) {
+        html += '<p style="color: #888;">시작 씬을 찾을 수 없습니다.</p>';
+      } else {
+        const visited = new Set();
+        html += buildFlowTree(startScene, '', visited, 0);
+      }
+
+      html += '</div>';
+
+      // Add statistics
+      const stats = calculateFlowStats();
+      html += `
+        <div class="flow-stats">
+          <h3>스토리 통계</h3>
+          <div class="flow-stats-grid">
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">총 씬 개수</div>
+              <div class="flow-stat-value">${stats.totalScenes}</div>
+            </div>
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">엔딩 개수</div>
+              <div class="flow-stat-value">${stats.endings}</div>
+            </div>
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">최대 깊이</div>
+              <div class="flow-stat-value">${stats.maxDepth}</div>
+            </div>
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">평균 플레이 길이</div>
+              <div class="flow-stat-value">${stats.avgPath}</div>
+            </div>
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">분기점 개수</div>
+              <div class="flow-stat-value">${stats.branches}</div>
+            </div>
+            <div class="flow-stat-item">
+              <div class="flow-stat-label">도달 불가능</div>
+              <div class="flow-stat-value">${stats.unreachable}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+
+      // Attach click handlers
+      container.querySelectorAll('.flow-node').forEach(node => {
+        node.addEventListener('click', () => {
+          const sceneId = node.dataset.sceneId;
+          if (sceneId) {
+            currentSceneId = sceneId;
+            renderSceneList();
+            renderEditor();
+            // Scroll to editor
+            byId('editor-content').scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    }
+
+    function buildFlowTree(scene, prefix, visited, depth) {
+      if (!scene || visited.has(scene.id)) {
+        return '';
+      }
+
+      visited.add(scene.id);
+
+      const isStart = scene.id === game.startSceneId;
+      const classes = ['flow-node'];
+      if (isStart) classes.push('start');
+      if (scene.isEnding) classes.push('ending');
+
+      let html = `${prefix}<span class="${classes.join(' ')}" data-scene-id="${scene.id}">${scene.id}: ${scene.name}</span>\n`;
+
+      if (scene.isEnding) {
+        return html;
+      }
+
+      const choices = ensureTwo(scene.choices || []);
+
+      choices.forEach((choice, idx) => {
+        const isLast = idx === choices.length - 1;
+        const choicePrefix = isLast ? '└─' : '├─';
+        const nextPrefix = isLast ? '   ' : '│  ';
+
+        const choiceClasses = ['flow-node'];
+        if (choice.type === 'success') choiceClasses.push('success-choice');
+        if (choice.type === 'failure') choiceClasses.push('failure-choice');
+
+        const label = choice.label || `선택지 ${String.fromCharCode(65 + idx)}`;
+        html += `${prefix}${choicePrefix} <span class="${choiceClasses.join(' ')}">[${String.fromCharCode(65 + idx)}] ${label}</span>`;
+
+        if (choice.type === 'success') {
+          html += ' → <span class="flow-node success-choice">[성공 엔딩]</span>\n';
+        } else if (choice.type === 'failure') {
+          html += ' → <span class="flow-node failure-choice">[실패 엔딩]</span>\n';
+        } else if (choice.nextSceneId) {
+          const nextScene = findScene(choice.nextSceneId);
+          if (nextScene) {
+            html += '\n';
+            if (visited.has(nextScene.id)) {
+              html += `${prefix}${nextPrefix}<span class="flow-node" data-scene-id="${nextScene.id}">⤴ ${nextScene.id} (순환 참조)</span>\n`;
+            } else {
+              html += buildFlowTree(nextScene, prefix + nextPrefix, visited, depth + 1);
+            }
+          } else {
+            html += ` → <span style="color: #888;">[씬 없음: ${choice.nextSceneId}]</span>\n`;
+          }
+        } else {
+          html += ' → <span style="color: #888;">[연결 안됨]</span>\n';
+        }
+      });
+
+      return html;
+    }
+
+    function calculateFlowStats() {
+      const stats = {
+        totalScenes: game.scenes.length,
+        endings: game.scenes.filter(s => s.isEnding).length,
+        maxDepth: 0,
+        avgPath: 0,
+        branches: 0,
+        unreachable: 0
+      };
+
+      // Calculate reachable scenes
+      if (game.startSceneId && findScene(game.startSceneId)) {
+        const reachable = new Set();
+        const queue = [{ id: game.startSceneId, depth: 0 }];
+        let totalDepth = 0;
+        let pathCount = 0;
+
+        while (queue.length > 0) {
+          const { id, depth } = queue.shift();
+          if (reachable.has(id)) continue;
+          reachable.add(id);
+
+          stats.maxDepth = Math.max(stats.maxDepth, depth);
+
+          const scene = findScene(id);
+          if (!scene) continue;
+
+          if (scene.isEnding) {
+            totalDepth += depth;
+            pathCount++;
+          }
+
+          const choices = ensureTwo(scene.choices || []);
+          let validChoices = 0;
+
+          choices.forEach(c => {
+            const type = c.type || 'scene';
+            if (type === 'scene' && c.nextSceneId) {
+              validChoices++;
+              if (!reachable.has(c.nextSceneId)) {
+                queue.push({ id: c.nextSceneId, depth: depth + 1 });
+              }
+            } else if (type === 'success' || type === 'failure') {
+              totalDepth += depth + 1;
+              pathCount++;
+            }
+          });
+
+          if (validChoices >= 2) {
+            stats.branches++;
+          }
+        }
+
+        stats.unreachable = game.scenes.length - reachable.size;
+        stats.avgPath = pathCount > 0 ? Math.round(totalDepth / pathCount) : 0;
+      }
+
+      return stats;
     }
 
     // ==================== Renderers ====================
@@ -1413,6 +1883,7 @@
 
       // Attach event listeners
       byId('btn-add-scene').addEventListener('click', addScene);
+      byId('btn-generate-template').addEventListener('click', generateTemplateStory);
       byId('btn-validate').addEventListener('click', validate);
       byId('btn-export').addEventListener('click', exportJSON);
       byId('input-import').addEventListener('change', (e) => {
@@ -1431,6 +1902,22 @@
 
       byId('search-scene').addEventListener('input', renderSceneList);
       byId('sort-scene').addEventListener('change', renderSceneList);
+
+      // Story flow controls
+      byId('btn-toggle-flow').addEventListener('click', () => {
+        const panel = byId('story-flow-panel');
+        const isHidden = panel.classList.contains('hidden');
+
+        if (isHidden) {
+          panel.classList.remove('hidden');
+          renderStoryFlow();
+        } else {
+          panel.classList.add('hidden');
+        }
+      });
+
+      byId('btn-refresh-flow').addEventListener('click', renderStoryFlow);
+      byId('btn-expand-all').addEventListener('click', renderStoryFlow);
 
       // Initial render
       renderSceneList();
