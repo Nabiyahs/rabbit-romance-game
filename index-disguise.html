@@ -75,65 +75,200 @@
 
     /* Main Layout */
     .container {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
       padding: 1rem;
       max-width: 1800px;
       margin: 0 auto;
     }
 
-    @media (min-width: 1024px) {
-      .container {
-        grid-template-columns: 30% 70%;
-        padding: 1.5rem;
-      }
-    }
-
-    /* Card Base */
-    .card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      border: 1px solid #ddd;
-    }
-
-    /* Scene List */
-    /* Story Tree Panel */
+    /* Story Tree Panel - Top Collapsible Section */
     .story-tree-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-height: calc(100vh - 120px);
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
       overflow: hidden;
     }
 
     .story-tree-header {
-      padding-bottom: 1rem;
-      border-bottom: 2px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      user-select: none;
     }
 
     .story-tree-header h2 {
-      margin-bottom: 0.5rem;
+      margin: 0;
+      font-size: 1rem;
+      color: var(--color-5);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-tree-header-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
 
     .story-tree-header select,
     .story-tree-header button {
-      padding: 0.5rem;
+      padding: 0.25rem 0.5rem;
       border: 1px solid #ccc;
       border-radius: var(--radius);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       background: white;
       cursor: pointer;
     }
 
-    #story-tree-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0.5rem;
-      background: #fafafa;
-      border: 1px solid #ddd;
+    .btn-toggle-tree {
+      padding: 0.25rem 0.5rem;
+      background: white;
+      border: 1px solid #999;
       border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    #story-tree-content {
+      padding: 1rem;
+      background: #fafafa;
+      max-height: 400px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .story-tree-panel.collapsed #story-tree-content {
+      display: none;
+    }
+
+    .story-tree-panel.collapsed .story-tree-header {
+      border-bottom: none;
+    }
+
+    /* Compact Tree Styles */
+    .tree-compact {
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+
+    .tree-scene-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      margin: 0.25rem 0;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .tree-scene-line:hover {
+      background: #e8e8e8;
+    }
+
+    .tree-scene-line.active {
+      background: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .tree-scene-id {
+      font-family: 'Courier New', monospace;
+      color: #666;
+      font-weight: 700;
+      min-width: 40px;
+    }
+
+    .tree-scene-name {
+      color: var(--color-5);
+      flex: 1;
+    }
+
+    .tree-icon {
+      font-size: 0.9rem;
+    }
+
+    .tree-icon.success {
+      color: #4caf50;
+    }
+
+    .tree-icon.failure {
+      color: #f44336;
+    }
+
+    .tree-choices-compact {
+      margin-left: 2.5rem;
+      padding-left: 1rem;
+      border-left: 2px solid #ddd;
+    }
+
+    .tree-choice-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.15rem 0;
+      font-size: 0.8rem;
+    }
+
+    .tree-choice-key {
+      font-weight: 700;
+      color: var(--color-4);
+      min-width: 15px;
+    }
+
+    .tree-choice-label {
+      color: #666;
+      flex: 0 1 auto;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tree-arrow {
+      color: #999;
+      font-weight: 700;
+    }
+
+    .tree-target {
+      font-family: 'Courier New', monospace;
+      color: #666;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .tree-add-btn {
+      padding: 0.1rem 0.4rem;
+      background: var(--color-3);
+      border: 1px solid #999;
+      border-radius: 2px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .tree-add-btn:hover {
+      background: #e0e0e0;
+    }
+
+    /* Bottom Layout */
+    .bottom-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .bottom-layout {
+        grid-template-columns: 60% 40%;
+      }
     }
 
     .tree-start {
@@ -521,31 +656,57 @@
 
     .choices-container {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
       margin-top: 1rem;
-    }
-
-    @media (min-width: 768px) {
-      .choices-container {
-        grid-template-columns: 1fr 1fr;
-      }
     }
 
     .choice-card {
       border: 1px solid #ccc;
       border-radius: var(--radius);
-      padding: 1rem;
+      padding: 0.75rem;
       background: #fafafa;
     }
 
     .choice-card h4 {
       color: var(--color-5);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .choice-card .form-group {
+      margin-bottom: 0.5rem;
+    }
+
+    .choice-card .form-group label {
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .choice-card .form-group input,
+    .choice-card .form-group select {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .choice-card .radio-group {
+      gap: 0.5rem;
+    }
+
+    .choice-card .radio-option {
+      font-size: 0.8rem;
     }
 
     .choice-type-scene {
       margin-top: 0.5rem;
+    }
+
+    /* Card Base */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid #ddd;
     }
 
     /* Player */
@@ -1048,19 +1209,20 @@
 
   <!-- Main Container -->
   <div class="container">
-    <!-- Left Panel: Story Tree -->
-    <div class="card story-tree-panel">
-      <div class="story-tree-header">
-        <h2 style="color: var(--color-5);">🌳 스토리 트리</h2>
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-          <select id="tree-depth" aria-label="트리 깊이">
+    <!-- Top Panel: Story Tree (Collapsible) -->
+    <div class="story-tree-panel" id="story-tree-panel">
+      <div class="story-tree-header" id="story-tree-header-toggle">
+        <h2>🌳 스토리 트리</h2>
+        <div class="story-tree-header-controls">
+          <select id="tree-depth" aria-label="트리 깊이" onclick="event.stopPropagation()">
             <option value="2">2단계</option>
             <option value="3">3단계</option>
             <option value="4" selected>4단계</option>
             <option value="5">5단계</option>
             <option value="99">전체</option>
           </select>
-          <button id="btn-refresh-tree" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;">새로고침</button>
+          <button id="btn-refresh-tree" onclick="event.stopPropagation()">새로고침</button>
+          <button class="btn-toggle-tree" id="btn-toggle-tree">접기 ▲</button>
         </div>
       </div>
       <div id="story-tree-content">
@@ -1068,13 +1230,13 @@
       </div>
     </div>
 
-    <!-- Right Panel -->
-    <div class="right-panel">
+    <!-- Bottom Panel: Editor & Player -->
+    <div class="bottom-layout">
       <!-- Scene Editor -->
       <div class="card scene-editor">
         <h2>씬 에디터</h2>
         <div id="editor-content">
-          <p style="color: #999; text-align: center; padding: 2rem;">좌측에서 씬을 선택하세요</p>
+          <p style="color: #999; text-align: center; padding: 2rem;">스토리 트리에서 씬을 선택하세요</p>
         </div>
       </div>
 
@@ -1089,24 +1251,24 @@
           <p style="opacity: 0.8;">'시작' 버튼을 눌러 플레이를 시작하세요</p>
         </div>
       </div>
+    </div>
 
-      <!-- Story Flow Visualizer -->
-      <div id="story-flow-panel" class="card story-flow hidden">
-        <h2>스토리 구조</h2>
-        <div class="flow-controls">
-          <button id="btn-refresh-flow">새로고침</button>
-          <button id="btn-expand-all">전체 펼치기</button>
-        </div>
-        <div id="flow-content">
-          <p style="color: #999; text-align: center; padding: 2rem;">스토리 구조를 불러오는 중...</p>
-        </div>
+    <!-- Story Flow Visualizer -->
+    <div id="story-flow-panel" class="card story-flow hidden">
+      <h2>스토리 구조</h2>
+      <div class="flow-controls">
+        <button id="btn-refresh-flow">새로고침</button>
+        <button id="btn-expand-all">전체 펼치기</button>
       </div>
+      <div id="flow-content">
+        <p style="color: #999; text-align: center; padding: 2rem;">스토리 구조를 불러오는 중...</p>
+      </div>
+    </div>
 
-      <!-- Validation Panel (hidden by default) -->
-      <div id="validation-panel" class="validation-panel hidden">
-        <h3>유효성 검사 결과</h3>
-        <div id="validation-results"></div>
-      </div>
+    <!-- Validation Panel (hidden by default) -->
+    <div id="validation-panel" class="validation-panel hidden">
+      <h3>유효성 검사 결과</h3>
+      <div id="validation-results"></div>
     </div>
   </div>
 
@@ -1513,10 +1675,12 @@
       const depthSelect = byId('tree-depth');
       const maxDepth = depthSelect ? parseInt(depthSelect.value) : 4;
 
-      let html = '<div class="tree-start">▶ 시작: ' + startScene.id + ' - ' + (startScene.name || '(이름 없음)') + '</div>';
+      let html = '<div class="tree-compact">';
+      html += '<div style="padding: 0.5rem; background: #e8e8e8; border-radius: 2px; margin-bottom: 1rem; font-weight: 700;">▶ 시작: ' + startScene.id + ' - ' + (startScene.name || '(이름 없음)') + '</div>';
 
       const visited = new Set();
-      html += buildTreeNode(startScene, 0, maxDepth, visited);
+      html += buildTreeNodeCompact(startScene, 0, maxDepth, visited);
+      html += '</div>';
 
       container.innerHTML = html;
 
@@ -1524,26 +1688,25 @@
       attachTreeHandlers();
     }
 
-    function buildTreeNode(scene, depth, maxDepth, visited) {
-      if (!scene || depth >= maxDepth || visited.has(scene.id)) {
-        if (visited.has(scene.id)) {
-          return `<div class="tree-circular" style="margin-left: ${depth * 1.5}rem;">↻ ${scene.id} (순환 참조)</div>`;
-        }
-        return '';
+    function buildTreeNodeCompact(scene, depth, maxDepth, visited) {
+      if (!scene || depth >= maxDepth) return '';
+      if (visited.has(scene.id)) {
+        return `<div style="margin-left: ${depth * 2}rem; color: #ff9800; font-size: 0.8rem;">↻ ${scene.id} 순환</div>`;
       }
 
       visited.add(scene.id);
 
-      let html = `<div class="tree-node ${scene.id === currentSceneId ? 'active' : ''}" data-scene-id="${scene.id}" style="margin-left: ${depth * 1.5}rem;">`;
+      let indent = depth * 2;
+      let html = '';
 
-      // Node header
-      html += '<div class="tree-node-header">';
-      html += `<span class="tree-node-id">${scene.id}</span>`;
-      html += `<span class="tree-node-name">${scene.name || '(이름 없음)'}</span>`;
+      // Scene line: [S001] 씬 이름 ✓/✗
+      html += `<div class="tree-scene-line ${scene.id === currentSceneId ? 'active' : ''}" data-scene-id="${scene.id}" style="margin-left: ${indent}rem;">`;
+      html += `<span class="tree-scene-id">${scene.id}</span>`;
+      html += `<span class="tree-scene-name">${scene.name || '(이름 없음)'}</span>`;
 
       if (scene.isEnding) {
-        const endingType = scene.endingInfo?.code?.includes('SUCCESS') ? 'success' : 'failure';
-        html += `<span class="tree-node-badge ${endingType}">${endingType === 'success' ? '✓ 성공' : '✗ 실패'}</span>`;
+        const isSuccess = scene.endingInfo?.code?.includes('SUCCESS');
+        html += `<span class="tree-icon ${isSuccess ? 'success' : 'failure'}">${isSuccess ? '✓' : '✗'}</span>`;
       }
 
       html += '</div>';
@@ -1551,57 +1714,57 @@
       // Choices
       if (!scene.isEnding) {
         const choices = ensureTwo(scene.choices || []);
-        html += '<div class="tree-choices">';
+        html += `<div class="tree-choices-compact" style="margin-left: ${indent}rem;">`;
 
         // Choice A
-        html += buildTreeChoice(choices[0], 'A', scene.id, depth, maxDepth, visited);
+        html += buildTreeChoiceCompact(choices[0], 'A', scene.id, depth, maxDepth, visited);
 
         // Choice B
-        html += buildTreeChoice(choices[1], 'B', scene.id, depth, maxDepth, visited);
+        html += buildTreeChoiceCompact(choices[1], 'B', scene.id, depth, maxDepth, visited);
 
         html += '</div>';
       }
 
-      html += '</div>';
-
       return html;
     }
 
-    function buildTreeChoice(choice, label, parentSceneId, depth, maxDepth, visited) {
+    function buildTreeChoiceCompact(choice, label, parentSceneId, depth, maxDepth, visited) {
       if (!choice) return '';
 
-      let html = '<div class="tree-choice">';
-      html += `<span class="tree-choice-label">선택지 ${label}</span>`;
-      html += `<div class="tree-choice-text">${choice.label || '(라벨 없음)'}</div>`;
-      html += `<span class="tree-choice-arrow">→</span>`;
+      let html = '<div class="tree-choice-line">';
+      html += `<span class="tree-choice-key">${label}:</span>`;
+      html += `<span class="tree-choice-label">${choice.label || '(라벨 없음)'}</span>`;
+      html += `<span class="tree-arrow">→</span>`;
 
       if (choice.type === 'success') {
-        html += '<span class="tree-ending-node success">✓ 성공 엔딩</span>';
+        html += '<span class="tree-icon success">✓</span>';
       } else if (choice.type === 'failure') {
-        html += '<span class="tree-ending-node failure">✗ 실패 엔딩</span>';
+        html += '<span class="tree-icon failure">✗</span>';
       } else if (choice.nextSceneId) {
         const nextScene = findScene(choice.nextSceneId);
 
         if (!nextScene) {
-          html += `<span class="tree-empty">[${choice.nextSceneId}] 씬 없음</span>`;
-          html += `<span class="tree-actions">`;
-          html += `<button class="tree-btn-add" data-parent="${parentSceneId}" data-choice="${label}" data-target="${choice.nextSceneId}">+ 생성</button>`;
-          html += `</span>`;
+          html += `<span class="tree-target">[${choice.nextSceneId}]</span>`;
+          html += `<button class="tree-add-btn" data-parent="${parentSceneId}" data-choice="${label}" data-target="${choice.nextSceneId}">+</button>`;
         } else {
           if (visited.has(nextScene.id)) {
-            html += `<span class="tree-circular">↻ ${nextScene.id} (순환)</span>`;
+            html += `<span class="tree-target" style="color: #ff9800;">[${nextScene.id}] ↻</span>`;
           } else {
-            // Recursively build next scene
-            html += '<div class="tree-branch">';
-            html += buildTreeNode(nextScene, depth + 1, maxDepth, new Set(visited));
+            html += `<span class="tree-target">[${nextScene.id}]</span>`;
+            const isEnding = nextScene.isEnding;
+            if (isEnding) {
+              const isSuccess = nextScene.endingInfo?.code?.includes('SUCCESS');
+              html += `<span class="tree-icon ${isSuccess ? 'success' : 'failure'}">${isSuccess ? '✓' : '✗'}</span>`;
+            }
             html += '</div>';
+            // Recursively build next scene
+            html += buildTreeNodeCompact(nextScene, depth + 1, maxDepth, new Set(visited));
+            return html;
           }
         }
       } else {
-        html += '<span class="tree-empty">(미연결)</span>';
-        html += `<span class="tree-actions">`;
-        html += `<button class="tree-btn-add" data-parent="${parentSceneId}" data-choice="${label}">+ 새 씬</button>`;
-        html += `</span>`;
+        html += '<span style="color: #999; font-size: 0.75rem;">(미연결)</span>';
+        html += `<button class="tree-add-btn" data-parent="${parentSceneId}" data-choice="${label}">+</button>`;
       }
 
       html += '</div>';
@@ -1609,17 +1772,10 @@
     }
 
     function attachTreeHandlers() {
-      // Click scene node to edit
-      document.querySelectorAll('.tree-node').forEach(node => {
-        node.addEventListener('click', (e) => {
-          // Prevent bubbling from inner elements
-          if (e.target.classList.contains('tree-btn-add')) return;
-          if (e.target.closest('.tree-choices')) {
-            // Only handle clicks on the node header
-            if (!e.target.closest('.tree-node-header')) return;
-          }
-
-          const sceneId = node.dataset.sceneId;
+      // Click scene line to edit
+      document.querySelectorAll('.tree-scene-line').forEach(line => {
+        line.addEventListener('click', () => {
+          const sceneId = line.dataset.sceneId;
           if (sceneId) {
             currentSceneId = sceneId;
             renderStoryTree();
@@ -1629,7 +1785,7 @@
       });
 
       // Add scene buttons
-      document.querySelectorAll('.tree-btn-add').forEach(btn => {
+      document.querySelectorAll('.tree-add-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const parentSceneId = btn.dataset.parent;
@@ -2360,6 +2516,23 @@
       // Story tree controls
       byId('tree-depth').addEventListener('change', renderStoryTree);
       byId('btn-refresh-tree').addEventListener('click', renderStoryTree);
+
+      // Tree toggle
+      byId('btn-toggle-tree').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const panel = byId('story-tree-panel');
+        const btn = byId('btn-toggle-tree');
+        panel.classList.toggle('collapsed');
+        btn.textContent = panel.classList.contains('collapsed') ? '펼치기 ▼' : '접기 ▲';
+      });
+
+      byId('story-tree-header-toggle').addEventListener('click', (e) => {
+        if (e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON') return;
+        const panel = byId('story-tree-panel');
+        const btn = byId('btn-toggle-tree');
+        panel.classList.toggle('collapsed');
+        btn.textContent = panel.classList.contains('collapsed') ? '펼치기 ▼' : '접기 ▲';
+      });
 
       // Story flow controls
       byId('btn-toggle-flow').addEventListener('click', () => {
