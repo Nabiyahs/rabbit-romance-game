@@ -667,6 +667,185 @@
       font-weight: 700;
       color: var(--color-5);
     }
+
+    /* Scene Connection Tree (in Editor) */
+    .scene-connection-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #ddd;
+    }
+
+    .scene-connection-section h3 {
+      color: var(--color-5);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .connection-controls {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .connection-controls label {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .connection-controls select {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+    }
+
+    .scene-connection-tree {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      max-height: 500px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+
+    .connection-current {
+      background: #e8e8e8;
+      border: 2px solid #999;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--color-5);
+    }
+
+    .connection-branch {
+      margin-left: 1rem;
+      padding-left: 1rem;
+      border-left: 2px solid #ccc;
+      margin-top: 0.75rem;
+    }
+
+    .connection-choice {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+    }
+
+    .connection-choice-label {
+      font-weight: 600;
+      color: var(--color-4);
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .connection-arrow {
+      color: #999;
+      margin: 0 0.5rem;
+    }
+
+    .connection-node {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .connection-node:hover {
+      background: #f0f0f0;
+      border-color: #999;
+      transform: translateX(2px);
+    }
+
+    .connection-node-id {
+      font-family: 'Courier New', monospace;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .connection-node-name {
+      color: var(--color-5);
+    }
+
+    .connection-ending {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.75rem;
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-weight: 600;
+    }
+
+    .connection-ending.success {
+      background: #e8f5e9;
+      border-color: #81c784;
+      color: #2e7d32;
+    }
+
+    .connection-ending.failure {
+      background: #ffebee;
+      border-color: #e57373;
+      color: #c62828;
+    }
+
+    .connection-actions {
+      display: inline-flex;
+      gap: 0.25rem;
+      margin-left: 0.5rem;
+    }
+
+    .btn-add-scene-inline {
+      padding: 0.25rem 0.5rem;
+      background: var(--color-3);
+      border: 1px solid #999;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: #333;
+      transition: all 0.2s;
+    }
+
+    .btn-add-scene-inline:hover {
+      background: #e0e0e0;
+      border-color: #666;
+    }
+
+    .btn-toggle-ending {
+      padding: 0.25rem 0.5rem;
+      background: white;
+      border: 1px solid #999;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    .btn-toggle-ending:hover {
+      background: #f0f0f0;
+    }
+
+    .connection-empty {
+      color: #999;
+      font-style: italic;
+      padding: 0.5rem;
+    }
+
+    .connection-circular {
+      color: #ff9800;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -1360,6 +1539,24 @@
             </div>
           </div>
         </div>
+
+        <!-- Scene Connection Tree -->
+        <div class="scene-connection-section">
+          <h3>🌳 씬 연결 구조</h3>
+          <div class="connection-controls">
+            <label>표시 깊이:</label>
+            <select id="connection-depth">
+              <option value="1">1단계</option>
+              <option value="2">2단계</option>
+              <option value="3" selected>3단계</option>
+              <option value="4">4단계</option>
+              <option value="5">5단계</option>
+            </select>
+          </div>
+          <div class="scene-connection-tree" id="scene-connection-tree">
+            <!-- Connection tree will be rendered here -->
+          </div>
+        </div>
       `;
 
       // Attach event listeners
@@ -1397,6 +1594,184 @@
           }
         });
       });
+
+      // Connection depth handler
+      byId('connection-depth').addEventListener('change', () => {
+        renderSceneConnectionTree();
+      });
+
+      // Render connection tree
+      renderSceneConnectionTree();
+    }
+
+    // ==================== Scene Connection Tree ====================
+
+    function renderSceneConnectionTree() {
+      const container = byId('scene-connection-tree');
+      if (!container) return;
+
+      const scene = findScene(currentSceneId);
+      if (!scene) {
+        container.innerHTML = '<div class="connection-empty">씬을 찾을 수 없습니다.</div>';
+        return;
+      }
+
+      const depthSelect = byId('connection-depth');
+      const maxDepth = depthSelect ? parseInt(depthSelect.value) : 3;
+
+      let html = `<div class="connection-current">현재: ${scene.id} - ${scene.name || '(이름 없음)'}</div>`;
+
+      const choices = ensureTwo(scene.choices || []);
+      const visited = new Set([currentSceneId]);
+
+      html += buildConnectionBranch(choices[0], 'A', 0, maxDepth, visited);
+      html += buildConnectionBranch(choices[1], 'B', 0, maxDepth, visited);
+
+      container.innerHTML = html;
+
+      // Attach click handlers
+      attachConnectionHandlers();
+    }
+
+    function buildConnectionBranch(choice, choiceLabel, depth, maxDepth, visited) {
+      if (!choice || depth >= maxDepth) return '';
+
+      let html = '<div class="connection-branch">';
+      html += `<div class="connection-choice">`;
+      html += `<span class="connection-choice-label">선택지 ${choiceLabel}:</span> ${choice.label || '(라벨 없음)'}`;
+      html += `<span class="connection-arrow">→</span>`;
+
+      // Handle different choice types
+      if (choice.type === 'success') {
+        html += `<span class="connection-ending success">✓ 성공 엔딩</span>`;
+      } else if (choice.type === 'failure') {
+        html += `<span class="connection-ending failure">✗ 실패 엔딩</span>`;
+      } else if (choice.nextSceneId) {
+        const nextScene = findScene(choice.nextSceneId);
+
+        if (!nextScene) {
+          html += `<span class="connection-empty">[${choice.nextSceneId}] 씬 없음</span>`;
+          html += `<span class="connection-actions">`;
+          html += `<button class="btn-add-scene-inline" data-parent="${currentSceneId}" data-choice="${choiceLabel}" data-scene-id="${choice.nextSceneId}">+ 생성</button>`;
+          html += `</span>`;
+        } else if (visited.has(nextScene.id)) {
+          html += `<span class="connection-circular">↻ ${nextScene.id} - ${nextScene.name} (순환)</span>`;
+        } else {
+          html += `<span class="connection-node" data-scene-id="${nextScene.id}">`;
+          html += `<span class="connection-node-id">${nextScene.id}</span>`;
+          html += `<span class="connection-node-name">${nextScene.name || '(이름 없음)'}</span>`;
+          html += `</span>`;
+
+          if (nextScene.isEnding) {
+            const endingType = nextScene.endingInfo?.code?.includes('SUCCESS') ? 'success' : 'failure';
+            html += ` <span class="connection-ending ${endingType}">${endingType === 'success' ? '✓' : '✗'} 엔딩</span>`;
+          } else {
+            html += `<span class="connection-actions">`;
+            html += `<button class="btn-add-scene-inline" data-parent="${nextScene.id}" data-choice="A">+ A</button>`;
+            html += `<button class="btn-add-scene-inline" data-parent="${nextScene.id}" data-choice="B">+ B</button>`;
+            html += `</span>`;
+          }
+
+          // Recursively build next level
+          if (!nextScene.isEnding && depth + 1 < maxDepth) {
+            const nextChoices = ensureTwo(nextScene.choices || []);
+            const newVisited = new Set([...visited, nextScene.id]);
+            html += buildConnectionBranch(nextChoices[0], 'A', depth + 1, maxDepth, newVisited);
+            html += buildConnectionBranch(nextChoices[1], 'B', depth + 1, maxDepth, newVisited);
+          }
+        }
+      } else {
+        html += `<span class="connection-empty">(미연결)</span>`;
+        html += `<span class="connection-actions">`;
+        html += `<button class="btn-add-scene-inline" data-parent="${currentSceneId}" data-choice="${choiceLabel}">+ 새 씬</button>`;
+        html += `</span>`;
+      }
+
+      html += `</div></div>`;
+      return html;
+    }
+
+    function attachConnectionHandlers() {
+      // Click to navigate to scene
+      document.querySelectorAll('.connection-node').forEach(node => {
+        node.addEventListener('click', () => {
+          const sceneId = node.dataset.sceneId;
+          if (sceneId) {
+            currentSceneId = sceneId;
+            renderSceneList();
+            renderEditor();
+          }
+        });
+      });
+
+      // Add scene buttons
+      document.querySelectorAll('.btn-add-scene-inline').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const parentSceneId = btn.dataset.parent;
+          const choiceKey = btn.dataset.choice;
+          const targetSceneId = btn.dataset.sceneId;
+          addSceneFromConnection(parentSceneId, choiceKey, targetSceneId);
+        });
+      });
+    }
+
+    function addSceneFromConnection(parentSceneId, choiceKey, targetSceneId = null) {
+      const parentScene = findScene(parentSceneId);
+      if (!parentScene) {
+        alert('부모 씬을 찾을 수 없습니다.');
+        return;
+      }
+
+      // Generate new scene ID
+      let newSceneId = targetSceneId;
+      if (!newSceneId) {
+        const maxNum = game.scenes.reduce((max, s) => {
+          const match = s.id.match(/^S(\d+)$/);
+          return match ? Math.max(max, parseInt(match[1])) : max;
+        }, 0);
+        newSceneId = `S${String(maxNum + 1).padStart(3, '0')}`;
+      }
+
+      // Check if scene already exists
+      if (findScene(newSceneId)) {
+        // Just navigate to it
+        currentSceneId = newSceneId;
+        renderSceneList();
+        renderEditor();
+        return;
+      }
+
+      // Create new scene
+      const timestamp = nowISO();
+      const newScene = {
+        id: newSceneId,
+        name: `씬 ${game.scenes.length + 1}`,
+        isEnding: false,
+        content: '',
+        choices: [
+          { id: `${newSceneId}A`, label: '', type: 'scene', nextSceneId: '', note: '' },
+          { id: `${newSceneId}B`, label: '', type: 'scene', nextSceneId: '', note: '' }
+        ],
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        isArchived: false
+      };
+
+      game.scenes.push(newScene);
+      game.updatedAt = timestamp;
+
+      // Connect parent scene to new scene
+      const choices = ensureTwo(parentScene.choices);
+      const choiceIndex = choiceKey === 'A' ? 0 : 1;
+      choices[choiceIndex].nextSceneId = newSceneId;
+      choices[choiceIndex].type = 'scene';
+      parentScene.updatedAt = timestamp;
+
+      // Navigate to new scene
+      currentSceneId = newSceneId;
+      renderSceneList();
+      renderEditor();
     }
 
     function renderPlayer() {
