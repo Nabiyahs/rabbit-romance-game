@@ -101,8 +101,8 @@
 
         .main-content {
             display: flex;
-            gap: 20px;
             min-height: 500px;
+            position: relative;
         }
 
         .panel {
@@ -111,10 +111,55 @@
         }
 
         .tree-panel {
-            flex: 1;
+            width: 40%;
+            min-width: 250px;
             background: #fafafa;
             border-right: 1px solid #eee;
             max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tree-panel-header {
+            padding: 10px 0;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .tree-panel-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tree-panel-controls button {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .resizer {
+            width: 5px;
+            cursor: col-resize;
+            background: #e0e0e0;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .resizer:hover {
+            background: #007bff;
+        }
+
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 3px;
+            height: 40px;
+            background: #999;
+            border-radius: 2px;
         }
 
         .editor-panel {
@@ -367,6 +412,14 @@
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
 
+            .resizer {
+                display: none;
+            }
+
+            .tree-panel {
+                width: 100% !important;
+            }
+
             .title {
                 font-size: 18px;
             }
@@ -502,10 +555,18 @@
 
         <div class="main-content">
             <div class="panel tree-panel active" id="treePanel">
-                <div class="tree" id="tree">
+                <div class="tree-panel-header">
+                    <div class="tree-panel-controls">
+                        <button class="btn-success" onclick="showAddSceneDialog()">➕ 새 씬</button>
+                        <button class="btn-info" onclick="showAllScenes()">📋 전체 목록</button>
+                    </div>
+                </div>
+                <div class="tree" id="tree" style="flex: 1; overflow-y: auto;">
                     <div class="empty-state">로딩 중...</div>
                 </div>
             </div>
+
+            <div class="resizer" id="resizer"></div>
 
             <div class="panel editor-panel" id="editorPanel">
                 <div id="editor">
@@ -537,6 +598,44 @@
         window.addEventListener('resize', () => {
             isMobile = window.innerWidth <= 768;
         });
+
+        // 패널 리사이저 기능
+        function initResizer() {
+            const resizer = document.getElementById('resizer');
+            const treePanel = document.getElementById('treePanel');
+            const editorPanel = document.getElementById('editorPanel');
+            let isResizing = false;
+
+            resizer.addEventListener('mousedown', function(e) {
+                if (isMobile) return;
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing || isMobile) return;
+
+                const container = document.querySelector('.main-content');
+                const containerRect = container.getBoundingClientRect();
+                const newWidth = e.clientX - containerRect.left;
+                const minWidth = 250;
+                const maxWidth = containerRect.width - 300;
+
+                if (newWidth >= minWidth && newWidth <= maxWidth) {
+                    const percentage = (newWidth / containerRect.width) * 100;
+                    treePanel.style.width = percentage + '%';
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
 
         // 탭 전환 (모바일)
         function switchTab(tab) {
@@ -611,6 +710,97 @@
                 }
             }
             return 0;
+        }
+
+        // 새 씬 추가 다이얼로그
+        function showAddSceneDialog() {
+            const nextScene = getNextAvailableScene();
+            if (nextScene === 0) {
+                alert('더 이상 사용 가능한 씬이 없습니다.');
+                return;
+            }
+
+            const sceneNum = prompt(`새 씬 번호를 입력하세요 (추천: ${nextScene})`, nextScene);
+            if (sceneNum === null) return;
+
+            const num = parseInt(sceneNum);
+            if (isNaN(num) || num < 1 || num > 1000) {
+                alert('1~1000 사이의 숫자를 입력하세요.');
+                return;
+            }
+
+            if (usedSceneNumbers.has(num)) {
+                if (!confirm(`씬 ${num}은(는) 이미 사용 중입니다. 수정하시겠습니까?`)) {
+                    return;
+                }
+            }
+
+            // 새 씬 생성 또는 수정
+            if (!gameData[num]) {
+                gameData[num] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+            }
+
+            selectScene(num);
+            updateUsedScenes();
+            renderTree();
+            updateStatus(`씬 ${num} 준비됨`);
+        }
+
+        // 전체 씬 목록 보기
+        function showAllScenes() {
+            const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
+
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">전체 씬 목록 (${sceneList.length}개)</h3>
+                </div>
+
+                <div class="editor-section">
+                    <div style="display: grid; gap: 8px; max-height: 500px; overflow-y: auto;">`;
+
+            sceneList.forEach(num => {
+                const scene = gameData[num];
+                const preview = scene.content ? scene.content.substring(0, 30) : '(내용 없음)';
+                const endingBadge = scene.isEnding ? '<span style="color: #dc3545; font-weight: bold;"> [END]</span>' : '';
+                const choicesInfo = !scene.isEnding ? ` (선택지: ${scene.choices.length})` : '';
+
+                html += `
+                    <div style="
+                        padding: 12px;
+                        background: ${num === 1 ? '#e3f2fd' : 'white'};
+                        border: 2px solid ${scene.isEnding ? '#dc3545' : '#007bff'};
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    " onclick="selectScene(${num})"
+                       onmouseover="this.style.background='#f0f0f0'"
+                       onmouseout="this.style.background='${num === 1 ? '#e3f2fd' : 'white'}'">
+                        <div style="font-weight: bold; margin-bottom: 5px;">
+                            씬 ${num}${endingBadge}${choicesInfo}
+                        </div>
+                        <div style="color: #666; font-size: 13px;">
+                            ${preview}${scene.content && scene.content.length > 30 ? '...' : ''}
+                        </div>
+                    </div>`;
+            });
+
+            html += `
+                    </div>
+                </div>
+
+                <div class="editor-controls">
+                    <button class="btn-info" onclick="renderTree(); document.getElementById('editor').innerHTML='<div class=\\'empty-state\\'>트리에서 씬이나 선택지를 탭하여 편집하세요</div>'">트리로 돌아가기</button>
+                </div>`;
+
+            document.getElementById('editor').innerHTML = html;
+
+            if (isMobile) {
+                switchTab('editor');
+            }
         }
 
         // 트리 렌더링
@@ -1089,12 +1279,15 @@
             } else {
                 init();
             }
-            
+
             // 데스크톱에서는 패널 모두 표시
             if (!isMobile) {
                 document.getElementById('treePanel').classList.add('active');
                 document.getElementById('editorPanel').classList.add('active');
             }
+
+            // 리사이저 초기화
+            initResizer();
         };
     </script>
 </body>
