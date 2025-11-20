@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Tree Editor - Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        /* 탭 네비게이션 */
+        .tab-nav {
+            display: none;
+            background: #f8f9fa;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            min-height: 500px;
+        }
+
+        .panel {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .tree-panel {
+            flex: 1;
+            background: #fafafa;
+            border-right: 1px solid #eee;
+            max-height: 600px;
+        }
+
+        .editor-panel {
+            flex: 1;
+            background: white;
+            max-height: 600px;
+        }
+
+        /* Tree Styles */
+        .tree {
+            font-size: 14px;
+        }
+
+        .tree ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+        }
+
+        .tree li {
+            margin: 3px 0;
+            position: relative;
+        }
+
+        .tree li ul {
+            margin-left: 20px;
+        }
+
+        .tree li::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -12px;
+            width: 10px;
+            height: 1px;
+            background: #999;
+        }
+
+        .tree li::after {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: -8px;
+            bottom: 12px;
+            width: 1px;
+            background: #999;
+        }
+
+        .tree > ul > li::before,
+        .tree > ul > li::after {
+            display: none;
+        }
+
+        .scene-node, .choice-node {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            margin: 2px 0;
+            user-select: none;
+        }
+
+        .scene-node {
+            background: white;
+            border: 2px solid #007bff;
+        }
+
+        .scene-node:active {
+            transform: scale(0.98);
+        }
+
+        .scene-node.selected {
+            background: #007bff;
+            color: white;
+        }
+
+        .scene-node.empty {
+            border-style: dashed;
+            opacity: 0.6;
+        }
+
+        .scene-node.ending {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .choice-node {
+            background: #f0f0f0;
+            border: 1px solid #999;
+            font-size: 12px;
+        }
+
+        .choice-node.selected {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* Editor Styles */
+        .editor-section {
+            margin-bottom: 20px;
+        }
+
+        .editor-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .editor-input, .editor-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px; /* iOS 줌 방지 */
+        }
+
+        .editor-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .choice-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+        }
+
+        .choice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .next-scene-control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .next-scene-input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        .auto-btn {
+            padding: 8px 12px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+
+        .delete-btn {
+            padding: 6px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .add-choice-btn {
+            padding: 10px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .editor-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .editor-controls button {
+            flex: 1;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .status-bar {
+            padding: 12px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .stats-info {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        /* 모바일 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .header {
+                position: sticky;
+                top: 0;
+                background: white;
+                z-index: 100;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+            .title {
+                font-size: 18px;
+            }
+
+            .buttons {
+                gap: 5px;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .tab-nav {
+                display: flex;
+                position: sticky;
+                top: 60px;
+                z-index: 99;
+                background: white;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .main-content {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .panel {
+                display: none;
+                min-height: calc(100vh - 200px);
+                max-height: none !important;
+            }
+
+            .panel.active {
+                display: block;
+            }
+
+            .tree-panel {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            /* 모바일에서 트리 터치 영역 확대 */
+            .scene-node, .choice-node {
+                padding: 10px 14px;
+                font-size: 14px;
+                margin: 4px 0;
+            }
+
+            .editor-input, .editor-textarea, .next-scene-input {
+                font-size: 16px; /* iOS 줌 방지 */
+            }
+
+            .editor-controls {
+                flex-direction: column;
+            }
+
+            .editor-controls button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .next-scene-control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .next-scene-input {
+                width: 100%;
+            }
+
+            .auto-btn {
+                width: 100%;
+                padding: 10px;
+            }
+
+            /* 스크롤 개선 */
+            .tree-panel, .editor-panel {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
+            }
+
+            /* 터치 피드백 */
+            button:active, .scene-node:active, .choice-node:active {
+                opacity: 0.8;
+            }
+        }
+
+        /* 태블릿 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .panel {
+                max-height: 400px;
+            }
+        }
+
+        /* 가로 모드 최적화 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                padding: 10px;
+            }
+
+            .title {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            .panel {
+                min-height: calc(100vh - 150px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎮 Game Tree Editor</h1>
+            <div class="buttons">
+                <button class="btn-primary" onclick="saveToLocal()">💾 저장</button>
+                <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
+                <button class="btn-success" onclick="exportGame()">🎯 내보내기</button>
+                <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
+            </div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('tree')">🌳 트리</button>
+            <button class="tab-btn" onclick="switchTab('editor')">✏️ 편집</button>
+        </div>
+
+        <div class="main-content">
+            <div class="panel tree-panel active" id="treePanel">
+                <div class="tree" id="tree">
+                    <div class="empty-state">로딩 중...</div>
+                </div>
+            </div>
+
+            <div class="panel editor-panel" id="editorPanel">
+                <div id="editor">
+                    <div class="empty-state">
+                        트리에서 씬이나 선택지를 탭하여 편집하세요
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div id="statusMessage">준비됨</div>
+            <div class="stats-info">
+                <div>사용: <span class="stat-value" id="usedScenes">1</span></div>
+                <div>남음: <span class="stat-value" id="availableScenes">999</span></div>
+                <div>전체: <span class="stat-value">1000</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameData = {};
+        let selectedNode = null;
+        let selectedType = null;
+        let usedSceneNumbers = new Set();
+        let isMobile = window.innerWidth <= 768;
+
+        // 모바일 감지 및 리사이즈 처리
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+        });
+
+        // 탭 전환 (모바일)
+        function switchTab(tab) {
+            if (!isMobile) return;
+            
+            const treePanel = document.getElementById('treePanel');
+            const editorPanel = document.getElementById('editorPanel');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'tree') {
+                treePanel.classList.add('active');
+                editorPanel.classList.remove('active');
+                tabBtns[0].classList.add('active');
+            } else {
+                treePanel.classList.remove('active');
+                editorPanel.classList.add('active');
+                tabBtns[1].classList.add('active');
+            }
+        }
+
+        // 초기화
+        function init() {
+            for (let i = 1; i <= 1000; i++) {
+                gameData[i] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+            }
+            gameData[1].content = '게임 시작';
+            updateUsedScenes();
+            renderTree();
+        }
+
+        // 사용된 씬 업데이트
+        function updateUsedScenes() {
+            usedSceneNumbers.clear();
+            usedSceneNumbers.add(1);
+            
+            function traverse(sceneNum) {
+                const scene = gameData[sceneNum];
+                if (!scene) return;
+                
+                scene.choices.forEach(choice => {
+                    if (choice.next && choice.next > 0 && choice.next <= 1000) {
+                        if (!usedSceneNumbers.has(choice.next)) {
+                            usedSceneNumbers.add(choice.next);
+                            traverse(choice.next);
+                        }
+                    }
+                });
+            }
+            
+            traverse(1);
+            
+            for (let i = 1; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim()) {
+                    usedSceneNumbers.add(i);
+                }
+            }
+            
+            updateStats();
+        }
+
+        // 다음 사용 가능한 씬 찾기
+        function getNextAvailableScene() {
+            for (let i = 2; i <= 1000; i++) {
+                if (!usedSceneNumbers.has(i)) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        // 트리 렌더링
+        function renderTree() {
+            const treeDiv = document.getElementById('tree');
+            const html = buildTreeHTML(1, new Set());
+            treeDiv.innerHTML = html;
+        }
+
+        // 트리 HTML 생성
+        function buildTreeHTML(sceneNum, visited) {
+            if (visited.has(sceneNum)) {
+                return `<li><span class="scene-node empty">씬 ${sceneNum} (순환)</span></li>`;
+            }
+
+            visited.add(sceneNum);
+            const scene = gameData[sceneNum];
+            
+            const hasContent = scene.content && scene.content.trim();
+            const nodeClass = `scene-node ${hasContent ? '' : 'empty'} ${scene.isEnding ? 'ending' : ''} ${selectedNode === sceneNum && selectedType === 'scene' ? 'selected' : ''}`;
+            
+            let html = '<ul><li>';
+            html += `<span class="${nodeClass}" onclick="selectScene(${sceneNum})">`;
+            html += `📄 씬 ${sceneNum}`;
+            if (hasContent) {
+                const preview = scene.content.substring(0, 12);
+                html += `: ${preview}${scene.content.length > 12 ? '...' : ''}`;
+            }
+            if (scene.isEnding) {
+                html += ' [END]';
+            }
+            html += '</span>';
+            
+            if (!scene.isEnding && scene.choices.length > 0) {
+                html += '<ul>';
+                scene.choices.forEach((choice, index) => {
+                    const choiceClass = `choice-node ${choice.text ? '' : 'empty'} ${selectedNode === `${sceneNum}-${index}` && selectedType === 'choice' ? 'selected' : ''}`;
+                    html += '<li>';
+                    html += `<span class="${choiceClass}" onclick="selectChoice(${sceneNum}, ${index})">`;
+                    html += `▶ ${index + 1}. ${choice.text ? choice.text.substring(0, 15) + (choice.text.length > 15 ? '...' : '') : '(빈 선택지)'}`;
+                    if (choice.next) {
+                        html += ` → ${choice.next}`;
+                    }
+                    html += '</span>';
+                    
+                    if (choice.next && choice.next > 0) {
+                        html += buildTreeHTML(choice.next, new Set([...visited]));
+                    }
+                    
+                    html += '</li>';
+                });
+                html += '</ul>';
+            }
+            
+            html += '</li></ul>';
+            
+            return html;
+        }
+
+        // 씬 선택
+        function selectScene(sceneNum) {
+            selectedNode = sceneNum;
+            selectedType = 'scene';
+            renderTree();
+            showSceneEditor(sceneNum);
+            
+            // 모바일에서는 자동으로 편집 탭으로 전환
+            if (isMobile) {
+                switchTab('editor');
+            }
+        }
+
+        // 선택지 선택
+        function selectChoice(sceneNum, choiceIndex) {
+            selectedNode = `${sceneNum}-${choiceIndex}`;
+            selectedType = 'choice';
+            renderTree();
+            showChoiceEditor(sceneNum, choiceIndex);
+            
+            if (isMobile) {
+                switchTab('editor');
+            }
+        }
+
+        // 씬 에디터
+        function showSceneEditor(sceneNum) {
+            const scene = gameData[sceneNum];
+            const editor = document.getElementById('editor');
+            
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">씬 ${sceneNum}</h3>
+                </div>
+                
+                <div class="editor-section">
+                    <div class="editor-label">씬 내용</div>
+                    <textarea class="editor-textarea" id="sceneContent" 
+                              placeholder="이 씬의 내용을 입력하세요...">${scene.content}</textarea>
+                </div>
+                
+                <div class="editor-section">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isEnding" ${scene.isEnding ? 'checked' : ''} 
+                               onchange="toggleEnding(${sceneNum})">
+                        <span>엔딩 씬으로 설정</span>
+                    </label>
+                </div>
+                
+                <div class="editor-section" id="choicesSection" ${scene.isEnding ? 'style="display:none"' : ''}>
+                    <div class="editor-label">선택지 (${scene.choices.length}/3)</div>`;
+            
+            scene.choices.forEach((choice, index) => {
+                html += `
+                    <div class="choice-container">
+                        <div class="choice-header">
+                            <span class="choice-number">선택지 ${index + 1}</span>
+                            <button class="delete-btn" onclick="deleteChoice(${sceneNum}, ${index})">삭제</button>
+                        </div>
+                        <input type="text" class="editor-input" id="choice-text-${index}" 
+                               placeholder="선택지 텍스트를 입력하세요..." value="${choice.text}">
+                        <div class="next-scene-control">
+                            <input type="number" class="next-scene-input" id="choice-next-${index}" 
+                                   min="1" max="1000" value="${choice.next || ''}" 
+                                   placeholder="다음 씬 번호">
+                            <button class="auto-btn" onclick="autoAssignNext(${sceneNum}, ${index})">자동 채번</button>
+                        </div>
+                    </div>`;
+            });
+            
+            if (scene.choices.length < 3 && !scene.isEnding) {
+                html += `<button class="add-choice-btn" onclick="addChoice(${sceneNum})">+ 선택지 추가</button>`;
+            }
+            
+            html += `</div>
+                
+                <div class="editor-controls">
+                    <button class="btn-success" onclick="saveScene(${sceneNum})">저장</button>
+                    ${sceneNum !== 1 ? `<button class="btn-danger" onclick="deleteScene(${sceneNum})">씬 삭제</button>` : ''}
+                    ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
+                </div>`;
+            
+            editor.innerHTML = html;
+        }
+
+        // 선택지 에디터
+        function showChoiceEditor(sceneNum, choiceIndex) {
+            const choice = gameData[sceneNum].choices[choiceIndex];
+            const editor = document.getElementById('editor');
+            
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">씬 ${sceneNum} - 선택지 ${choiceIndex + 1}</h3>
+                </div>
+                
+                <div class="editor-section">
+                    <div class="editor-label">선택지 텍스트</div>
+                    <input type="text" class="editor-input" id="choiceText" 
+                           placeholder="선택지 텍스트를 입력하세요..." value="${choice.text || ''}">
+                </div>
+                
+                <div class="editor-section">
+                    <div class="editor-label">다음 씬 번호</div>
+                    <div class="next-scene-control">
+                        <input type="number" class="editor-input" id="choiceNext" 
+                               min="1" max="1000" value="${choice.next || ''}" 
+                               placeholder="1-1000">
+                        <button class="auto-btn" onclick="autoAssignNextForChoice(${sceneNum}, ${choiceIndex})">자동 채번</button>
+                    </div>
+                </div>
+                
+                <div class="editor-controls">
+                    <button class="btn-success" onclick="saveChoice(${sceneNum}, ${choiceIndex})">저장</button>
+                    <button class="btn-danger" onclick="deleteChoice(${sceneNum}, ${choiceIndex})">삭제</button>
+                    ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
+                </div>`;
+            
+            editor.innerHTML = html;
+        }
+
+        // 엔딩 토글
+        function toggleEnding(sceneNum) {
+            const isEnding = document.getElementById('isEnding').checked;
+            gameData[sceneNum].isEnding = isEnding;
+            
+            const choicesSection = document.getElementById('choicesSection');
+            if (isEnding) {
+                choicesSection.style.display = 'none';
+                gameData[sceneNum].choices = [];
+            } else {
+                choicesSection.style.display = 'block';
+            }
+            
+            updateUsedScenes();
+            renderTree();
+        }
+
+        // 자동 채번
+        function autoAssignNext(sceneNum, choiceIndex) {
+            const nextScene = getNextAvailableScene();
+            if (nextScene > 0) {
+                document.getElementById(`choice-next-${choiceIndex}`).value = nextScene;
+                updateStatus(`씬 ${nextScene} 자동 할당`);
+            } else {
+                alert('사용 가능한 씬이 없습니다');
+            }
+        }
+
+        function autoAssignNextForChoice(sceneNum, choiceIndex) {
+            const nextScene = getNextAvailableScene();
+            if (nextScene > 0) {
+                document.getElementById('choiceNext').value = nextScene;
+                updateStatus(`씬 ${nextScene} 자동 할당`);
+            } else {
+                alert('사용 가능한 씬이 없습니다');
+            }
+        }
+
+        // 씬 저장
+        function saveScene(sceneNum) {
+            const content = document.getElementById('sceneContent').value;
+            const isEnding = document.getElementById('isEnding').checked;
+            
+            gameData[sceneNum].content = content;
+            gameData[sceneNum].isEnding = isEnding;
+            
+            if (!isEnding) {
+                gameData[sceneNum].choices.forEach((choice, index) => {
+                    const textInput = document.getElementById(`choice-text-${index}`);
+                    const nextInput = document.getElementById(`choice-next-${index}`);
+                    if (textInput) choice.text = textInput.value;
+                    if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                });
+            }
+            
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
+            updateStatus('씬 ' + sceneNum + ' 저장됨');
+            
+            if (isMobile) {
+                setTimeout(() => switchTab('tree'), 500);
+            }
+        }
+
+        // 선택지 저장
+        function saveChoice(sceneNum, choiceIndex) {
+            const text = document.getElementById('choiceText').value;
+            const next = parseInt(document.getElementById('choiceNext').value) || 0;
+            
+            gameData[sceneNum].choices[choiceIndex] = { text, next };
+            
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
+            updateStatus('선택지 저장됨');
+            
+            if (isMobile) {
+                setTimeout(() => switchTab('tree'), 500);
+            }
+        }
+
+        // 선택지 추가
+        function addChoice(sceneNum) {
+            if (gameData[sceneNum].choices.length < 3) {
+                gameData[sceneNum].choices.push({ text: '', next: 0 });
+                showSceneEditor(sceneNum);
+                updateStatus('선택지 추가됨');
+            }
+        }
+
+        // 선택지 삭제
+        function deleteChoice(sceneNum, choiceIndex) {
+            if (confirm('선택지를 삭제하시겠습니까?')) {
+                gameData[sceneNum].choices.splice(choiceIndex, 1);
+                updateUsedScenes();
+                renderTree();
+                if (selectedType === 'choice') {
+                    showSceneEditor(sceneNum);
+                }
+                saveToLocal();
+                updateStatus('선택지 삭제됨');
+            }
+        }
+
+        // 씬 삭제
+        function deleteScene(sceneNum) {
+            if (sceneNum === 1) {
+                alert('씬 1은 삭제할 수 없습니다');
+                return;
+            }
+            
+            if (confirm(`씬 ${sceneNum}을 삭제하시겠습니까?`)) {
+                gameData[sceneNum] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+                updateUsedScenes();
+                renderTree();
+                document.getElementById('editor').innerHTML = '<div class="empty-state">트리에서 씬이나 선택지를 탭하여 편집하세요</div>';
+                saveToLocal();
+                updateStatus('씬 ' + sceneNum + ' 삭제됨');
+                
+                if (isMobile) {
+                    switchTab('tree');
+                }
+            }
+        }
+
+        // 로컬 저장
+        function saveToLocal() {
+            localStorage.setItem('gameTreeDataMobile', JSON.stringify(gameData));
+        }
+
+        // 로컬에서 불러오기
+        function loadFromLocal() {
+            const saved = localStorage.getItem('gameTreeDataMobile');
+            if (saved) {
+                gameData = JSON.parse(saved);
+                updateUsedScenes();
+                renderTree();
+                updateStatus('데이터 불러옴');
+            } else {
+                updateStatus('저장된 데이터 없음');
+            }
+        }
+
+        // 초기화
+        function clearAll() {
+            if (confirm('모든 데이터를 초기화하시겠습니까?')) {
+                init();
+                document.getElementById('editor').innerHTML = '<div class="empty-state">트리에서 씬이나 선택지를 탭하여 편집하세요</div>';
+                saveToLocal();
+                updateStatus('초기화 완료');
+            }
+        }
+
+        // 게임 내보내기
+        function exportGame() {
+            const gameHTML = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .game-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .scene-content {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            white-space: pre-wrap;
+        }
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .choice-btn {
+            padding: 15px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        .choice-btn:active {
+            transform: scale(0.98);
+        }
+        .ending {
+            text-align: center;
+            font-size: 24px;
+            color: #dc3545;
+            font-weight: bold;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .game-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="scene-content" id="content"></div>
+        <div class="choices" id="choices"></div>
+    </div>
+    <script>
+        const gameData = ${JSON.stringify(gameData)};
+        
+        function showScene(sceneNum) {
+            const scene = gameData[sceneNum];
+            if (!scene) return;
+            
+            document.getElementById('content').textContent = scene.content || '내용 없음';
+            
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            
+            if (scene.isEnding) {
+                choicesDiv.innerHTML = '<div class="ending">~ THE END ~</div>';
+            } else if (scene.choices && scene.choices.length > 0) {
+                scene.choices.forEach((choice, index) => {
+                    if (choice.text) {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.textContent = (index + 1) + '. ' + choice.text;
+                        btn.onclick = () => {
+                            if (choice.next && choice.next > 0) {
+                                showScene(choice.next);
+                            }
+                        };
+                        choicesDiv.appendChild(btn);
+                    }
+                });
+            }
+        }
+        
+        showScene(1);
+    <\/script>
+</body>
+</html>`;
+            
+            const blob = new Blob([gameHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'game.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            updateStatus('게임 파일 생성됨');
+        }
+
+        // 상태 업데이트
+        function updateStatus(message) {
+            document.getElementById('statusMessage').textContent = message;
+            updateStats();
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const used = usedSceneNumbers.size;
+            const available = 1000 - used;
+            
+            document.getElementById('usedScenes').textContent = used;
+            document.getElementById('availableScenes').textContent = available;
+        }
+
+        // 초기화
+        window.onload = function() {
+            const saved = localStorage.getItem('gameTreeDataMobile');
+            if (saved) {
+                gameData = JSON.parse(saved);
+                updateUsedScenes();
+                renderTree();
+            } else {
+                init();
+            }
+            
+            // 데스크톱에서는 패널 모두 표시
+            if (!isMobile) {
+                document.getElementById('treePanel').classList.add('active');
+                document.getElementById('editorPanel').classList.add('active');
+            }
+        };
+    </script>
+</body>
+</html>
