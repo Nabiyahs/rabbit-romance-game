@@ -595,6 +595,9 @@
         let usedSceneNumbers = new Set();
         let isMobile = window.innerWidth <= 768;
         let gameTitle = "Catch! Love"; // 게임 제목
+        let currentEditingScene = null; // 현재 편집 중인 씬 번호
+        let currentEditingChoice = null; // 현재 편집 중인 선택지 {scene, index}
+        let autoSaveTimer = null; // 자동 저장 타이머
 
         // 모바일 감지 및 리사이즈 처리
         window.addEventListener('resize', () => {
@@ -716,6 +719,9 @@
 
         // 새 씬 추가 다이얼로그
         function showAddSceneDialog() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             const nextScene = getNextAvailableScene();
             if (nextScene === 0) {
                 alert('더 이상 사용 가능한 씬이 없습니다.');
@@ -754,6 +760,9 @@
 
         // 전체 씬 목록 보기
         function showAllScenes() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
 
             let html = `
@@ -862,13 +871,77 @@
             return html;
         }
 
+        // 현재 편집 중인 내용 자동 저장
+        function autoSaveCurrentEdit() {
+            // 씬 편집 중이면 저장
+            if (currentEditingScene !== null && selectedType === 'scene') {
+                const contentEl = document.getElementById('sceneContent');
+                const isEndingEl = document.getElementById('isEnding');
+
+                if (contentEl) {
+                    gameData[currentEditingScene].content = contentEl.value;
+                }
+                if (isEndingEl) {
+                    gameData[currentEditingScene].isEnding = isEndingEl.checked;
+                }
+
+                // 선택지들도 저장
+                if (!gameData[currentEditingScene].isEnding) {
+                    gameData[currentEditingScene].choices.forEach((choice, index) => {
+                        const textInput = document.getElementById(`choice-text-${index}`);
+                        const nextInput = document.getElementById(`choice-next-${index}`);
+                        const outcomeInput = document.getElementById(`choice-outcome-${index}`);
+                        if (textInput) choice.text = textInput.value;
+                        if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                        if (outcomeInput) choice.outcome = outcomeInput.value;
+                    });
+                }
+
+                saveToLocal();
+            }
+
+            // 선택지 편집 중이면 저장
+            if (currentEditingChoice !== null && selectedType === 'choice') {
+                const textEl = document.getElementById('choiceText');
+                const outcomeEl = document.getElementById('choiceOutcome');
+                const nextEl = document.getElementById('choiceNext');
+
+                if (textEl && gameData[currentEditingChoice.scene]?.choices[currentEditingChoice.index]) {
+                    const choice = gameData[currentEditingChoice.scene].choices[currentEditingChoice.index];
+                    choice.text = textEl.value;
+                    if (outcomeEl) choice.outcome = outcomeEl.value;
+                    if (nextEl && choice.outcome === 'continue') {
+                        choice.next = parseInt(nextEl.value) || 0;
+                    }
+                    saveToLocal();
+                }
+            }
+        }
+
+        // 자동 저장 타이머 시작 (5초마다)
+        function startAutoSave() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            autoSaveTimer = setInterval(() => {
+                autoSaveCurrentEdit();
+                updateStatus('자동 저장됨');
+            }, 5000);
+        }
+
         // 씬 선택
         function selectScene(sceneNum) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             selectedNode = sceneNum;
             selectedType = 'scene';
+            currentEditingScene = sceneNum;
+            currentEditingChoice = null;
+
             renderTree();
             showSceneEditor(sceneNum);
-            
+
             // 모바일에서는 자동으로 편집 탭으로 전환
             if (isMobile) {
                 switchTab('editor');
@@ -877,11 +950,17 @@
 
         // 선택지 선택
         function selectChoice(sceneNum, choiceIndex) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             selectedNode = `${sceneNum}-${choiceIndex}`;
             selectedType = 'choice';
+            currentEditingScene = null;
+            currentEditingChoice = { scene: sceneNum, index: choiceIndex };
+
             renderTree();
             showChoiceEditor(sceneNum, choiceIndex);
-            
+
             if (isMobile) {
                 switchTab('editor');
             }
@@ -1404,7 +1483,22 @@
 
             // 리사이저 초기화
             initResizer();
+
+            // 자동 저장 타이머 시작
+            startAutoSave();
         };
+
+        // 페이지를 떠날 때 저장
+        window.onbeforeunload = function() {
+            autoSaveCurrentEdit();
+        };
+
+        // 탭이 비활성화될 때도 저장 (모바일 브라우저용)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                autoSaveCurrentEdit();
+            }
+        });
     </script>
 </body>
 </html>
