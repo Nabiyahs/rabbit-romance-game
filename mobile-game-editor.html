@@ -543,7 +543,8 @@
             <div class="buttons">
                 <button class="btn-primary" onclick="saveToLocal()">💾 저장</button>
                 <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
-                <button class="btn-success" onclick="exportGame()">🎯 내보내기</button>
+                <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
+                <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
                 <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
             </div>
         </div>
@@ -593,6 +594,10 @@
         let selectedType = null;
         let usedSceneNumbers = new Set();
         let isMobile = window.innerWidth <= 768;
+        let gameTitle = "Catch! Love"; // 게임 제목
+        let currentEditingScene = null; // 현재 편집 중인 씬 번호
+        let currentEditingChoice = null; // 현재 편집 중인 선택지 {scene, index}
+        let autoSaveTimer = null; // 자동 저장 타이머
 
         // 모바일 감지 및 리사이즈 처리
         window.addEventListener('resize', () => {
@@ -714,6 +719,9 @@
 
         // 새 씬 추가 다이얼로그
         function showAddSceneDialog() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             const nextScene = getNextAvailableScene();
             if (nextScene === 0) {
                 alert('더 이상 사용 가능한 씬이 없습니다.');
@@ -752,6 +760,9 @@
 
         // 전체 씬 목록 보기
         function showAllScenes() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
 
             let html = `
@@ -860,13 +871,77 @@
             return html;
         }
 
+        // 현재 편집 중인 내용 자동 저장
+        function autoSaveCurrentEdit() {
+            // 씬 편집 중이면 저장
+            if (currentEditingScene !== null && selectedType === 'scene') {
+                const contentEl = document.getElementById('sceneContent');
+                const isEndingEl = document.getElementById('isEnding');
+
+                if (contentEl) {
+                    gameData[currentEditingScene].content = contentEl.value;
+                }
+                if (isEndingEl) {
+                    gameData[currentEditingScene].isEnding = isEndingEl.checked;
+                }
+
+                // 선택지들도 저장
+                if (!gameData[currentEditingScene].isEnding) {
+                    gameData[currentEditingScene].choices.forEach((choice, index) => {
+                        const textInput = document.getElementById(`choice-text-${index}`);
+                        const nextInput = document.getElementById(`choice-next-${index}`);
+                        const outcomeInput = document.getElementById(`choice-outcome-${index}`);
+                        if (textInput) choice.text = textInput.value;
+                        if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                        if (outcomeInput) choice.outcome = outcomeInput.value;
+                    });
+                }
+
+                saveToLocal();
+            }
+
+            // 선택지 편집 중이면 저장
+            if (currentEditingChoice !== null && selectedType === 'choice') {
+                const textEl = document.getElementById('choiceText');
+                const outcomeEl = document.getElementById('choiceOutcome');
+                const nextEl = document.getElementById('choiceNext');
+
+                if (textEl && gameData[currentEditingChoice.scene]?.choices[currentEditingChoice.index]) {
+                    const choice = gameData[currentEditingChoice.scene].choices[currentEditingChoice.index];
+                    choice.text = textEl.value;
+                    if (outcomeEl) choice.outcome = outcomeEl.value;
+                    if (nextEl && choice.outcome === 'continue') {
+                        choice.next = parseInt(nextEl.value) || 0;
+                    }
+                    saveToLocal();
+                }
+            }
+        }
+
+        // 자동 저장 타이머 시작 (5초마다)
+        function startAutoSave() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            autoSaveTimer = setInterval(() => {
+                autoSaveCurrentEdit();
+                updateStatus('자동 저장됨');
+            }, 5000);
+        }
+
         // 씬 선택
         function selectScene(sceneNum) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             selectedNode = sceneNum;
             selectedType = 'scene';
+            currentEditingScene = sceneNum;
+            currentEditingChoice = null;
+
             renderTree();
             showSceneEditor(sceneNum);
-            
+
             // 모바일에서는 자동으로 편집 탭으로 전환
             if (isMobile) {
                 switchTab('editor');
@@ -875,11 +950,17 @@
 
         // 선택지 선택
         function selectChoice(sceneNum, choiceIndex) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
             selectedNode = `${sceneNum}-${choiceIndex}`;
             selectedType = 'choice';
+            currentEditingScene = null;
+            currentEditingChoice = { scene: sceneNum, index: choiceIndex };
+
             renderTree();
             showChoiceEditor(sceneNum, choiceIndex);
-            
+
             if (isMobile) {
                 switchTab('editor');
             }
@@ -913,19 +994,25 @@
                     <div class="editor-label">선택지 (${scene.choices.length}/3)</div>`;
             
             scene.choices.forEach((choice, index) => {
+                const outcomeValue = choice.outcome || 'continue';
                 html += `
                     <div class="choice-container">
                         <div class="choice-header">
                             <span class="choice-number">선택지 ${index + 1}</span>
                             <button class="delete-btn" onclick="deleteChoice(${sceneNum}, ${index})">삭제</button>
                         </div>
-                        <input type="text" class="editor-input" id="choice-text-${index}" 
+                        <input type="text" class="editor-input" id="choice-text-${index}"
                                placeholder="선택지 텍스트를 입력하세요..." value="${choice.text}">
                         <div class="next-scene-control">
-                            <input type="number" class="next-scene-input" id="choice-next-${index}" 
-                                   min="1" max="1000" value="${choice.next || ''}" 
-                                   placeholder="다음 씬 번호">
-                            <button class="auto-btn" onclick="autoAssignNext(${sceneNum}, ${index})">자동 채번</button>
+                            <select class="editor-input" id="choice-outcome-${index}" style="width: auto; min-width: 120px;">
+                                <option value="continue" ${outcomeValue === 'continue' ? 'selected' : ''}>다음 씬으로</option>
+                                <option value="success" ${outcomeValue === 'success' ? 'selected' : ''}>성공 엔딩</option>
+                                <option value="failure" ${outcomeValue === 'failure' ? 'selected' : ''}>실패 엔딩</option>
+                            </select>
+                            <input type="number" class="next-scene-input" id="choice-next-${index}"
+                                   min="1" max="1000" value="${choice.next || ''}"
+                                   placeholder="다음 씬" ${outcomeValue !== 'continue' ? 'disabled' : ''}>
+                            <button class="auto-btn" onclick="autoAssignNext(${sceneNum}, ${index})" ${outcomeValue !== 'continue' ? 'disabled' : ''}>자동</button>
                         </div>
                     </div>`;
             });
@@ -949,35 +1036,54 @@
         function showChoiceEditor(sceneNum, choiceIndex) {
             const choice = gameData[sceneNum].choices[choiceIndex];
             const editor = document.getElementById('editor');
-            
+            const outcomeValue = choice.outcome || 'continue';
+
             let html = `
                 <div class="editor-section">
                     <h3 style="margin: 0 0 15px 0; color: #333;">씬 ${sceneNum} - 선택지 ${choiceIndex + 1}</h3>
                 </div>
-                
+
                 <div class="editor-section">
                     <div class="editor-label">선택지 텍스트</div>
-                    <input type="text" class="editor-input" id="choiceText" 
+                    <input type="text" class="editor-input" id="choiceText"
                            placeholder="선택지 텍스트를 입력하세요..." value="${choice.text || ''}">
                 </div>
-                
+
                 <div class="editor-section">
+                    <div class="editor-label">결과 유형</div>
+                    <select class="editor-input" id="choiceOutcome" onchange="toggleNextSceneInput()">
+                        <option value="continue" ${outcomeValue === 'continue' ? 'selected' : ''}>다음 씬으로 진행</option>
+                        <option value="success" ${outcomeValue === 'success' ? 'selected' : ''}>성공 엔딩</option>
+                        <option value="failure" ${outcomeValue === 'failure' ? 'selected' : ''}>실패 엔딩</option>
+                    </select>
+                </div>
+
+                <div class="editor-section" id="nextSceneSection" ${outcomeValue !== 'continue' ? 'style="display:none"' : ''}>
                     <div class="editor-label">다음 씬 번호</div>
                     <div class="next-scene-control">
-                        <input type="number" class="editor-input" id="choiceNext" 
-                               min="1" max="1000" value="${choice.next || ''}" 
+                        <input type="number" class="editor-input" id="choiceNext"
+                               min="1" max="1000" value="${choice.next || ''}"
                                placeholder="1-1000">
                         <button class="auto-btn" onclick="autoAssignNextForChoice(${sceneNum}, ${choiceIndex})">자동 채번</button>
                     </div>
                 </div>
-                
+
                 <div class="editor-controls">
                     <button class="btn-success" onclick="saveChoice(${sceneNum}, ${choiceIndex})">저장</button>
                     <button class="btn-danger" onclick="deleteChoice(${sceneNum}, ${choiceIndex})">삭제</button>
                     ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
                 </div>`;
-            
+
             editor.innerHTML = html;
+        }
+
+        // 다음 씬 입력창 토글
+        function toggleNextSceneInput() {
+            const outcome = document.getElementById('choiceOutcome').value;
+            const section = document.getElementById('nextSceneSection');
+            if (section) {
+                section.style.display = outcome === 'continue' ? 'block' : 'none';
+            }
         }
 
         // 엔딩 토글
@@ -1030,8 +1136,10 @@
                 gameData[sceneNum].choices.forEach((choice, index) => {
                     const textInput = document.getElementById(`choice-text-${index}`);
                     const nextInput = document.getElementById(`choice-next-${index}`);
+                    const outcomeInput = document.getElementById(`choice-outcome-${index}`);
                     if (textInput) choice.text = textInput.value;
                     if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                    if (outcomeInput) choice.outcome = outcomeInput.value;
                 });
             }
             
@@ -1048,15 +1156,19 @@
         // 선택지 저장
         function saveChoice(sceneNum, choiceIndex) {
             const text = document.getElementById('choiceText').value;
-            const next = parseInt(document.getElementById('choiceNext').value) || 0;
-            
-            gameData[sceneNum].choices[choiceIndex] = { text, next };
-            
+            const outcomeEl = document.getElementById('choiceOutcome');
+            const nextEl = document.getElementById('choiceNext');
+
+            const outcome = outcomeEl ? outcomeEl.value : 'continue';
+            const next = outcome === 'continue' ? (parseInt(nextEl?.value) || 0) : 0;
+
+            gameData[sceneNum].choices[choiceIndex] = { text, next, outcome };
+
             updateUsedScenes();
             renderTree();
             saveToLocal();
             updateStatus('선택지 저장됨');
-            
+
             if (isMobile) {
                 setTimeout(() => switchTab('tree'), 500);
             }
@@ -1065,7 +1177,7 @@
         // 선택지 추가
         function addChoice(sceneNum) {
             if (gameData[sceneNum].choices.length < 3) {
-                gameData[sceneNum].choices.push({ text: '', next: 0 });
+                gameData[sceneNum].choices.push({ text: '', next: 0, outcome: 'continue' });
                 showSceneEditor(sceneNum);
                 updateStatus('선택지 추가됨');
             }
@@ -1138,120 +1250,203 @@
             }
         }
 
-        // 게임 내보내기
-        function exportGame() {
-            const gameHTML = `<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .game-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        .scene-content {
-            font-size: 18px;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            white-space: pre-wrap;
-        }
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .choice-btn {
-            padding: 15px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s;
-        }
-        .choice-btn:active {
-            transform: scale(0.98);
-        }
-        .ending {
-            text-align: center;
-            font-size: 24px;
-            color: #dc3545;
-            font-weight: bold;
-            padding: 20px;
-        }
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
+        // game.html 호환 JSON 내보내기
+        function exportJSON() {
+            const story = convertToStoryFormat();
+            const errors = validateStory(story);
+
+            if (errors.length > 0) {
+                alert('유효성 검사 경고:\n' + errors.join('\n') + '\n\n내보내기를 계속합니다.');
             }
-            .game-container {
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <div class="scene-content" id="content"></div>
-        <div class="choices" id="choices"></div>
-    </div>
-    <script>
-        const gameData = ${JSON.stringify(gameData)};
-        
-        function showScene(sceneNum) {
-            const scene = gameData[sceneNum];
-            if (!scene) return;
-            
-            document.getElementById('content').textContent = scene.content || '내용 없음';
-            
-            const choicesDiv = document.getElementById('choices');
-            choicesDiv.innerHTML = '';
-            
-            if (scene.isEnding) {
-                choicesDiv.innerHTML = '<div class="ending">~ THE END ~</div>';
-            } else if (scene.choices && scene.choices.length > 0) {
-                scene.choices.forEach((choice, index) => {
-                    if (choice.text) {
-                        const btn = document.createElement('button');
-                        btn.className = 'choice-btn';
-                        btn.textContent = (index + 1) + '. ' + choice.text;
-                        btn.onclick = () => {
-                            if (choice.next && choice.next > 0) {
-                                showScene(choice.next);
-                            }
-                        };
-                        choicesDiv.appendChild(btn);
-                    }
-                });
-            }
-        }
-        
-        showScene(1);
-    <\/script>
-</body>
-</html>`;
-            
-            const blob = new Blob([gameHTML], { type: 'text/html' });
+
+            const json = JSON.stringify(story, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'game.html';
+            a.download = `${gameTitle.replace(/\s+/g, '-')}-${Date.now()}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            updateStatus('게임 파일 생성됨');
+            updateStatus('JSON 파일 생성됨 (game.html 호환)');
+        }
+
+        // 에디터 데이터를 game.html STORY 형식으로 변환
+        function convertToStoryFormat() {
+            const scenes = [];
+            const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
+
+            sceneList.forEach(num => {
+                const scene = gameData[num];
+                if (!scene || (!scene.content && scene.choices.length === 0)) return;
+
+                const sceneId = `S${String(num).padStart(3, '0')}`;
+                const sceneObj = {
+                    id: sceneId,
+                    name: `씬 ${num}`,
+                    content: scene.content || '',
+                    isEnding: scene.isEnding || false,
+                    choices: []
+                };
+
+                if (scene.isEnding) {
+                    sceneObj.endingInfo = {
+                        code: `END-${num}`,
+                        title: `엔딩 ${num}`,
+                        summary: scene.content || ''
+                    };
+                    // 엔딩 씬도 빈 선택지 2개 필요 (game.html 형식)
+                    sceneObj.choices = [
+                        { id: `C${String(num).padStart(3, '0')}A`, label: '', outcome: 'continue', nextSceneId: '' },
+                        { id: `C${String(num).padStart(3, '0')}B`, label: '', outcome: 'continue', nextSceneId: '' }
+                    ];
+                } else {
+                    // 선택지 변환 (최대 2개만)
+                    for (let i = 0; i < 2; i++) {
+                        const choice = scene.choices[i];
+                        const choiceId = `C${String(num).padStart(3, '0')}${i === 0 ? 'A' : 'B'}`;
+
+                        if (choice && choice.text) {
+                            const outcome = choice.outcome || 'continue';
+                            let nextSceneId = '';
+
+                            if (outcome === 'continue' && choice.next > 0) {
+                                nextSceneId = `S${String(choice.next).padStart(3, '0')}`;
+                            }
+
+                            sceneObj.choices.push({
+                                id: choiceId,
+                                label: choice.text,
+                                outcome: outcome,
+                                nextSceneId: nextSceneId
+                            });
+                        } else {
+                            // 빈 선택지
+                            sceneObj.choices.push({
+                                id: choiceId,
+                                label: '',
+                                outcome: 'continue',
+                                nextSceneId: ''
+                            });
+                        }
+                    }
+                }
+
+                scenes.push(sceneObj);
+            });
+
+            return {
+                title: gameTitle,
+                startSceneId: 'S001',
+                scenes: scenes
+            };
+        }
+
+        // STORY 형식 유효성 검사
+        function validateStory(story) {
+            const errors = [];
+
+            if (!story.startSceneId) {
+                errors.push('시작 씬 ID가 없습니다.');
+            } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
+                errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
+            }
+
+            story.scenes.forEach(scene => {
+                if (!scene.choices || scene.choices.length !== 2) {
+                    errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+                }
+
+                if (scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.outcome === 'continue' && choice.label && !choice.nextSceneId) {
+                            errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
+                        }
+
+                        if (choice.outcome === 'continue' && choice.nextSceneId) {
+                            if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
+                                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
+                            }
+                        }
+                    });
+                }
+            });
+
+            return errors;
+        }
+
+        // JSON 가져오기
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+                        convertFromStoryFormat(story);
+                        updateStatus('JSON 파일 가져오기 완료');
+                    } catch (err) {
+                        alert('JSON 파싱 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // game.html STORY 형식을 에디터 형식으로 변환
+        function convertFromStoryFormat(story) {
+            if (story.title) {
+                gameTitle = story.title;
+            }
+
+            // 기존 데이터 초기화
+            init();
+
+            if (story.scenes && Array.isArray(story.scenes)) {
+                story.scenes.forEach(scene => {
+                    // 씬 ID에서 번호 추출 (S001 -> 1)
+                    const match = scene.id.match(/S(\d+)/);
+                    if (!match) return;
+
+                    const num = parseInt(match[1]);
+                    if (num < 1 || num > 1000) return;
+
+                    gameData[num] = {
+                        content: scene.content || '',
+                        isEnding: scene.isEnding || false,
+                        choices: []
+                    };
+
+                    if (!scene.isEnding && scene.choices) {
+                        scene.choices.forEach(choice => {
+                            if (choice.label) {
+                                let nextNum = 0;
+                                if (choice.nextSceneId) {
+                                    const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                    if (nextMatch) {
+                                        nextNum = parseInt(nextMatch[1]);
+                                    }
+                                }
+
+                                gameData[num].choices.push({
+                                    text: choice.label,
+                                    next: nextNum,
+                                    outcome: choice.outcome || 'continue'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
         }
 
         // 상태 업데이트
@@ -1288,7 +1483,22 @@
 
             // 리사이저 초기화
             initResizer();
+
+            // 자동 저장 타이머 시작
+            startAutoSave();
         };
+
+        // 페이지를 떠날 때 저장
+        window.onbeforeunload = function() {
+            autoSaveCurrentEdit();
+        };
+
+        // 탭이 비활성화될 때도 저장 (모바일 브라우저용)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                autoSaveCurrentEdit();
+            }
+        });
     </script>
 </body>
 </html>
