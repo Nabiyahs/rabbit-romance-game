@@ -595,12 +595,14 @@
             <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.2);">
                 <h2 style="color: white; margin: 0; font-size: 18px;">🎮 테스트 플레이</h2>
                 <div style="display: flex; gap: 10px;">
+                    <button id="testBackBtn" onclick="goBackTestPlay()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; display: none;">⬅️ 이전</button>
                     <button onclick="restartTestPlay()" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 처음부터</button>
                     <button onclick="closeTestPlay()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">✕ 닫기</button>
                 </div>
             </div>
             <div style="padding: 20px;">
                 <div id="testPlayContent" style="background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; min-height: 200px;">
+                    <div id="testSceneNumber" style="font-size: 12px; color: #999; margin-bottom: 10px;"></div>
                     <div id="testSceneContent" style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-wrap;"></div>
                 </div>
                 <div id="testChoices" style="display: flex; flex-direction: column; gap: 12px;"></div>
@@ -625,7 +627,8 @@
 
         // 테스트 플레이 관련 변수
         let testCurrentScene = 1;
-        let testPathHistory = [];
+        let testPathHistory = []; // 표시용 경로
+        let testSceneStack = []; // 뒤로가기용 씬 스택
 
         // 테스트 플레이 시작
         function startTestPlay() {
@@ -640,9 +643,10 @@
 
             testCurrentScene = 1;
             testPathHistory = [];
+            testSceneStack = [];
             document.getElementById('testPlayModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
-            showTestScene(1);
+            showTestScene(1, false);
         }
 
         // 테스트 플레이 닫기
@@ -655,17 +659,52 @@
         function restartTestPlay() {
             testCurrentScene = 1;
             testPathHistory = [];
-            showTestScene(1);
+            testSceneStack = [];
+            showTestScene(1, false);
+        }
+
+        // 이전 씬으로 돌아가기
+        function goBackTestPlay() {
+            if (testSceneStack.length > 0) {
+                // 현재 씬에서 추가된 경로 제거 (씬 + 선택)
+                if (testPathHistory.length > 0) testPathHistory.pop(); // 선택 제거
+                if (testPathHistory.length > 0) testPathHistory.pop(); // 씬 제거
+
+                const prevScene = testSceneStack.pop();
+                showTestScene(prevScene, false);
+            }
+        }
+
+        // 뒤로가기 버튼 표시/숨김
+        function updateBackButton() {
+            const backBtn = document.getElementById('testBackBtn');
+            if (testSceneStack.length > 0) {
+                backBtn.style.display = 'inline-block';
+            } else {
+                backBtn.style.display = 'none';
+            }
         }
 
         // 테스트 씬 표시
-        function showTestScene(sceneNum) {
+        function showTestScene(sceneNum, addToStack = true) {
             const scene = gameData[sceneNum];
+
+            // 스택에 현재 씬 저장 (뒤로가기용)
+            if (addToStack && testCurrentScene !== sceneNum) {
+                testSceneStack.push(testCurrentScene);
+            }
+
             testCurrentScene = sceneNum;
 
             // 경로 기록
             testPathHistory.push(`씬 ${sceneNum}`);
             document.getElementById('testPathHistory').textContent = testPathHistory.join(' → ');
+
+            // 씬 번호 표시
+            document.getElementById('testSceneNumber').textContent = `📍 씬 ${sceneNum}`;
+
+            // 뒤로가기 버튼 업데이트
+            updateBackButton();
 
             if (!scene || !scene.content) {
                 document.getElementById('testSceneContent').innerHTML = `
