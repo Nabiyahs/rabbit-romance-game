@@ -545,6 +545,7 @@
                 <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
                 <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
                 <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
+                <button style="background: #9b59b6; color: white;" onclick="startTestPlay()">▶️ 테스트</button>
                 <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
             </div>
         </div>
@@ -588,6 +589,29 @@
         </div>
     </div>
 
+    <!-- 테스트 플레이 모달 -->
+    <div id="testPlayModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto;">
+        <div style="max-width: 800px; margin: 20px auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; min-height: calc(100vh - 40px);">
+            <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.2);">
+                <h2 style="color: white; margin: 0; font-size: 18px;">🎮 테스트 플레이</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="restartTestPlay()" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 처음부터</button>
+                    <button onclick="closeTestPlay()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">✕ 닫기</button>
+                </div>
+            </div>
+            <div style="padding: 20px;">
+                <div id="testPlayContent" style="background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; min-height: 200px;">
+                    <div id="testSceneContent" style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-wrap;"></div>
+                </div>
+                <div id="testChoices" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                <div id="testHistory" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <div style="color: rgba(255,255,255,0.7); font-size: 12px; margin-bottom: 8px;">📍 경로:</div>
+                    <div id="testPathHistory" style="color: white; font-size: 13px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let gameData = {};
         let selectedNode = null;
@@ -598,6 +622,175 @@
         let currentEditingScene = null; // 현재 편집 중인 씬 번호
         let currentEditingChoice = null; // 현재 편집 중인 선택지 {scene, index}
         let autoSaveTimer = null; // 자동 저장 타이머
+
+        // 테스트 플레이 관련 변수
+        let testCurrentScene = 1;
+        let testPathHistory = [];
+
+        // 테스트 플레이 시작
+        function startTestPlay() {
+            // 현재 편집 내용 저장
+            autoSaveCurrentEdit();
+
+            // 씬 1이 있는지 확인
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            testCurrentScene = 1;
+            testPathHistory = [];
+            document.getElementById('testPlayModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            showTestScene(1);
+        }
+
+        // 테스트 플레이 닫기
+        function closeTestPlay() {
+            document.getElementById('testPlayModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // 테스트 플레이 재시작
+        function restartTestPlay() {
+            testCurrentScene = 1;
+            testPathHistory = [];
+            showTestScene(1);
+        }
+
+        // 테스트 씬 표시
+        function showTestScene(sceneNum) {
+            const scene = gameData[sceneNum];
+            testCurrentScene = sceneNum;
+
+            // 경로 기록
+            testPathHistory.push(`씬 ${sceneNum}`);
+            document.getElementById('testPathHistory').textContent = testPathHistory.join(' → ');
+
+            if (!scene || !scene.content) {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="color: #dc3545; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <div style="font-size: 18px; font-weight: bold;">씬 ${sceneNum}이 비어있습니다</div>
+                        <div style="color: #666; margin-top: 10px;">에디터에서 이 씬의 내용을 작성해주세요.</div>
+                    </div>`;
+                document.getElementById('testChoices').innerHTML = '';
+                return;
+            }
+
+            // 씬 내용 표시
+            document.getElementById('testSceneContent').textContent = scene.content;
+
+            // 선택지 또는 엔딩 표시
+            const choicesDiv = document.getElementById('testChoices');
+
+            if (scene.isEnding) {
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+                        <div style="font-size: 24px; color: white; font-weight: bold;">~ THE END ~</div>
+                        <div style="color: rgba(255,255,255,0.9); margin-top: 10px;">엔딩에 도달했습니다!</div>
+                    </div>`;
+            } else if (scene.choices && scene.choices.length > 0) {
+                let choicesHTML = '';
+                scene.choices.forEach((choice, index) => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+                        let btnColor = '#007bff';
+                        let outcomeLabel = '';
+
+                        if (outcome === 'success') {
+                            btnColor = '#28a745';
+                            outcomeLabel = ' 🎉';
+                        } else if (outcome === 'failure') {
+                            btnColor = '#dc3545';
+                            outcomeLabel = ' 💔';
+                        }
+
+                        choicesHTML += `
+                            <button onclick="selectTestChoice(${sceneNum}, ${index})" style="
+                                padding: 15px 20px;
+                                background: ${btnColor};
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                font-size: 15px;
+                                cursor: pointer;
+                                text-align: left;
+                                transition: all 0.3s;
+                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                ${index + 1}. ${choice.text}${outcomeLabel}
+                            </button>`;
+                    }
+                });
+
+                if (choicesHTML === '') {
+                    choicesHTML = `<div style="color: white; text-align: center; padding: 20px;">선택지가 없습니다. 에디터에서 선택지를 추가해주세요.</div>`;
+                }
+
+                choicesDiv.innerHTML = choicesHTML;
+            } else {
+                choicesDiv.innerHTML = `<div style="color: white; text-align: center; padding: 20px;">선택지가 없습니다. 에디터에서 선택지를 추가해주세요.</div>`;
+            }
+        }
+
+        // 테스트 선택지 선택
+        function selectTestChoice(sceneNum, choiceIndex) {
+            const choice = gameData[sceneNum].choices[choiceIndex];
+            if (!choice) return;
+
+            const outcome = choice.outcome || 'continue';
+
+            // 경로에 선택 기록
+            testPathHistory.push(`"${choice.text.substring(0, 15)}${choice.text.length > 15 ? '...' : ''}"`);
+
+            if (outcome === 'success') {
+                showTestEnding('success');
+            } else if (outcome === 'failure') {
+                showTestEnding('failure');
+            } else if (choice.next && choice.next > 0) {
+                showTestScene(choice.next);
+            } else {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="color: #ffc107; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <div style="font-size: 18px; font-weight: bold;">다음 씬이 지정되지 않았습니다</div>
+                        <div style="color: #666; margin-top: 10px;">에디터에서 이 선택지의 다음 씬 번호를 설정해주세요.</div>
+                    </div>`;
+                document.getElementById('testChoices').innerHTML = '';
+            }
+        }
+
+        // 테스트 엔딩 표시
+        function showTestEnding(type) {
+            document.getElementById('testPathHistory').textContent = testPathHistory.join(' → ');
+
+            const choicesDiv = document.getElementById('testChoices');
+
+            if (type === 'success') {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">💕</div>
+                        <div style="font-size: 28px; color: #e91e63; font-weight: bold;">SUCCESS!</div>
+                        <div style="color: #666; margin-top: 15px; font-size: 16px;">축하합니다! 성공 엔딩에 도달했습니다.</div>
+                    </div>`;
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px;">
+                        <div style="font-size: 20px; color: white; font-weight: bold;">🎉 THE END 🎉</div>
+                    </div>`;
+            } else {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">💔</div>
+                        <div style="font-size: 28px; color: #607d8b; font-weight: bold;">MAYBE NEXT TIME...</div>
+                        <div style="color: #666; margin-top: 15px; font-size: 16px;">다른 선택을 해보세요.</div>
+                    </div>`;
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); border-radius: 10px;">
+                        <div style="font-size: 20px; color: #455a64; font-weight: bold;">~ THE END ~</div>
+                    </div>`;
+            }
+        }
 
         // 모바일 감지 및 리사이즈 처리
         window.addEventListener('resize', () => {
