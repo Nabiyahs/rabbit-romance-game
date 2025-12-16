@@ -1296,9 +1296,22 @@
             renderTree();
         }
 
-        // 자동 채번
+        // 자동 채번 (현재 화면의 입력값도 고려)
         function autoAssignNext(sceneNum, choiceIndex) {
-            const nextScene = getNextAvailableScene();
+            // 현재 화면에 이미 입력된 다음 씬 번호들 수집
+            const usedInCurrentForm = new Set();
+            const scene = gameData[sceneNum];
+            if (scene && scene.choices) {
+                scene.choices.forEach((choice, idx) => {
+                    // 현재 편집 중인 선택지가 아닌 경우, 입력 필드에서 값 확인
+                    const inputEl = document.getElementById(`choice-next-${idx}`);
+                    if (inputEl && inputEl.value) {
+                        usedInCurrentForm.add(parseInt(inputEl.value));
+                    }
+                });
+            }
+
+            const nextScene = getNextAvailableSceneExcluding(usedInCurrentForm);
             if (nextScene > 0) {
                 document.getElementById(`choice-next-${choiceIndex}`).value = nextScene;
                 updateStatus(`씬 ${nextScene} 자동 할당`);
@@ -1308,13 +1321,34 @@
         }
 
         function autoAssignNextForChoice(sceneNum, choiceIndex) {
-            const nextScene = getNextAvailableScene();
+            // 같은 씬의 다른 선택지에서 사용 중인 번호 수집
+            const usedInCurrentScene = new Set();
+            const scene = gameData[sceneNum];
+            if (scene && scene.choices) {
+                scene.choices.forEach((choice, idx) => {
+                    if (idx !== choiceIndex && choice.next > 0) {
+                        usedInCurrentScene.add(choice.next);
+                    }
+                });
+            }
+
+            const nextScene = getNextAvailableSceneExcluding(usedInCurrentScene);
             if (nextScene > 0) {
                 document.getElementById('choiceNext').value = nextScene;
                 updateStatus(`씬 ${nextScene} 자동 할당`);
             } else {
                 alert('사용 가능한 씬이 없습니다');
             }
+        }
+
+        // 특정 번호들을 제외하고 다음 사용 가능한 씬 찾기
+        function getNextAvailableSceneExcluding(excludeSet) {
+            for (let i = 2; i <= 1000; i++) {
+                if (!usedSceneNumbers.has(i) && !excludeSet.has(i)) {
+                    return i;
+                }
+            }
+            return 0;
         }
 
         // 씬 저장
