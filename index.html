@@ -1504,19 +1504,49 @@
         // 트리 렌더링
         function renderTree() {
             const treeDiv = document.getElementById('tree');
-            const html = buildTreeHTML(1, new Set());
+            const connectedScenes = new Set();
+
+            // 메인 트리 (씬 1부터 연결된 씬들)
+            let html = buildTreeHTML(1, new Set(), connectedScenes);
+
+            // 연결되지 않은 씬들 (고아 씬) 찾기
+            const orphanScenes = [];
+            for (let i = 2; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim() && !connectedScenes.has(i)) {
+                    orphanScenes.push(i);
+                }
+            }
+
+            // 고아 씬들 표시
+            if (orphanScenes.length > 0) {
+                html += `<div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ffc107;">
+                    <div style="color: #856404; font-weight: bold; margin-bottom: 10px; font-size: 13px;">
+                        ⚠️ 연결되지 않은 씬 (${orphanScenes.length}개)
+                    </div>`;
+                orphanScenes.forEach(num => {
+                    html += buildTreeHTML(num, new Set(), connectedScenes);
+                });
+                html += '</div>';
+            }
+
             treeDiv.innerHTML = html;
         }
 
         // 트리 HTML 생성
-        function buildTreeHTML(sceneNum, visited) {
+        function buildTreeHTML(sceneNum, visited, connectedScenes = null) {
             if (visited.has(sceneNum)) {
                 return `<li><span class="scene-node empty">씬 ${sceneNum} (순환)</span></li>`;
             }
 
             visited.add(sceneNum);
+            if (connectedScenes) connectedScenes.add(sceneNum);
             const scene = gameData[sceneNum];
-            
+
+            // 씬이 없으면 빈 노드 표시
+            if (!scene) {
+                return `<ul><li><span class="scene-node empty" onclick="selectScene(${sceneNum})">📄 씬 ${sceneNum}: (없음)</span></li></ul>`;
+            }
+
             const hasContent = scene.content && scene.content.trim();
             const nodeClass = `scene-node ${hasContent ? '' : 'empty'} ${scene.isEnding ? 'ending' : ''} ${selectedNode === sceneNum && selectedType === 'scene' ? 'selected' : ''}`;
             
@@ -1545,7 +1575,7 @@
                     html += '</span>';
                     
                     if (choice.next && choice.next > 0) {
-                        html += buildTreeHTML(choice.next, new Set([...visited]));
+                        html += buildTreeHTML(choice.next, new Set([...visited]), connectedScenes);
                     }
                     
                     html += '</li>';
