@@ -925,17 +925,27 @@
 
                                 if (!scene.isEnding && scene.choices) {
                                     scene.choices.forEach(choice => {
-                                        if (choice.label) {
+                                        // label 또는 text 둘 다 지원
+                                        const choiceText = choice.label || choice.text || '';
+                                        if (choiceText) {
                                             let nextNum = 0;
-                                            if (choice.nextSceneId) {
-                                                const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                            // nextSceneId 또는 next 둘 다 지원
+                                            const nextSceneId = choice.nextSceneId || '';
+                                            const directNext = choice.next || 0;
+
+                                            if (nextSceneId) {
+                                                const nextMatch = nextSceneId.match(/S(\d+)/);
                                                 if (nextMatch) {
                                                     const originalNext = parseInt(nextMatch[1]);
                                                     nextNum = sceneMapping[originalNext] || 0;
                                                 }
+                                            } else if (directNext > 0) {
+                                                // 직접 숫자로 된 next도 매핑
+                                                nextNum = sceneMapping[directNext] || 0;
                                             }
+
                                             gameData[newNum].choices.push({
-                                                text: choice.label,
+                                                text: choiceText,
                                                 next: nextNum,
                                                 outcome: choice.outcome || 'continue'
                                             });
