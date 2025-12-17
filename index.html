@@ -510,6 +510,7 @@
                 <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
                 <button style="background: #9b59b6; color: white;" onclick="startTestPlay()">▶️ 처음부터</button>
                 <button id="testFromCurrentBtn" style="background: #8e44ad; color: white; display: none;" onclick="startTestPlayFromCurrent()">▶️ 현재 씬</button>
+                <button style="background: #e67e22; color: white;" onclick="openPreviewPopup()">🔲 팝업 미리보기</button>
                 <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
             </div>
         </div>
@@ -1707,6 +1708,7 @@
                                    min="1" max="1000" value="${choice.next || ''}"
                                    placeholder="다음 씬" ${outcomeValue !== 'continue' ? 'disabled' : ''}>
                             <button class="auto-btn" onclick="autoAssignNext(${sceneNum}, ${index})" ${outcomeValue !== 'continue' ? 'disabled' : ''}>자동</button>
+                            ${choice.next && choice.next > 0 && outcomeValue === 'continue' ? `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${choice.next})">→ 씬 ${choice.next}</button>` : ''}
                         </div>
                     </div>`;
             });
@@ -1715,15 +1717,53 @@
                 html += `<button class="add-choice-btn" onclick="addChoice(${sceneNum})">+ 선택지 추가</button>`;
             }
             
-            html += `</div>
-                
+            html += `</div>`;
+
+            // 바로가기 섹션 추가
+            const parentScenes = findParentScenes(sceneNum);
+            const childScenes = scene.choices.filter(c => c.next && c.next > 0 && (c.outcome || 'continue') === 'continue').map(c => c.next);
+
+            if (parentScenes.length > 0 || childScenes.length > 0) {
+                html += `<div class="editor-section">
+                    <div class="editor-label">🔗 바로가기</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">`;
+
+                parentScenes.forEach(p => {
+                    html += `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${p.scene})">← 씬 ${p.scene} (선택지 ${p.choiceIdx + 1})</button>`;
+                });
+
+                childScenes.forEach(nextScene => {
+                    html += `<button class="auto-btn" style="background: #17a2b8;" onclick="selectScene(${nextScene})">→ 씬 ${nextScene}</button>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            html += `
                 <div class="editor-controls">
                     <button class="btn-success" onclick="saveScene(${sceneNum})">저장</button>
                     ${sceneNum !== 1 ? `<button class="btn-danger" onclick="deleteScene(${sceneNum})">씬 삭제</button>` : ''}
                     ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
                 </div>`;
-            
+
             editor.innerHTML = html;
+        }
+
+        // 특정 씬을 연결하는 부모 씬들 찾기
+        function findParentScenes(targetScene) {
+            const parents = [];
+            Object.keys(gameData).forEach(key => {
+                const sceneNum = parseInt(key);
+                const scene = gameData[sceneNum];
+                if (scene && scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.next === targetScene && (choice.outcome || 'continue') === 'continue') {
+                            parents.push({ scene: sceneNum, choiceIdx: idx });
+                        }
+                    });
+                }
+            });
+            return parents;
         }
 
         // 선택지 에디터
@@ -1759,6 +1799,14 @@
                                min="1" max="1000" value="${choice.next || ''}"
                                placeholder="1-1000">
                         <button class="auto-btn" onclick="autoAssignNextForChoice(${sceneNum}, ${choiceIndex})">자동 채번</button>
+                        ${choice.next && choice.next > 0 ? `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${choice.next})">→ 씬 ${choice.next} 편집</button>` : ''}
+                    </div>
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-label">바로가기</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="auto-btn" style="background: #007bff;" onclick="selectScene(${sceneNum})">← 씬 ${sceneNum}으로</button>
                     </div>
                 </div>
 
@@ -2377,6 +2425,306 @@
                 autoSaveCurrentEdit();
             }
         });
+
+        // ========== 팝업 미리보기 기능 ==========
+        let previewPopup = null;
+
+        function openPreviewPopup() {
+            autoSaveCurrentEdit();
+
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            // 기존 팝업이 열려있으면 포커스
+            if (previewPopup && !previewPopup.closed) {
+                previewPopup.focus();
+                previewPopup.postMessage({ type: 'refresh', scene: 1 }, '*');
+                return;
+            }
+
+            // 팝업 HTML 생성
+            const popupContent = generatePreviewPopupHTML();
+
+            previewPopup = window.open('', 'PreviewPopup', 'width=500,height=700,scrollbars=yes,resizable=yes');
+            previewPopup.document.write(popupContent);
+            previewPopup.document.close();
+        }
+
+        function generatePreviewPopupHTML() {
+            return `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🎮 미리보기</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        .header h1 { color: white; font-size: 18px; }
+        .header-btns { display: flex; gap: 8px; }
+        .header-btns button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .content-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 150px;
+        }
+        .scene-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .scene-num { font-size: 12px; color: #999; }
+        .edit-btn {
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .edit-btn:hover { background: #0056b3; }
+        .scene-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+        .choices { display: flex; flex-direction: column; gap: 10px; }
+        .choice-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .choice-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .choice-btn.success { background: #28a745; }
+        .choice-btn.failure { background: #dc3545; }
+        .choice-text { flex: 1; }
+        .choice-edit {
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .choice-edit:hover { background: rgba(255,255,255,0.3); }
+        .ending {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+        }
+        .ending-icon { font-size: 48px; margin-bottom: 10px; }
+        .ending-text { font-size: 20px; color: white; font-weight: bold; }
+        .path-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        .path-label { color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 5px; }
+        .path-content { color: white; font-size: 12px; word-break: break-all; }
+        .warning {
+            text-align: center;
+            color: #dc3545;
+            padding: 20px;
+        }
+        .warning-icon { font-size: 40px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 미리보기</h1>
+        <div class="header-btns">
+            <button onclick="goBack()" id="backBtn" style="background: #6c757d; color: white; display: none;">⬅️ 이전</button>
+            <button onclick="restart()" style="background: #28a745; color: white;">🔄 처음부터</button>
+        </div>
+    </div>
+    <div id="content"></div>
+    <div class="path-box">
+        <div class="path-label">📍 경로:</div>
+        <div class="path-content" id="pathDisplay"></div>
+    </div>
+
+    <script>
+        let currentScene = 1;
+        let pathHistory = [];
+        let sceneStack = [];
+
+        function getGameData() {
+            return window.opener ? window.opener.gameData : {};
+        }
+
+        function showScene(sceneNum, addToStack = true) {
+            const gameData = getGameData();
+            const scene = gameData[sceneNum];
+
+            if (addToStack && currentScene !== sceneNum) {
+                sceneStack.push(currentScene);
+            }
+            currentScene = sceneNum;
+            pathHistory.push('씬 ' + sceneNum);
+
+            document.getElementById('pathDisplay').textContent = pathHistory.join(' → ');
+            document.getElementById('backBtn').style.display = sceneStack.length > 0 ? 'inline-block' : 'none';
+
+            const content = document.getElementById('content');
+
+            if (!scene || !scene.content) {
+                content.innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>씬 ' + sceneNum + '이 비어있습니다</div></div></div>';
+                return;
+            }
+
+            let html = '<div class="content-box">';
+            html += '<div class="scene-info"><span class="scene-num">📍 씬 ' + sceneNum + '</span>';
+            html += '<button class="edit-btn" onclick="editScene(' + sceneNum + ')">✏️ 편집</button></div>';
+            html += '<div class="scene-content">' + escapeHtml(scene.content) + '</div></div>';
+
+            if (scene.isEnding) {
+                html += '<div class="ending"><div class="ending-icon">🎉</div><div class="ending-text">~ THE END ~</div></div>';
+            } else if (scene.choices && scene.choices.length > 0) {
+                html += '<div class="choices">';
+                scene.choices.forEach((choice, idx) => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+                        let btnClass = '';
+                        let label = '';
+                        if (outcome === 'success') { btnClass = 'success'; label = ' 🎉'; }
+                        else if (outcome === 'failure') { btnClass = 'failure'; label = ' 💔'; }
+
+                        html += '<button class="choice-btn ' + btnClass + '" onclick="selectChoice(' + sceneNum + ',' + idx + ')">';
+                        html += '<span class="choice-text">' + (idx + 1) + '. ' + escapeHtml(choice.text) + label + '</span>';
+                        html += '<span class="choice-edit" onclick="event.stopPropagation(); editChoice(' + sceneNum + ',' + idx + ')">편집</span>';
+                        html += '</button>';
+                    }
+                });
+                html += '</div>';
+            } else {
+                html += '<div class="content-box"><div class="warning">선택지가 없습니다</div></div>';
+            }
+
+            content.innerHTML = html;
+        }
+
+        function selectChoice(sceneNum, choiceIdx) {
+            const gameData = getGameData();
+            const choice = gameData[sceneNum].choices[choiceIdx];
+            if (!choice) return;
+
+            pathHistory.push('"' + choice.text.substring(0, 15) + (choice.text.length > 15 ? '...' : '') + '"');
+            const outcome = choice.outcome || 'continue';
+
+            if (outcome === 'success') {
+                showEnding('success');
+            } else if (outcome === 'failure') {
+                showEnding('failure');
+            } else if (choice.next && choice.next > 0) {
+                showScene(choice.next);
+            } else {
+                document.getElementById('content').innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>다음 씬이 지정되지 않았습니다</div></div></div>';
+            }
+        }
+
+        function showEnding(type) {
+            document.getElementById('pathDisplay').textContent = pathHistory.join(' → ');
+            const icon = type === 'success' ? '💕' : '💔';
+            const text = type === 'success' ? 'SUCCESS!' : 'MAYBE NEXT TIME...';
+            const gradient = type === 'success' ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' : 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)';
+            document.getElementById('content').innerHTML = '<div class="ending" style="background: ' + gradient + '"><div class="ending-icon">' + icon + '</div><div class="ending-text">' + text + '</div></div>';
+        }
+
+        function editScene(sceneNum) {
+            if (window.opener && !window.opener.closed) {
+                window.opener.selectScene(sceneNum);
+                window.opener.focus();
+            }
+        }
+
+        function editChoice(sceneNum, choiceIdx) {
+            if (window.opener && !window.opener.closed) {
+                window.opener.selectChoice(sceneNum, choiceIdx);
+                window.opener.focus();
+            }
+        }
+
+        function goBack() {
+            if (sceneStack.length > 0) {
+                if (pathHistory.length > 0) pathHistory.pop();
+                if (pathHistory.length > 0) pathHistory.pop();
+                const prevScene = sceneStack.pop();
+                showScene(prevScene, false);
+            }
+        }
+
+        function restart() {
+            currentScene = 1;
+            pathHistory = [];
+            sceneStack = [];
+            showScene(1, false);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 부모 창에서 메시지 수신
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'refresh') {
+                showScene(e.data.scene || currentScene, false);
+            }
+        });
+
+        // 초기화
+        showScene(1, false);
+    </script>
+</body>
+</html>`;
+        }
+
+        // 팝업 새로고침 함수 (편집 후 호출)
+        function refreshPreviewPopup() {
+            if (previewPopup && !previewPopup.closed) {
+                previewPopup.postMessage({ type: 'refresh' }, '*');
+            }
+        }
     </script>
 </body>
 </html>
