@@ -551,6 +551,14 @@
             </div>
         </div>
 
+        <!-- 스토리 버전 선택 바 -->
+        <div class="version-bar" style="padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-weight: bold; color: #555;">📚 스토리:</span>
+            <div id="versionTabs" style="display: flex; gap: 5px; flex-wrap: wrap;"></div>
+            <button onclick="addNewVersion()" style="padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;" id="addVersionBtn">➕ 새 버전</button>
+            <button onclick="importAsNewVersion()" style="padding: 6px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">📥 파일로 추가</button>
+        </div>
+
         <div class="tab-nav">
             <button class="tab-btn active" onclick="switchTab('tree')">🌳 트리</button>
             <button class="tab-btn" onclick="switchTab('editor')">✏️ 편집</button>
@@ -617,6 +625,12 @@
     </div>
 
     <script>
+        // 스토리 버전 관리
+        const MAX_VERSIONS = 5;
+        let storyVersions = []; // [{name: "버전1", data: {...}, title: "Catch! Love"}, ...]
+        let currentVersionIndex = 0;
+
+        // 현재 버전의 데이터 (기존 코드와의 호환성을 위해 getter/setter 사용)
         let gameData = {};
         let selectedNode = null;
         let selectedType = null;
@@ -626,6 +640,305 @@
         let currentEditingScene = null; // 현재 편집 중인 씬 번호
         let currentEditingChoice = null; // 현재 편집 중인 선택지 {scene, index}
         let autoSaveTimer = null; // 자동 저장 타이머
+
+        // 버전 탭 렌더링
+        function renderVersionTabs() {
+            const container = document.getElementById('versionTabs');
+            let html = '';
+
+            storyVersions.forEach((version, index) => {
+                const isActive = index === currentVersionIndex;
+                const sceneCount = Object.keys(version.data).filter(k => version.data[k]?.content).length;
+                html += `
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <button onclick="switchVersion(${index})" style="
+                            padding: 6px 12px;
+                            background: ${isActive ? '#007bff' : '#e9ecef'};
+                            color: ${isActive ? 'white' : '#333'};
+                            border: ${isActive ? '2px solid #0056b3' : '1px solid #ccc'};
+                            border-radius: 5px 0 0 5px;
+                            cursor: pointer;
+                            font-size: 12px;
+                            font-weight: ${isActive ? 'bold' : 'normal'};
+                        ">${version.name} (${sceneCount}씬)</button>
+                        ${storyVersions.length > 1 ? `
+                            <button onclick="deleteVersion(${index})" style="
+                                padding: 6px 8px;
+                                background: ${isActive ? '#dc3545' : '#f8d7da'};
+                                color: ${isActive ? 'white' : '#721c24'};
+                                border: 1px solid ${isActive ? '#c82333' : '#f5c6cb'};
+                                border-radius: 0 5px 5px 0;
+                                cursor: pointer;
+                                font-size: 10px;
+                            ">✕</button>
+                        ` : `
+                            <span style="
+                                padding: 6px 8px;
+                                background: #e9ecef;
+                                color: #aaa;
+                                border: 1px solid #ccc;
+                                border-radius: 0 5px 5px 0;
+                                font-size: 10px;
+                            ">✕</span>
+                        `}
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+
+            // 버전 추가 버튼 활성화/비활성화
+            const addBtn = document.getElementById('addVersionBtn');
+            if (storyVersions.length >= MAX_VERSIONS) {
+                addBtn.disabled = true;
+                addBtn.style.opacity = '0.5';
+                addBtn.title = '최대 5개까지만 생성 가능합니다';
+            } else {
+                addBtn.disabled = false;
+                addBtn.style.opacity = '1';
+                addBtn.title = '';
+            }
+        }
+
+        // 버전 전환
+        function switchVersion(index) {
+            if (index < 0 || index >= storyVersions.length) return;
+
+            // 현재 버전 저장
+            autoSaveCurrentEdit();
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            // 새 버전으로 전환
+            currentVersionIndex = index;
+            gameData = storyVersions[index].data;
+            gameTitle = storyVersions[index].title || "Catch! Love";
+
+            // UI 업데이트
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+
+            // 에디터 초기화
+            document.getElementById('editor').innerHTML = '<div class="empty-state">씬을 선택하세요</div>';
+            selectedNode = null;
+            selectedType = null;
+            currentEditingScene = null;
+            currentEditingChoice = null;
+            updateTestFromCurrentButton();
+
+            updateStatus(`"${storyVersions[index].name}" 버전으로 전환됨`);
+        }
+
+        // 새 버전 추가
+        function addNewVersion() {
+            if (storyVersions.length >= MAX_VERSIONS) {
+                alert(`최대 ${MAX_VERSIONS}개까지만 생성 가능합니다.`);
+                return;
+            }
+
+            const name = prompt('새 버전 이름을 입력하세요:', `버전 ${storyVersions.length + 1}`);
+            if (!name) return;
+
+            // 현재 버전 저장
+            autoSaveCurrentEdit();
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            // 새 버전 생성 (빈 스토리)
+            const newVersion = {
+                name: name,
+                title: "Catch! Love",
+                data: { 1: { content: '', isEnding: false, choices: [] } }
+            };
+
+            storyVersions.push(newVersion);
+            currentVersionIndex = storyVersions.length - 1;
+            gameData = newVersion.data;
+            gameTitle = newVersion.title;
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+            updateStatus(`"${name}" 버전이 생성되었습니다.`);
+        }
+
+        // 파일을 새 버전으로 불러오기
+        function importAsNewVersion() {
+            if (storyVersions.length >= MAX_VERSIONS) {
+                alert(`최대 ${MAX_VERSIONS}개까지만 생성 가능합니다.`);
+                return;
+            }
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+
+                        // 현재 버전 저장
+                        autoSaveCurrentEdit();
+                        storyVersions[currentVersionIndex].data = gameData;
+                        storyVersions[currentVersionIndex].title = gameTitle;
+
+                        // 새 버전 생성
+                        const name = prompt('버전 이름을 입력하세요:', story.title || `버전 ${storyVersions.length + 1}`);
+                        if (!name) return;
+
+                        const newVersion = {
+                            name: name,
+                            title: story.title || "Catch! Love",
+                            data: {}
+                        };
+
+                        // STORY 형식을 에디터 형식으로 변환
+                        if (story.scenes && Array.isArray(story.scenes)) {
+                            story.scenes.forEach(scene => {
+                                const match = scene.id.match(/S(\d+)/);
+                                if (!match) return;
+
+                                const num = parseInt(match[1]);
+                                if (num < 1 || num > 1000) return;
+
+                                newVersion.data[num] = {
+                                    content: scene.content || '',
+                                    isEnding: scene.isEnding || false,
+                                    choices: []
+                                };
+
+                                if (!scene.isEnding && scene.choices) {
+                                    scene.choices.forEach(choice => {
+                                        if (choice.label) {
+                                            let nextNum = 0;
+                                            if (choice.nextSceneId) {
+                                                const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                                if (nextMatch) nextNum = parseInt(nextMatch[1]);
+                                            }
+                                            newVersion.data[num].choices.push({
+                                                text: choice.label,
+                                                next: nextNum,
+                                                outcome: choice.outcome || 'continue'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        // 최소 씬 1이라도 있게
+                        if (!newVersion.data[1]) {
+                            newVersion.data[1] = { content: '', isEnding: false, choices: [] };
+                        }
+
+                        storyVersions.push(newVersion);
+                        currentVersionIndex = storyVersions.length - 1;
+                        gameData = newVersion.data;
+                        gameTitle = newVersion.title;
+
+                        updateUsedScenes();
+                        renderTree();
+                        renderVersionTabs();
+                        saveAllVersionsToLocal();
+                        updateStatus(`"${name}" 버전으로 파일을 불러왔습니다.`);
+
+                    } catch (err) {
+                        alert('JSON 파싱 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // 버전 삭제
+        function deleteVersion(index) {
+            if (storyVersions.length <= 1) {
+                alert('최소 1개의 버전은 유지해야 합니다.');
+                return;
+            }
+
+            const version = storyVersions[index];
+            if (!confirm(`"${version.name}" 버전을 삭제하시겠습니까?\n모든 씬이 삭제됩니다.`)) {
+                return;
+            }
+
+            storyVersions.splice(index, 1);
+
+            // 현재 버전이 삭제되었거나 인덱스 조정 필요
+            if (currentVersionIndex >= storyVersions.length) {
+                currentVersionIndex = storyVersions.length - 1;
+            } else if (currentVersionIndex > index) {
+                currentVersionIndex--;
+            }
+
+            // 현재 버전 데이터 로드
+            gameData = storyVersions[currentVersionIndex].data;
+            gameTitle = storyVersions[currentVersionIndex].title || "Catch! Love";
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+            updateStatus(`버전이 삭제되었습니다.`);
+        }
+
+        // 모든 버전을 로컬 스토리지에 저장
+        function saveAllVersionsToLocal() {
+            // 현재 버전 데이터 동기화
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            localStorage.setItem('gameTreeVersions', JSON.stringify({
+                versions: storyVersions,
+                currentIndex: currentVersionIndex
+            }));
+        }
+
+        // 모든 버전을 로컬 스토리지에서 불러오기
+        function loadAllVersionsFromLocal() {
+            const saved = localStorage.getItem('gameTreeVersions');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    storyVersions = data.versions || [];
+                    currentVersionIndex = data.currentIndex || 0;
+
+                    if (storyVersions.length === 0) {
+                        initDefaultVersion();
+                    } else {
+                        // 인덱스 유효성 검사
+                        if (currentVersionIndex >= storyVersions.length) {
+                            currentVersionIndex = 0;
+                        }
+                        gameData = storyVersions[currentVersionIndex].data;
+                        gameTitle = storyVersions[currentVersionIndex].title || "Catch! Love";
+                    }
+                    return true;
+                } catch (e) {
+                    console.error('버전 데이터 로드 실패:', e);
+                }
+            }
+            return false;
+        }
+
+        // 기본 버전 초기화
+        function initDefaultVersion() {
+            storyVersions = [{
+                name: '버전 1',
+                title: 'Catch! Love',
+                data: { 1: { content: '', isEnding: false, choices: [] } }
+            }];
+            currentVersionIndex = 0;
+            gameData = storyVersions[0].data;
+            gameTitle = storyVersions[0].title;
+        }
 
         // 테스트 플레이 관련 변수
         let testCurrentScene = 1;
@@ -1525,31 +1838,43 @@
             }
         }
 
-        // 로컬 저장
+        // 로컬 저장 (버전 시스템과 통합)
         function saveToLocal() {
-            localStorage.setItem('gameTreeDataMobile', JSON.stringify(gameData));
+            saveAllVersionsToLocal();
+            renderVersionTabs(); // 씬 개수 업데이트
         }
 
-        // 로컬에서 불러오기
+        // 로컬에서 불러오기 (현재 버전만 다시 로드)
         function loadFromLocal() {
-            const saved = localStorage.getItem('gameTreeDataMobile');
-            if (saved) {
-                gameData = JSON.parse(saved);
+            if (loadAllVersionsFromLocal()) {
                 updateUsedScenes();
                 renderTree();
+                renderVersionTabs();
                 updateStatus('데이터 불러옴');
             } else {
                 updateStatus('저장된 데이터 없음');
             }
         }
 
-        // 초기화
+        // 초기화 (현재 버전만)
         function clearAll() {
-            if (confirm('모든 데이터를 초기화하시겠습니까?')) {
-                init();
+            const currentName = storyVersions[currentVersionIndex].name;
+            if (confirm(`"${currentName}" 버전의 모든 씬을 초기화하시겠습니까?`)) {
+                gameData = { 1: { content: '', isEnding: false, choices: [] } };
+                storyVersions[currentVersionIndex].data = gameData;
+                usedSceneNumbers.clear();
+                usedSceneNumbers.add(1);
+
                 document.getElementById('editor').innerHTML = '<div class="empty-state">트리에서 씬이나 선택지를 탭하여 편집하세요</div>';
+                selectedNode = null;
+                selectedType = null;
+                currentEditingScene = null;
+                currentEditingChoice = null;
+
+                renderTree();
+                renderVersionTabs();
                 saveToLocal();
-                updateStatus('초기화 완료');
+                updateStatus(`"${currentName}" 초기화 완료`);
             }
         }
 
@@ -1887,14 +2212,34 @@
 
         // 초기화
         window.onload = function() {
-            const saved = localStorage.getItem('gameTreeDataMobile');
-            if (saved) {
-                gameData = JSON.parse(saved);
-                updateUsedScenes();
-                renderTree();
-            } else {
-                init();
+            // 새 버전 시스템 로드 시도
+            if (!loadAllVersionsFromLocal()) {
+                // 기존 단일 데이터 마이그레이션 시도
+                const oldSaved = localStorage.getItem('gameTreeDataMobile');
+                if (oldSaved) {
+                    try {
+                        const oldData = JSON.parse(oldSaved);
+                        storyVersions = [{
+                            name: '버전 1',
+                            title: 'Catch! Love',
+                            data: oldData
+                        }];
+                        currentVersionIndex = 0;
+                        gameData = oldData;
+                        gameTitle = 'Catch! Love';
+                        // 마이그레이션 후 새 형식으로 저장
+                        saveAllVersionsToLocal();
+                    } catch (e) {
+                        initDefaultVersion();
+                    }
+                } else {
+                    initDefaultVersion();
+                }
             }
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
 
             // 데스크톱에서는 패널 모두 표시
             if (!isMobile) {
