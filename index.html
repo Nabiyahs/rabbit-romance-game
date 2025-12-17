@@ -1534,7 +1534,8 @@
                         ⚠️ 연결되지 않은 씬 (${orphanScenes.length}개)
                     </div>`;
                 orphanScenes.forEach(num => {
-                    html += buildTreeHTML(num, new Set(), connectedScenes);
+                    // 이미 렌더링된 씬은 건너뛰도록 connectedScenes를 visited로 전달
+                    html += buildTreeHTML(num, new Set(connectedScenes), connectedScenes);
                 });
                 html += '</div>';
             }
