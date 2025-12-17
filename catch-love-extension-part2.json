@@ -1,385 +1,335 @@
 {
-  "title": "Catch! Love - 사랑의 완성",
-  "startSceneId": "S059",
+  "title": "Catch! Love - 사랑의 완성 (Part 2)",
+  "startSceneId": "S001",
   "scenes": [
     {
-      "id": "S059",
-      "content": "한 번 더 키스했다.\n이번엔 더 깊게.\n\n\"...연주씨.\"\n\"응?\"\n\"좋아해요.\"",
+      "id": "S001",
+      "content": "💕 EP4. 시련의 시작\n\n사귄 지 석 달이 지났다.\n희수와의 연애는 달콤했다.\n\n어느 날 희수에게 연락이 왔다.\n\n'연주씨, 오늘 저녁에 잠깐 얘기할 수 있어요?'\n\n뭔가 심상치 않다.",
       "isEnding": false,
       "choices": [
-        {"id": "C059A", "label": "\"나도 좋아해요\"", "outcome": "continue", "nextSceneId": "S069"},
-        {"id": "C059B", "label": "(대답 대신 안아준다)", "outcome": "continue", "nextSceneId": "S069"}
+        {"id": "C001A", "label": "'무슨 일이야? 걱정돼'", "outcome": "continue", "nextSceneId": "S002"},
+        {"id": "C001B", "label": "'응, 어디서 만날까?'", "outcome": "continue", "nextSceneId": "S003"}
       ]
     },
     {
-      "id": "S060",
-      "content": "영화를 보다가 희수가 내 어깨에 기댔다.\n영화는 눈에 안 들어온다.\n\n\"...졸려요?\"\n\"아니요, 그냥 이러고 싶어서.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C060A", "label": "머리를 쓰다듬어준다", "outcome": "continue", "nextSceneId": "S070"},
-        {"id": "C060B", "label": "\"오늘 자고 가요\"", "outcome": "continue", "nextSceneId": "S071"}
-      ]
-    },
-    {
-      "id": "S061",
-      "content": "💕 EP4. 시련의 시작\n\n사귄 지 석 달.\n어느 날 희수에게 연락이 왔다.\n\n'연주씨, 오늘 저녁에 잠깐 얘기할 수 있어요?'\n\n뭔가 심상치 않다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C061A", "label": "'무슨 일이야? 걱정돼'", "outcome": "continue", "nextSceneId": "S072"},
-        {"id": "C061B", "label": "'응, 어디서 만날까?'", "outcome": "continue", "nextSceneId": "S073"}
-      ]
-    },
-    {
-      "id": "S062",
-      "content": "2인용 자전거를 타고 한강을 달린다.\n\n\"앞에서 열심히 밟아요~\"\n\"야! 뒤에서도 밟아!\"\n\n깔깔 웃으며 달리는 우리.\n바람이 시원하다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C062A", "label": "치킨 사 먹자고 한다", "outcome": "continue", "nextSceneId": "S074"},
-        {"id": "C062B", "label": "노을 보며 쉰다", "outcome": "continue", "nextSceneId": "S075"}
-      ]
-    },
-    {
-      "id": "S063",
-      "content": "각자 자전거를 타고 달린다.\n희수가 앞서 달리며 뒤돌아본다.\n\n\"빨리 와요~!\"\n\"기다려!\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C063A", "label": "전속력으로 쫓아간다", "outcome": "continue", "nextSceneId": "S074"}
-      ]
-    },
-    {
-      "id": "S064",
-      "content": "💕 EP3. 연인의 일상 (계속)\n\n며칠 후, 팀 회식이 있었다.\n희수도 같이 참석한다.\n술자리에서 모르는 남자가 희수에게 작업을 건다.\n\n\"통역사님, 술 한 잔 받아요~\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C064A", "label": "끼어들어서 막는다", "outcome": "continue", "nextSceneId": "S076"},
-        {"id": "C064B", "label": "희수가 알아서 하도록 둔다", "outcome": "continue", "nextSceneId": "S077"}
-      ]
-    },
-    {
-      "id": "S065",
-      "content": "\"헤어진 지 1년 됐어요. 근데 사진은 그냥... 추억이니까.\"\n\n희수가 조심스럽게 말한다.\n\n\"불편하면 치울게요.\"\n\n흠, 어떻게 하지?",
-      "isEnding": false,
-      "choices": [
-        {"id": "C065A", "label": "\"아니에요, 괜찮아요\"", "outcome": "continue", "nextSceneId": "S078"},
-        {"id": "C065B", "label": "\"솔직히 조금 불편해요\"", "outcome": "continue", "nextSceneId": "S079"}
-      ]
-    },
-    {
-      "id": "S066",
-      "content": "\"왜 아직 사진이 있냐고요?\"\n\n희수의 표정이 굳어진다.\n\n\"...그냥 정리 안 한 거예요.\"\n\"미련 있는 거 아니에요?\"\n\n분위기가 싸해진다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C066A", "label": "\"미안해요, 제가 너무 그랬네\"", "outcome": "continue", "nextSceneId": "S078"},
-        {"id": "C066B", "label": "\"솔직하게 말해줘요\"", "outcome": "continue", "nextSceneId": "S080"}
-      ]
-    },
-    {
-      "id": "S067",
-      "content": "\"고등학교 때 친한 친구가 있었는데... 걔한테 설렜어요.\"\n\n희수가 고개를 끄덕인다.\n\n\"그때 알았어요. 아, 나 여자 좋아하는구나.\"\n\"용기 있다. 나도 비슷해요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C067A", "label": "\"희수씨는 어땠어요?\"", "outcome": "continue", "nextSceneId": "S081"},
-        {"id": "C067B", "label": "\"우리 잘 맞는 것 같아요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S068",
-      "content": "\"자연스럽게요? 그게 다야?\"\n\n희수가 의아하다는 표정을 짓는다.\n\n\"뭐... 복잡하게 생각 안 했어요.\"\n\"부럽다. 난 엄청 고민했거든요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C068A", "label": "\"무슨 고민이요?\"", "outcome": "continue", "nextSceneId": "S081"}
-      ]
-    },
-    {
-      "id": "S069",
-      "content": "💕 EP5. 함께하는 미래\n\n사귄 지 1년이 지났다.\n우리는 여전히 행복하다.\n\n\"연주씨, 우리 앞으로 어떻게 될까요?\"\n\n희수가 진지하게 물어본다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C069A", "label": "\"같이 살래요?\"", "outcome": "continue", "nextSceneId": "S082"},
-        {"id": "C069B", "label": "\"천천히 생각해봐요\"", "outcome": "continue", "nextSceneId": "S083"}
-      ]
-    },
-    {
-      "id": "S070",
-      "content": "머리를 쓰다듬자 희수가 눈을 감는다.\n평화로운 표정.\n\n\"...행복해요.\"\n\"저도요.\"\n\n영화가 끝나도 우리는 그대로였다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C070A", "label": "\"오늘 자고 가요\"", "outcome": "continue", "nextSceneId": "S071"}
-      ]
-    },
-    {
-      "id": "S071",
-      "content": "희수가 처음으로 우리 집에서 잤다.\n아침에 눈을 뜨니 옆에 희수가 있다.\n\n\"...안녕?\"\n\"안녕.\"\n\n이게 꿈이 아니길.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C071A", "label": "아침 만들어준다", "outcome": "continue", "nextSceneId": "S084"},
-        {"id": "C071B", "label": "더 자자고 한다", "outcome": "continue", "nextSceneId": "S085"}
-      ]
-    },
-    {
-      "id": "S072",
+      "id": "S002",
       "content": "'만나서 얘기해요. 전화로는 좀...'\n\n불안하다. 무슨 일이지?\n\n퇴근 후 평소 가던 카페에서 만났다.\n희수의 표정이 어둡다.",
       "isEnding": false,
       "choices": [
-        {"id": "C072A", "label": "\"무슨 일이야?\"", "outcome": "continue", "nextSceneId": "S086"}
+        {"id": "C002A", "label": "\"무슨 일이야?\"", "outcome": "continue", "nextSceneId": "S004"}
       ]
     },
     {
-      "id": "S073",
+      "id": "S003",
       "content": "평소 가던 카페에서 만났다.\n희수가 커피를 한 모금 마시고 말했다.\n\n\"저... 해외 발령 제의 받았어요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C073A", "label": "\"...뭐라고?\"", "outcome": "continue", "nextSceneId": "S086"}
+        {"id": "C003A", "label": "\"...뭐라고?\"", "outcome": "continue", "nextSceneId": "S004"}
       ]
     },
     {
-      "id": "S074",
-      "content": "한강에서 치킨을 먹었다.\n\n\"이게 인생이지~\"\n\"인정. 치킨에 맥주 최고.\"\n\n석양이 진다. 희수 얼굴이 노을빛으로 물든다.\n\n'예쁘다...'",
-      "isEnding": false,
-      "choices": [
-        {"id": "C074A", "label": "\"희수씨 너무 예뻐요\"", "outcome": "continue", "nextSceneId": "S087"},
-        {"id": "C074B", "label": "(몰래 사진 찍는다)", "outcome": "continue", "nextSceneId": "S088"}
-      ]
-    },
-    {
-      "id": "S075",
-      "content": "벤치에 앉아 노을을 본다.\n\n\"여기 진짜 좋다...\"\n\"그쵸? 자주 와요 우리.\"\n\n희수가 내 어깨에 기댄다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C075A", "label": "\"평생 이러고 살고 싶다\"", "outcome": "continue", "nextSceneId": "S089"}
-      ]
-    },
-    {
-      "id": "S076",
-      "content": "\"저희 여자친구예요.\"\n\n남자가 당황한다.\n\n\"아, 죄송합니다...\"\n\n희수가 날 본다. 놀란 표정... 인 줄 알았는데 웃고 있다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C076A", "label": "\"너무 그랬나...?\"", "outcome": "continue", "nextSceneId": "S090"},
-        {"id": "C076B", "label": "\"질투했어요\"", "outcome": "continue", "nextSceneId": "S091"}
-      ]
-    },
-    {
-      "id": "S077",
-      "content": "희수가 알아서 거절한다.\n\n\"죄송해요, 저 사람 있어요.\"\n\n돌아와서 내 옆에 앉으며 속삭인다.\n\n\"질투 안 나요?\"\n\"...났어요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C077A", "label": "\"다음엔 내가 막을게\"", "outcome": "continue", "nextSceneId": "S091"}
-      ]
-    },
-    {
-      "id": "S078",
-      "content": "\"고마워요. 이해해줘서.\"\n\n희수가 안심한 표정을 짓는다.\n\n\"과거는 과거니까요. 지금 제 옆에 있는 건 저잖아요.\"\n\"맞아요. 지금은 연주씨가 제일 소중해요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C078A", "label": "\"저도요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S079",
-      "content": "\"불편해요? 그럼 바로 치울게요.\"\n\n희수가 사진을 서랍에 넣는다.\n\n\"미안해요. 제가 신경을 못 썼네.\"\n\"아니에요, 괜찮아요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C079A", "label": "\"이제 됐어요. 고마워요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S080",
-      "content": "\"솔직히? 미련 없어요. 그 사람이 저 버렸거든요.\"\n\n희수의 목소리가 떨린다.\n\n\"...미안해요. 제가 너무 그랬네.\"\n\"아니에요. 물어볼 수 있죠.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C080A", "label": "(안아준다)", "outcome": "continue", "nextSceneId": "S092"},
-        {"id": "C080B", "label": "\"다신 그런 일 없을 거예요\"", "outcome": "continue", "nextSceneId": "S092"}
-      ]
-    },
-    {
-      "id": "S081",
-      "content": "\"저는 대학교 때 커밍아웃했는데... 부모님이 안 좋아하셨어요.\"\n\n희수가 쓸쓸히 웃는다.\n\n\"지금은 좀 나아졌지만... 아직도 어려워요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C081A", "label": "\"힘들었겠다...\"", "outcome": "continue", "nextSceneId": "S093"},
-        {"id": "C081B", "label": "\"우리 부모님은 어떨까...\"", "outcome": "continue", "nextSceneId": "S094"}
-      ]
-    },
-    {
-      "id": "S082",
-      "content": "\"같이 살자고요?\"\n\n희수가 눈이 커진다.\n\n\"응. 매일 보고 싶어요.\"\n\"...저도요.\"\n\n희수가 고개를 끄덕인다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C082A", "label": "\"그럼 집 알아보자!\"", "outcome": "continue", "nextSceneId": "S095"}
-      ]
-    },
-    {
-      "id": "S083",
-      "content": "\"천천히요? 그래요, 서두를 필요 없죠.\"\n\n희수가 웃지만 어딘가 아쉬워 보인다.\n\n\"근데... 언젠간 같이 살고 싶어요.\"\n\"저도요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C083A", "label": "\"그럼 내년에 같이 살자\"", "outcome": "continue", "nextSceneId": "S095"},
-        {"id": "C083B", "label": "\"지금은 이대로가 좋아요\"", "outcome": "continue", "nextSceneId": "S096"}
-      ]
-    },
-    {
-      "id": "S084",
-      "content": "아침을 만들어줬다.\n계란프라이와 토스트.\n\n\"맛있다! 연주씨 요리 잘하네요?\"\n\"이 정도는 뭐~\"\n\n사실 처음 해봤다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C084A", "label": "\"매일 해줄게요\"", "outcome": "continue", "nextSceneId": "S095"}
-      ]
-    },
-    {
-      "id": "S085",
-      "content": "\"5분만 더...\"\n\n희수가 이불 속으로 파고든다.\n\n결국 점심때 일어났다.\n게으른 주말. 나쁘지 않다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C085A", "label": "\"배달 시켜 먹자\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S086",
+      "id": "S004",
       "content": "\"해외 발령이요. 미국 지사에서 통역사 필요하대요.\"\n\n심장이 철렁 내려앉는다.\n\n\"...가려고요?\"\n\"아직 결정 안 했어요. 연주씨랑 상의하려고.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C086A", "label": "\"가지 마요\"", "outcome": "continue", "nextSceneId": "S097"},
-        {"id": "C086B", "label": "\"희수씨가 하고 싶은 대로 해요\"", "outcome": "continue", "nextSceneId": "S098"}
+        {"id": "C004A", "label": "\"가지 마요\"", "outcome": "continue", "nextSceneId": "S005"},
+        {"id": "C004B", "label": "\"희수씨가 하고 싶은 대로 해요\"", "outcome": "continue", "nextSceneId": "S006"}
       ]
     },
     {
-      "id": "S087",
-      "content": "\"뭐야, 갑자기~\"\n\n희수가 부끄러워한다.\n\n\"사실이니까. 진짜 예뻐요.\"\n\"...고마워요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C087A", "label": "\"평생 옆에 있을게요\"", "outcome": "continue", "nextSceneId": "S089"}
-      ]
-    },
-    {
-      "id": "S088",
-      "content": "몰래 사진을 찍었는데 희수가 눈치챘다.\n\n\"야! 찍었어요?\"\n\"아니~\"\n\"거짓말! 보여줘요!\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C088A", "label": "보여준다", "outcome": "continue", "nextSceneId": "S089"}
-      ]
-    },
-    {
-      "id": "S089",
-      "content": "\"평생이라... 진심이에요?\"\n\n희수가 진지하게 물어본다.\n\n\"응. 희수씨랑 계속 함께하고 싶어요.\"\n\"...저도요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C089A", "label": "\"그럼 우리 약속해요\"", "outcome": "continue", "nextSceneId": "S095"}
-      ]
-    },
-    {
-      "id": "S090",
-      "content": "\"아니요, 좋았어요. 우리 사이 공개한 거잖아요.\"\n\n희수가 웃는다.\n\n\"이제 숨길 필요 없겠네요.\"\n\"응, 이제 당당하게 사귀자.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C090A", "label": "\"사랑해요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S091",
-      "content": "\"질투요? 귀여워~\"\n\n희수가 웃는다.\n\n\"귀엽긴! 진심으로 질투났다고요.\"\n\"알아요. 그래서 더 좋아요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C091A", "label": "\"앞으로도 질투할 거예요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S092",
-      "content": "\"이제 저한테 연주씨가 있으니까 괜찮아요.\"\n\n희수가 미소 짓는다.\n\n\"저도 희수씨 안 버릴 거예요.\"\n\"알아요. 믿어요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C092A", "label": "\"평생 함께해요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S093",
-      "content": "\"지금은 괜찮아요. 연주씨가 옆에 있으니까.\"\n\n희수가 손을 잡는다.\n\n\"우리 앞으로 뭐든 함께 이겨내요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C093A", "label": "\"약속해요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S094",
-      "content": "\"우리 부모님요? 글쎄요... 아직 말 못 했어요.\"\n\n희수가 걱정스러운 표정을 짓는다.\n\n\"언젠간 말해야겠죠?\"\n\"응... 근데 무서워요.\"",
-      "isEnding": false,
-      "choices": [
-        {"id": "C094A", "label": "\"같이 말하러 가요\"", "outcome": "continue", "nextSceneId": "S099"},
-        {"id": "C094B", "label": "\"천천히 준비해요\"", "outcome": "continue", "nextSceneId": "S069"}
-      ]
-    },
-    {
-      "id": "S095",
-      "content": "🎉 해피 엔딩: 동거의 시작\n\n우리는 함께 살기 시작했다.\n매일 아침 같이 일어나고,\n저녁엔 같이 밥을 먹고,\n주말엔 함께 쉰다.\n\n\"행복해요.\"\n\"저도요.\"\n\n이게 바로 우리가 꿈꾸던 일상이다.\n\n💕 THE END - 함께하는 일상",
-      "isEnding": true,
-      "choices": [
-        {"id": "C095A", "label": "", "outcome": "success", "nextSceneId": ""}
-      ]
-    },
-    {
-      "id": "S096",
-      "content": "😢 솔로 엔딩: 멀어진 마음\n\n\"이대로가 좋다\"는 말이 희수에게 상처가 됐다.\n\n점점 연락이 뜸해지고,\n만남도 줄어들었다.\n\n어느 날 희수에게서 메시지가 왔다.\n\n'연주씨, 우리 그만 만나요.'\n\n붙잡지 못했다.\n너무 늦었다.\n\n💔 THE END - 타이밍을 놓친 사랑",
-      "isEnding": true,
-      "choices": [
-        {"id": "C096A", "label": "", "outcome": "failure", "nextSceneId": ""}
-      ]
-    },
-    {
-      "id": "S097",
+      "id": "S005",
       "content": "\"가지 말라고요?\"\n\n희수가 놀란 표정을 짓는다.\n\n\"응. 나 없이 가지 마요.\"\n\"...연주씨.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C097A", "label": "\"같이 가면 안 될까요?\"", "outcome": "continue", "nextSceneId": "S100"},
-        {"id": "C097B", "label": "\"포기해줘요\"", "outcome": "continue", "nextSceneId": "S101"}
+        {"id": "C005A", "label": "\"같이 가면 안 될까요?\"", "outcome": "continue", "nextSceneId": "S007"},
+        {"id": "C005B", "label": "\"포기해줘요\"", "outcome": "continue", "nextSceneId": "S008"}
       ]
     },
     {
-      "id": "S098",
+      "id": "S006",
       "content": "\"제가 하고 싶은 대로요?\"\n\n희수가 눈물을 글썽인다.\n\n\"연주씨 없이는 싫어요. 근데 기회를 놓치기도 싫고...\"\n\"그럼 우리 방법을 찾아보자.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C098A", "label": "\"장거리 연애 해볼까요?\"", "outcome": "continue", "nextSceneId": "S102"},
-        {"id": "C098B", "label": "\"제가 따라갈게요\"", "outcome": "continue", "nextSceneId": "S100"}
+        {"id": "C006A", "label": "\"장거리 연애 해볼까요?\"", "outcome": "continue", "nextSceneId": "S009"},
+        {"id": "C006B", "label": "\"제가 따라갈게요\"", "outcome": "continue", "nextSceneId": "S007"}
       ]
     },
     {
-      "id": "S099",
+      "id": "S007",
+      "content": "\"같이 가자고요?\"\n\n희수가 놀란다.\n\n\"네. 저도 새로운 환경에서 도전해보고 싶어요.\"\n\"...연주씨, 진심이에요?\"\n\n진심이다. 희수와 함께라면.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C007A", "label": "\"진심이에요. 같이 가요.\"", "outcome": "continue", "nextSceneId": "S010"},
+        {"id": "C007B", "label": "\"근데 준비할 게 많겠네요...\"", "outcome": "continue", "nextSceneId": "S011"}
+      ]
+    },
+    {
+      "id": "S008",
+      "content": "\"포기해달라고요?\"\n\n희수의 표정이 굳어진다.\n\n\"...그건 너무 이기적인 거 아니에요?\"\n\"미안해요. 나 없이 가는 게 너무 싫어서...\"\n\n분위기가 싸해졌다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C008A", "label": "\"미안해요, 제가 잘못했어요\"", "outcome": "continue", "nextSceneId": "S012"},
+        {"id": "C008B", "label": "\"...그래도 가지 마요\"", "outcome": "continue", "nextSceneId": "S013"}
+      ]
+    },
+    {
+      "id": "S009",
+      "content": "\"장거리요?\"\n\n희수가 고민한다.\n\n\"힘들겠지만... 영상통화도 있고, 휴가 때 만나면 되잖아요.\"\n\"연주씨... 진짜 기다려줄 거예요?\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C009A", "label": "\"물론이죠. 기다릴게요.\"", "outcome": "continue", "nextSceneId": "S014"},
+        {"id": "C009B", "label": "\"...자신 없어요\"", "outcome": "continue", "nextSceneId": "S015"}
+      ]
+    },
+    {
+      "id": "S010",
+      "content": "💕 EP5. 새로운 시작\n\n결국 나도 회사를 그만두고 미국행을 결심했다.\n희수가 울면서 말했다.\n\n\"고마워요... 진짜 고마워요.\"\n\"바보, 당연한 건데.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C010A", "label": "\"우리 열심히 살자\"", "outcome": "continue", "nextSceneId": "S016"},
+        {"id": "C010B", "label": "(말없이 안아준다)", "outcome": "continue", "nextSceneId": "S016"}
+      ]
+    },
+    {
+      "id": "S011",
+      "content": "\"준비할 게 많죠. 비자도 받아야 하고, 집도 알아봐야 하고...\"\n\n희수가 눈물을 훔친다.\n\n\"정말 같이 가줄 거예요?\"\n\"응. 희수씨 없는 한국은 의미 없어요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C011A", "label": "\"같이 준비하자\"", "outcome": "continue", "nextSceneId": "S016"}
+      ]
+    },
+    {
+      "id": "S012",
+      "content": "\"아니에요, 제가 너무 갑자기 말했죠.\"\n\n희수가 내 손을 잡는다.\n\n\"같이 방법을 찾아봐요. 우리 사이는 변하지 않을 거예요.\"\n\"...고마워요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C012A", "label": "\"같이 가고 싶어요\"", "outcome": "continue", "nextSceneId": "S010"},
+        {"id": "C012B", "label": "\"장거리도 괜찮아요\"", "outcome": "continue", "nextSceneId": "S014"}
+      ]
+    },
+    {
+      "id": "S013",
+      "content": "희수가 눈물을 흘린다.\n\n\"연주씨... 왜 이래요. 이건 제 꿈이에요.\"\n\"알아요. 근데...\"\n\n말이 안 나온다.\n이기적인 건 알지만, 보내고 싶지 않다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C013A", "label": "\"미안해요. 가요.\" (놓아준다)", "outcome": "continue", "nextSceneId": "S017"},
+        {"id": "C013B", "label": "\"...\" (끝까지 막는다)", "outcome": "continue", "nextSceneId": "S018"}
+      ]
+    },
+    {
+      "id": "S014",
+      "content": "\"기다릴게요. 희수씨 가서 열심히 해요.\"\n\n희수가 울면서 안긴다.\n\n\"연주씨... 사랑해요.\"\n\"나도 사랑해요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C014A", "label": "\"공항까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S019"}
+      ]
+    },
+    {
+      "id": "S015",
+      "content": "\"자신 없다고요...?\"\n\n희수의 눈에서 눈물이 흐른다.\n\n\"그럼... 어떻게 하자는 거예요?\"\n\"모르겠어요. 그냥... 솔직하게 말한 거예요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C015A", "label": "\"그래도 해볼게요\"", "outcome": "continue", "nextSceneId": "S014"},
+        {"id": "C015B", "label": "\"우리... 잠깐 쉬어볼까요?\"", "outcome": "continue", "nextSceneId": "S020"}
+      ]
+    },
+    {
+      "id": "S016",
+      "content": "미국에서의 새 생활이 시작됐다.\n낯선 땅, 낯선 언어.\n하지만 희수가 옆에 있다.\n\n\"힘들지 않아요?\"\n\"희수씨랑 같이니까 괜찮아요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C016A", "label": "\"우리 잘해나갈 수 있어요\"", "outcome": "continue", "nextSceneId": "S021"},
+        {"id": "C016B", "label": "\"가끔 힘들긴 해요\"", "outcome": "continue", "nextSceneId": "S022"}
+      ]
+    },
+    {
+      "id": "S017",
+      "content": "\"...고마워요. 연주씨.\"\n\n희수가 눈물을 닦으며 웃는다.\n\n\"저 열심히 할게요. 연주씨도 기다려줄 거죠?\"\n\"응. 기다릴게.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C017A", "label": "\"꼭 돌아와요\"", "outcome": "continue", "nextSceneId": "S019"}
+      ]
+    },
+    {
+      "id": "S018",
+      "content": "😢 솔로 엔딩: 붙잡은 새\n\n희수는 나를 위해 기회를 포기했다.\n하지만 점점 눈빛이 어두워졌다.\n\n\"후회돼요?\"\n\"...아니요.\"\n\n거짓말인 걸 알았다.\n결국 우리는 1년 뒤 헤어졌다.\n\n나는 희수의 날개를 꺾었다.\n\n💔 THE END - 이기적인 사랑",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "S019",
+      "content": "공항에서 희수를 배웅했다.\n\n\"자주 연락해요.\"\n\"응, 매일 할게.\"\n\n마지막으로 꼭 안아줬다.\n\n\"사랑해요.\"\n\"나도 사랑해.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C019A", "label": "희수가 떠난 후...", "outcome": "continue", "nextSceneId": "S023"}
+      ]
+    },
+    {
+      "id": "S020",
+      "content": "😢 솔로 엔딩: 갈라선 길\n\n\"잠깐 쉬자\"는 말은 결국 이별이 됐다.\n\n서로를 사랑했지만,\n거리의 두려움을 이기지 못했다.\n\n가끔 희수의 SNS를 본다.\n미국에서 잘 지내는 것 같아 다행이다.\n\n그래도 가슴 한 구석이 아프다.\n\n💔 THE END - 두려움에 진 사랑",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "S021",
+      "content": "6개월이 지났다.\n미국 생활에 적응하고 있다.\n\n\"연주씨, 저 승진했어요!\"\n\"진짜?! 축하해!\"\n\n희수의 눈이 반짝인다.\n이 빛을 보기 위해 온 거다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C021A", "label": "\"축하 파티하자!\"", "outcome": "continue", "nextSceneId": "S024"},
+        {"id": "C021B", "label": "\"나도 좋은 소식 있어\"", "outcome": "continue", "nextSceneId": "S025"}
+      ]
+    },
+    {
+      "id": "S022",
+      "content": "\"힘들어요...?\"\n\n희수가 걱정스러운 얼굴을 한다.\n\n\"괜찮아요. 적응 중이니까.\"\n\"미안해요. 저 때문에...\"\n\"무슨 소리야. 같이 오자고 한 건 나야.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C022A", "label": "\"후회 안 해요\"", "outcome": "continue", "nextSceneId": "S026"},
+        {"id": "C022B", "label": "\"...가끔은 힘들어요\"", "outcome": "continue", "nextSceneId": "S027"}
+      ]
+    },
+    {
+      "id": "S023",
+      "content": "🌸 비터스윗 엔딩: 기다리는 사랑\n\n희수가 떠난 후, 1년이 지났다.\n영상통화로 얼굴을 보고,\n가끔 휴가 때 만난다.\n\n\"보고 싶어요.\"\n\"나도.\"\n\n힘들지만, 이 사랑을 지킬 거다.\n언젠간 다시 함께할 그날까지.\n\n💜 THE END - 기다리는 사랑",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "S024",
+      "content": "축하 파티를 했다.\n작은 아파트지만 우리만의 공간.\n\n\"연주씨, 고마워요. 함께 와줘서.\"\n\"그만 고마워해요. 지겨워~\"\n\n희수가 웃으며 안긴다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C024A", "label": "\"사랑해요\"", "outcome": "continue", "nextSceneId": "S028"},
+        {"id": "C024B", "label": "\"우리 앞으로도 잘하자\"", "outcome": "continue", "nextSceneId": "S028"}
+      ]
+    },
+    {
+      "id": "S025",
+      "content": "\"좋은 소식이요? 뭔데요?\"\n\n희수가 눈을 반짝인다.\n\n\"나도 취업했어요. 현지 회사에.\"\n\"진짜요?! 대박!\"\n\n희수가 뛰어와 안긴다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C025A", "label": "\"이제 둘 다 정착이네요\"", "outcome": "continue", "nextSceneId": "S029"}
+      ]
+    },
+    {
+      "id": "S026",
+      "content": "\"후회 안 해요. 진짜로.\"\n\n희수가 눈물을 글썽인다.\n\n\"연주씨... 사랑해요.\"\n\"나도 사랑해요.\"\n\n힘들어도 후회는 없다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C026A", "label": "\"우리 오래 함께하자\"", "outcome": "continue", "nextSceneId": "S028"}
+      ]
+    },
+    {
+      "id": "S027",
+      "content": "\"힘들면 솔직하게 말해요.\"\n\n희수가 내 손을 잡는다.\n\n\"같이 이겨내요. 혼자 참지 말고.\"\n\"...고마워요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C027A", "label": "\"함께라서 버틸 수 있어요\"", "outcome": "continue", "nextSceneId": "S028"},
+        {"id": "C027B", "label": "\"가끔 한국이 그리워요\"", "outcome": "continue", "nextSceneId": "S030"}
+      ]
+    },
+    {
+      "id": "S028",
+      "content": "💕 EP5. 함께하는 미래\n\n1년이 더 지났다.\n우리는 여전히 함께다.\n\n\"연주씨, 우리 앞으로 어떻게 될까요?\"\n\n희수가 진지하게 물어본다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C028A", "label": "\"같이 살래요?\"", "outcome": "continue", "nextSceneId": "S031"},
+        {"id": "C028B", "label": "\"천천히 생각해봐요\"", "outcome": "continue", "nextSceneId": "S032"}
+      ]
+    },
+    {
+      "id": "S029",
+      "content": "\"둘 다 정착하면... 같이 살아요.\"\n\n희수가 수줍게 말한다.\n\n\"그러고 싶었어요.\"\n\"진짜요?\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C029A", "label": "\"당연하죠\"", "outcome": "continue", "nextSceneId": "S031"}
+      ]
+    },
+    {
+      "id": "S030",
+      "content": "\"한국이 그리워요?\"\n\n희수가 걱정스러운 표정을 짓는다.\n\n\"가끔요. 근데 희수씨가 있으니까 괜찮아요.\"\n\"...돌아가고 싶으면 말해요. 저도 생각해볼게요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C030A", "label": "\"아니에요, 여기서 계속 살아요\"", "outcome": "continue", "nextSceneId": "S028"},
+        {"id": "C030B", "label": "\"언젠간 돌아가고 싶어요\"", "outcome": "continue", "nextSceneId": "S033"}
+      ]
+    },
+    {
+      "id": "S031",
+      "content": "\"같이 살자고요?\"\n\n희수가 눈이 커진다.\n\n\"응. 매일 보고 싶어요.\"\n\"...저도요.\"\n\n희수가 고개를 끄덕인다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C031A", "label": "\"그럼 집 알아보자!\"", "outcome": "continue", "nextSceneId": "S034"}
+      ]
+    },
+    {
+      "id": "S032",
+      "content": "\"천천히요? 그래요, 서두를 필요 없죠.\"\n\n희수가 웃지만 어딘가 아쉬워 보인다.\n\n\"근데... 언젠간 같이 살고 싶어요.\"\n\"저도요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C032A", "label": "\"그럼 내년에 같이 살자\"", "outcome": "continue", "nextSceneId": "S034"},
+        {"id": "C032B", "label": "\"지금은 이대로가 좋아요\"", "outcome": "continue", "nextSceneId": "S035"}
+      ]
+    },
+    {
+      "id": "S033",
+      "content": "\"언젠간 한국에 돌아가고 싶어요.\"\n\n희수가 고민한다.\n\n\"...알겠어요. 저도 가끔 생각해요.\"\n\"진짜요?\"\n\"네. 연주씨 있는 곳이 제 집이에요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C033A", "label": "\"같이 돌아가요\"", "outcome": "continue", "nextSceneId": "S036"},
+        {"id": "C033B", "label": "\"나중에 생각해요\"", "outcome": "continue", "nextSceneId": "S028"}
+      ]
+    },
+    {
+      "id": "S034",
+      "content": "🎉 해피 엔딩 1: 동거의 시작\n\n우리는 함께 살기 시작했다.\n매일 아침 같이 일어나고,\n저녁엔 같이 밥을 먹고,\n주말엔 함께 쉰다.\n\n\"행복해요.\"\n\"저도요.\"\n\n이게 바로 우리가 꿈꾸던 일상이다.\n\n💕 THE END - 함께하는 일상",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "S035",
+      "content": "😢 솔로 엔딩: 멀어진 마음\n\n\"이대로가 좋다\"는 말이 희수에게 상처가 됐다.\n\n점점 연락이 뜸해지고,\n만남도 줄어들었다.\n\n어느 날 희수에게서 메시지가 왔다.\n\n'연주씨, 우리 그만 만나요.'\n\n붙잡지 못했다.\n너무 늦었다.\n\n💔 THE END - 타이밍을 놓친 사랑",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "S036",
+      "content": "결국 우리는 한국에 돌아왔다.\n미국에서의 경험을 바탕으로 새 직장을 구했다.\n\n\"돌아오니까 좋아요.\"\n\"그쵸? 근데 미국도 그리워요.\"\n\"가끔 여행 가요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C036A", "label": "\"우리 이제 정착하자\"", "outcome": "continue", "nextSceneId": "S037"}
+      ]
+    },
+    {
+      "id": "S037",
+      "content": "한국에서 다시 시작한 우리.\n이번엔 더 단단하다.\n\n\"연주씨, 우리 부모님께 인사드릴까요?\"\n\n희수가 조심스럽게 물어본다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C037A", "label": "\"좋아요, 같이 가요\"", "outcome": "continue", "nextSceneId": "S038"},
+        {"id": "C037B", "label": "\"아직 무서워요...\"", "outcome": "continue", "nextSceneId": "S039"}
+      ]
+    },
+    {
+      "id": "S038",
       "content": "부모님께 함께 인사드리러 갔다.\n\n\"어머니, 아버지... 이 사람이 제가 사귀는 사람이에요.\"\n\n침묵이 흐른다.\n\n\"...그래, 알았다.\"\n\n받아들여주셨다.",
       "isEnding": false,
       "choices": [
-        {"id": "C099A", "label": "\"감사합니다.\"", "outcome": "continue", "nextSceneId": "S103"}
+        {"id": "C038A", "label": "\"감사합니다.\"", "outcome": "continue", "nextSceneId": "S040"}
       ]
     },
     {
-      "id": "S100",
-      "content": "🎉 해피 엔딩: 새로운 시작\n\n결국 나도 회사를 그만두고 미국으로 갔다.\n새로운 땅에서 둘이 함께 시작했다.\n\n\"힘들지 않아요?\"\n\"희수씨랑 같이니까 괜찮아요.\"\n\n어디서든, 함께라면 괜찮다.\n\n💕 THE END - 함께라면 어디든",
-      "isEnding": true,
+      "id": "S039",
+      "content": "\"무서워도 괜찮아요. 제가 옆에 있을게요.\"\n\n희수가 내 손을 꼭 잡는다.\n\n\"...같이 가요?\"\n\"당연하죠.\"",
+      "isEnding": false,
       "choices": [
-        {"id": "C100A", "label": "", "outcome": "success", "nextSceneId": ""}
+        {"id": "C039A", "label": "용기를 낸다", "outcome": "continue", "nextSceneId": "S038"}
       ]
     },
     {
-      "id": "S101",
-      "content": "😢 솔로 엔딩: 붙잡은 새\n\n희수는 나를 위해 기회를 포기했다.\n하지만 점점 눈빛이 어두워졌다.\n\n\"후회돼요?\"\n\"...아니요.\"\n\n거짓말인 걸 알았다.\n결국 우리는 1년 뒤 헤어졌다.\n\n나는 희수의 날개를 꺾었다.\n\n💔 THE END - 이기적인 사랑",
-      "isEnding": true,
-      "choices": [
-        {"id": "C101A", "label": "", "outcome": "failure", "nextSceneId": ""}
-      ]
-    },
-    {
-      "id": "S102",
-      "content": "🌸 비터스윗 엔딩: 기다리는 사랑\n\n희수는 미국으로 떠났다.\n우리는 장거리 연애를 시작했다.\n\n영상통화로 얼굴을 보고,\n가끔 휴가 때 만난다.\n\n\"보고 싶어요.\"\n\"나도.\"\n\n힘들지만, 이 사랑을 지킬 거다.\n언젠간 다시 함께할 그날까지.\n\n💜 THE END - 기다리는 사랑",
-      "isEnding": true,
-      "choices": [
-        {"id": "C102A", "label": "", "outcome": "continue", "nextSceneId": ""}
-      ]
-    },
-    {
-      "id": "S103",
+      "id": "S040",
       "content": "🎉 베스트 엔딩: 프로포즈\n\n가족에게도 인정받고,\n우리는 더 단단해졌다.\n\n1년 뒤, 처음 만난 그 카페에서.\n\n\"희수씨, 저랑 평생 함께해줄래요?\"\n\n반지를 꺼냈다.\n희수의 눈에 눈물이 맺힌다.\n\n\"...네!\"\n\n💕 THE END - 영원한 사랑",
       "isEnding": true,
-      "choices": [
-        {"id": "C103A", "label": "", "outcome": "success", "nextSceneId": ""}
-      ]
+      "choices": []
     }
   ]
 }

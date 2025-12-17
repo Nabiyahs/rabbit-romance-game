@@ -1,360 +1,606 @@
 {
-  "title": "Catch! Love - 연애의 시작",
-  "startSceneId": "S018",
+  "title": "Catch! Love - 연애의 시작 (Part 1)",
+  "startSceneId": "S001",
   "scenes": [
     {
-      "id": "S018",
+      "id": "S001",
       "content": "\"사실 저도 연주씨 처음 봤을 때부터 눈에 들어왔어요.\"\n\n그녀의 고백에 심장이 터질 것 같다.\n드디어... 우리 사귀는 건가?",
       "isEnding": false,
       "choices": [
-        {"id": "C018A", "label": "그럼 우리 사귀는 거예요?", "outcome": "continue", "nextSceneId": "S020"},
-        {"id": "C018B", "label": "(말없이 손을 잡는다)", "outcome": "continue", "nextSceneId": "S021"}
+        {"id": "C001A", "label": "그럼 우리 사귀는 거예요?", "outcome": "continue", "nextSceneId": "S002"},
+        {"id": "C001B", "label": "(말없이 손을 잡는다)", "outcome": "continue", "nextSceneId": "S003"}
+      ]
+    },
+    {
+      "id": "S002",
+      "content": "\"네, 사귀는 거예요.\"\n\n희수가 수줍게 웃는다. 세상에서 제일 예쁜 미소다.\n\n💕 EP1. 설레는 연애의 시작",
+      "isEnding": false,
+      "choices": [
+        {"id": "C002A", "label": "오늘부터 1일이네요!", "outcome": "continue", "nextSceneId": "S004"},
+        {"id": "C002B", "label": "기념으로 뭐 할까요?", "outcome": "continue", "nextSceneId": "S004"}
+      ]
+    },
+    {
+      "id": "S003",
+      "content": "손을 잡자 희수가 살짝 놀란다.\n하지만 곧 손에 힘을 준다.\n\n\"...좋아요.\"\n\n말 없이도 통하는 우리.\n\n💕 EP1. 설레는 연애의 시작",
+      "isEnding": false,
+      "choices": [
+        {"id": "C003A", "label": "이 손 놓지 마요.", "outcome": "continue", "nextSceneId": "S004"}
+      ]
+    },
+    {
+      "id": "S004",
+      "content": "☕ 다음 날 아침, 회사\n\n출근길에 희수를 만났다.\n\"안녕하세요~\"\n평소처럼 인사하는 그녀. 아무도 모르는 우리만의 비밀이 생겼다.\n\n근데 회사에서 어떻게 하지?",
+      "isEnding": false,
+      "choices": [
+        {"id": "C004A", "label": "회사에서는 숨기자고 한다", "outcome": "continue", "nextSceneId": "S005"},
+        {"id": "C004B", "label": "당당하게 공개하자고 한다", "outcome": "continue", "nextSceneId": "S006"}
+      ]
+    },
+    {
+      "id": "S005",
+      "content": "\"그래요, 회사에서는 조심하는 게 좋겠죠.\"\n\n희수가 동의한다.\n하지만 눈이 마주칠 때마다 입꼬리가 올라간다.\n숨기기 힘들겠는데...",
+      "isEnding": false,
+      "choices": [
+        {"id": "C005A", "label": "점심에 몰래 만나자고 한다", "outcome": "continue", "nextSceneId": "S007"},
+        {"id": "C005B", "label": "퇴근 후에 보자고 한다", "outcome": "continue", "nextSceneId": "S008"}
+      ]
+    },
+    {
+      "id": "S006",
+      "content": "\"에이, 뭘 숨겨요. 당당하게 사귀는 건데.\"\n\n희수가 살짝 당황한다.\n\"그래도 소문나면 불편하지 않을까요...\"\n\n아차, 생각이 짧았나.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C006A", "label": "\"그럼 일단 숨기다가 천천히 공개해요\"", "outcome": "continue", "nextSceneId": "S007"},
+        {"id": "C006B", "label": "\"아, 미안해요. 제가 성급했네요\"", "outcome": "continue", "nextSceneId": "S008"}
+      ]
+    },
+    {
+      "id": "S007",
+      "content": "점심시간.\n회사 근처 한적한 카페에서 몰래 만났다.\n\n\"이거 완전 비밀연애 같아요.\"\n희수가 재밌다는 듯 웃는다.\n\n\"설레지 않아요?\"\n\"...조금요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C007A", "label": "\"조금만요? 섭섭하네~\"", "outcome": "continue", "nextSceneId": "S009"},
+        {"id": "C007B", "label": "\"저는 많이 설레는데\"", "outcome": "continue", "nextSceneId": "S009"}
+      ]
+    },
+    {
+      "id": "S008",
+      "content": "퇴근 후, 회사 근처에서 만났다.\n\n\"오늘 뭐 먹을까요?\"\n\"연주씨가 골라요.\"\n\n처음 둘이서 먹는 저녁. 뭘 먹어도 맛있을 것 같다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C008A", "label": "분위기 좋은 이탈리안 레스토랑", "outcome": "continue", "nextSceneId": "S010"},
+        {"id": "C008B", "label": "소박하게 떡볶이", "outcome": "continue", "nextSceneId": "S011"}
+      ]
+    },
+    {
+      "id": "S009",
+      "content": "\"농담이에요. 저도 많이 설레요.\"\n\n희수가 볼을 붉히며 말한다.\n커피잔을 들고 있는 그녀의 손이 살짝 떨린다.\n\n귀여워서 미치겠다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C009A", "label": "손을 잡아본다", "outcome": "continue", "nextSceneId": "S012"},
+        {"id": "C009B", "label": "\"희수씨 귀여워요\"", "outcome": "continue", "nextSceneId": "S012"}
+      ]
+    },
+    {
+      "id": "S010",
+      "content": "분위기 좋은 레스토랑에 왔다.\n캔들 라이트 아래 마주 앉으니 영화 같다.\n\n\"여기 비싸 보이는데... 괜찮아요?\"\n\"첫 데이트인데 당연히 제가 쏘죠.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C010A", "label": "와인도 시킨다", "outcome": "continue", "nextSceneId": "S013"},
+        {"id": "C010B", "label": "음식에 집중한다", "outcome": "continue", "nextSceneId": "S014"}
+      ]
+    },
+    {
+      "id": "S011",
+      "content": "포장마차에서 떡볶이를 먹었다.\n\n\"이게 더 우리답지 않아요?\"\n희수가 웃으며 순대를 집는다.\n\n\"맞아요. 비싼 거 먹는 건 나중에 해요.\"\n\"기대할게요~\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C011A", "label": "\"다음엔 제가 제대로 쏠게요\"", "outcome": "continue", "nextSceneId": "S014"},
+        {"id": "C011B", "label": "\"우리 자주 오자\"", "outcome": "continue", "nextSceneId": "S014"}
+      ]
+    },
+    {
+      "id": "S012",
+      "content": "손을 슬쩍 잡았다.\n희수가 움찔하더니 이내 손에 힘을 준다.\n\n\"...카페에서 이러면 안 되는데.\"\n\"아무도 안 봐요.\"\n\n우리만의 비밀.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C012A", "label": "\"다음엔 손 말고 다른 것도 잡아도 될까요?\"", "outcome": "continue", "nextSceneId": "S015"},
+        {"id": "C012B", "label": "조용히 손만 잡고 있는다", "outcome": "continue", "nextSceneId": "S016"}
+      ]
+    },
+    {
+      "id": "S013",
+      "content": "와인을 한 잔씩 마셨다.\n희수의 볼이 살짝 붉어진다.\n\n\"저 술 약해요...\"\n\"그럼 이만 마셔요.\"\n\n취기 어린 그녀가 더 예뻐 보인다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C013A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S017"},
+        {"id": "C013B", "label": "\"2차 갈까요?\"", "outcome": "continue", "nextSceneId": "S018"}
+      ]
+    },
+    {
+      "id": "S014",
+      "content": "식사를 마치고 거리를 걸었다.\n어느새 해가 지고 가로등이 켜졌다.\n\n\"오늘 진짜 재밌었어요.\"\n\"저도요. 또 만나요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C014A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S017"},
+        {"id": "C014B", "label": "\"아쉬운데... 2차 갈까요?\"", "outcome": "continue", "nextSceneId": "S018"}
+      ]
+    },
+    {
+      "id": "S015",
+      "content": "\"...뭘요?\"\n\n희수가 의아하게 쳐다본다.\n\n\"농담이에요~\"\n\"뭐야, 진지하게 물었잖아요.\"\n\n장난치다 진심이 될 뻔했다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C015A", "label": "\"사실 진심이에요\"", "outcome": "continue", "nextSceneId": "S019"},
+        {"id": "C015B", "label": "\"다음에 알려줄게요~\"", "outcome": "continue", "nextSceneId": "S016"}
+      ]
+    },
+    {
+      "id": "S016",
+      "content": "조용히 손을 잡고 있었다.\n말이 없어도 좋았다.\n\n\"...시간 가는 줄 몰랐네요.\"\n벌써 점심시간이 끝나간다.\n\n\"또 만나요.\"\n\"네, 퇴근하고 봐요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C016A", "label": "볼에 살짝 뽀뽀한다", "outcome": "continue", "nextSceneId": "S020"},
+        {"id": "C016B", "label": "손 흔들며 헤어진다", "outcome": "continue", "nextSceneId": "S021"}
+      ]
+    },
+    {
+      "id": "S017",
+      "content": "💕 EP2. 점점 가까워지는 우리\n\n희수네 집 앞에 도착했다.\n\n\"여기까지만요. 올라가지는 마세요.\"\n\"알죠알죠~ 아직 빠르니까.\"\n\n희수가 살짝 아쉬운 표정을 짓는다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C017A", "label": "\"안녕히 주무세요\" (헤어진다)", "outcome": "continue", "nextSceneId": "S022"},
+        {"id": "C017B", "label": "\"...진짜 안 올라가도 돼요?\"", "outcome": "continue", "nextSceneId": "S023"}
+      ]
+    },
+    {
+      "id": "S018",
+      "content": "2차로 조용한 바에 갔다.\n분위기 좋은 음악이 흐른다.\n\n\"오늘 너무 좋아요.\"\n희수가 나를 바라보며 말한다.\n\n눈이 마주쳤다. 심장이 두근거린다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C018A", "label": "\"뽀뽀해도 돼요?\"", "outcome": "continue", "nextSceneId": "S024"},
+        {"id": "C018B", "label": "\"저도 좋아요\"", "outcome": "continue", "nextSceneId": "S025"}
+      ]
+    },
+    {
+      "id": "S019",
+      "content": "\"진심이라면... 뭘 잡고 싶은데요?\"\n\n희수가 호기심 어린 눈으로 물어본다.\n\n이 분위기라면...",
+      "isEnding": false,
+      "choices": [
+        {"id": "C019A", "label": "\"희수씨 마음이요\"", "outcome": "continue", "nextSceneId": "S026"},
+        {"id": "C019B", "label": "\"비밀이에요~\"", "outcome": "continue", "nextSceneId": "S016"}
       ]
     },
     {
       "id": "S020",
-      "content": "\"네, 사귀는 거예요.\"\n\n희수가 수줍게 웃는다. 세상에서 제일 예쁜 미소다.\n\n💕 EP1. 설레는 연애의 시작",
+      "content": "볼에 살짝 입술을 댔다.\n희수가 얼굴이 빨개진다.\n\n\"야, 여기 카페라고!\"\n\"아무도 안 봤어요~\"\n\n귀까지 빨개진 희수. 너무 귀엽다.",
       "isEnding": false,
       "choices": [
-        {"id": "C020A", "label": "오늘부터 1일이네요!", "outcome": "continue", "nextSceneId": "S022"},
-        {"id": "C020B", "label": "기념으로 뭐 할까요?", "outcome": "continue", "nextSceneId": "S022"}
+        {"id": "C020A", "label": "\"퇴근하고 봐요~\"", "outcome": "continue", "nextSceneId": "S021"}
       ]
     },
     {
       "id": "S021",
-      "content": "손을 잡자 희수가 살짝 놀란다.\n하지만 곧 손에 힘을 준다.\n\n\"...좋아요.\"\n\n말 없이도 통하는 우리.\n\n💕 EP1. 설레는 연애의 시작",
+      "content": "오후 내내 희수 생각뿐이었다.\n일이 손에 안 잡힌다.\n\n[카톡: 희수♥]\n'퇴근하면 어디서 만날까요?'\n\n심장이 콩닥콩닥.",
       "isEnding": false,
       "choices": [
-        {"id": "C021A", "label": "이 손 놓지 마요.", "outcome": "continue", "nextSceneId": "S022"}
+        {"id": "C021A", "label": "'우리 집 근처 어때요?'", "outcome": "continue", "nextSceneId": "S027"},
+        {"id": "C021B", "label": "'희수씨가 골라요'", "outcome": "continue", "nextSceneId": "S028"}
       ]
     },
     {
       "id": "S022",
-      "content": "☕ 다음 날 아침, 회사\n\n출근길에 희수를 만났다.\n\"안녕하세요~\"\n평소처럼 인사하는 그녀. 아무도 모르는 우리만의 비밀이 생겼다.\n\n근데 회사에서 어떻게 하지?",
+      "content": "집에 돌아왔다.\n희수에게서 메시지가 왔다.\n\n'오늘 고마웠어요. 좋은 꿈 꿔요 💕'\n\n심장이 녹는다.",
       "isEnding": false,
       "choices": [
-        {"id": "C022A", "label": "회사에서는 숨기자고 한다", "outcome": "continue", "nextSceneId": "S023"},
-        {"id": "C022B", "label": "당당하게 공개하자고 한다", "outcome": "continue", "nextSceneId": "S024"}
+        {"id": "C022A", "label": "'희수씨 꿈 꿀게요'", "outcome": "continue", "nextSceneId": "S029"},
+        {"id": "C022B", "label": "'저도요! 내일 봐요 ❤️'", "outcome": "continue", "nextSceneId": "S029"}
       ]
     },
     {
       "id": "S023",
-      "content": "\"그래요, 회사에서는 조심하는 게 좋겠죠.\"\n\n희수가 동의한다.\n하지만 눈이 마주칠 때마다 입꼬리가 올라간다.\n숨기기 힘들겠는데...",
+      "content": "\"...진짜요?\"\n\n희수가 놀란 표정을 짓는다.\n잠깐, 이건 좀 빠르지 않나?\n\n\"농담이에요. 조심히 들어가요.\"\n\n\"뭐야... 기대했잖아요.\"\n\n기대했다고?!",
       "isEnding": false,
       "choices": [
-        {"id": "C023A", "label": "점심에 몰래 만나자고 한다", "outcome": "continue", "nextSceneId": "S025"},
-        {"id": "C023B", "label": "퇴근 후에 보자고 한다", "outcome": "continue", "nextSceneId": "S026"}
+        {"id": "C023A", "label": "\"그럼 올라가도 될까요?\"", "outcome": "continue", "nextSceneId": "S030"},
+        {"id": "C023B", "label": "\"다음에 올라갈게요\" (참는다)", "outcome": "continue", "nextSceneId": "S022"}
       ]
     },
     {
       "id": "S024",
-      "content": "\"에이, 뭘 숨겨요. 당당하게 사귀는 건데.\"\n\n희수가 살짝 당황한다.\n\"그래도 소문나면 불편하지 않을까요...\"\n\n아차, 생각이 짧았나.",
+      "content": "\"...네.\"\n\n희수가 눈을 감는다.\n심장이 터질 것 같다.\n\n조심스럽게 다가가 입술을 포갠다.\n달콤한 첫 키스.",
       "isEnding": false,
       "choices": [
-        {"id": "C024A", "label": "\"그럼 일단 숨기다가 천천히 공개해요\"", "outcome": "continue", "nextSceneId": "S025"},
-        {"id": "C024B", "label": "\"아, 미안해요. 제가 성급했네요\"", "outcome": "continue", "nextSceneId": "S026"}
+        {"id": "C024A", "label": "\"...맛있다\"", "outcome": "continue", "nextSceneId": "S031"},
+        {"id": "C024B", "label": "(아무 말 없이 안아준다)", "outcome": "continue", "nextSceneId": "S032"}
       ]
     },
     {
       "id": "S025",
-      "content": "점심시간.\n회사 근처 한적한 카페에서 몰래 만났다.\n\n\"이거 완전 비밀연애 같아요.\"\n희수가 재밌다는 듯 웃는다.\n\n\"설레지 않아요?\"\n\"...조금요.\"",
+      "content": "분위기가 무르익었다.\n희수가 내 손을 잡는다.\n\n\"연주씨... 저 오늘 집에 가기 싫어요.\"\n\n심장이 멎을 것 같다.",
       "isEnding": false,
       "choices": [
-        {"id": "C025A", "label": "\"조금만요? 섭섭하네~\"", "outcome": "continue", "nextSceneId": "S027"},
-        {"id": "C025B", "label": "\"저는 많이 설레는데\"", "outcome": "continue", "nextSceneId": "S027"}
+        {"id": "C025A", "label": "\"그럼 우리 집 갈래요?\"", "outcome": "continue", "nextSceneId": "S033"},
+        {"id": "C025B", "label": "\"아직 빠르지 않아요?\"", "outcome": "continue", "nextSceneId": "S034"}
       ]
     },
     {
       "id": "S026",
-      "content": "퇴근 후, 회사 근처에서 만났다.\n\n\"오늘 뭐 먹을까요?\"\n\"연주씨가 골라요.\"\n\n처음 둘이서 먹는 저녁. 뭘 먹어도 맛있을 것 같다.",
+      "content": "\"제 마음은 이미 연주씨 거예요.\"\n\n희수가 웃으며 말한다.\n\n\"...진짜요?\"\n\"네, 진짜요.\"\n\n세상에서 가장 행복한 순간이다.",
       "isEnding": false,
       "choices": [
-        {"id": "C026A", "label": "분위기 좋은 이탈리안 레스토랑", "outcome": "continue", "nextSceneId": "S028"},
-        {"id": "C026B", "label": "소박하게 떡볶이", "outcome": "continue", "nextSceneId": "S029"}
+        {"id": "C026A", "label": "\"저도 희수씨한테 마음 뺏겼어요\"", "outcome": "continue", "nextSceneId": "S021"}
       ]
     },
     {
       "id": "S027",
-      "content": "\"농담이에요. 저도 많이 설레요.\"\n\n희수가 볼을 붉히며 말한다.\n커피잔을 들고 있는 그녀의 손이 살짝 떨린다.\n\n귀여워서 미치겠다.",
+      "content": "우리 집 근처 공원에서 만났다.\n해 질 녘, 벤치에 나란히 앉았다.\n\n\"여기 좋다. 조용하고.\"\n\"그쵸? 자주 와요.\"\n\n희수가 내 어깨에 머리를 기댄다.",
       "isEnding": false,
       "choices": [
-        {"id": "C027A", "label": "손을 잡아본다", "outcome": "continue", "nextSceneId": "S030"},
-        {"id": "C027B", "label": "\"희수씨 귀여워요\"", "outcome": "continue", "nextSceneId": "S030"}
+        {"id": "C027A", "label": "\"우리 집 구경할래요?\"", "outcome": "continue", "nextSceneId": "S033"},
+        {"id": "C027B", "label": "그냥 이대로 있는다", "outcome": "continue", "nextSceneId": "S035"}
       ]
     },
     {
       "id": "S028",
-      "content": "분위기 좋은 레스토랑에 왔다.\n캔들 라이트 아래 마주 앉으니 영화 같다.\n\n\"여기 비싸 보이는데... 괜찮아요?\"\n\"첫 데이트인데 당연히 제가 쏘죠.\"",
+      "content": "'그럼 제가 가고 싶은 데 있는데... 괜찮아요?'\n\n어디길래?\n\n'좋아요, 어딘데요?'\n'비밀~ 퇴근하고 알려줄게요'",
       "isEnding": false,
       "choices": [
-        {"id": "C028A", "label": "와인도 시킨다", "outcome": "continue", "nextSceneId": "S031"},
-        {"id": "C028B", "label": "음식에 집중한다", "outcome": "continue", "nextSceneId": "S032"}
+        {"id": "C028A", "label": "기대된다!", "outcome": "continue", "nextSceneId": "S036"}
       ]
     },
     {
       "id": "S029",
-      "content": "포장마차에서 떡볶이를 먹었다.\n\n\"이게 더 우리답지 않아요?\"\n희수가 웃으며 순대를 집는다.\n\n\"맞아요. 비싼 거 먹는 건 나중에 해요.\"\n\"기대할게요~\"",
+      "content": "💕 EP3. 연인의 일상\n\n사귄 지 한 달이 지났다.\n이제 회사에서도 슬슬 눈치채는 사람들이 생겼다.\n\n\"너네 둘 뭐야? 요즘 분위기가?\"\n\n친한 동료 민지가 물어온다.",
       "isEnding": false,
       "choices": [
-        {"id": "C029A", "label": "\"다음엔 제가 제대로 쏠게요\"", "outcome": "continue", "nextSceneId": "S032"},
-        {"id": "C029B", "label": "\"우리 자주 오자\"", "outcome": "continue", "nextSceneId": "S032"}
+        {"id": "C029A", "label": "\"사실은...\" (털어놓는다)", "outcome": "continue", "nextSceneId": "S037"},
+        {"id": "C029B", "label": "\"무슨 소리야~ 아무것도 아니야\"", "outcome": "continue", "nextSceneId": "S038"}
       ]
     },
     {
       "id": "S030",
-      "content": "손을 슬쩍 잡았다.\n희수가 움찔하더니 이내 손에 힘을 준다.\n\n\"...카페에서 이러면 안 되는데.\"\n\"아무도 안 봐요.\"\n\n우리만의 비밀.",
+      "content": "희수네 집에 올라왔다.\n아담하고 아늑한 원룸이다.\n\n\"좁죠? 부끄럽네요.\"\n\"아니에요, 희수씨 답게 예뻐요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C030A", "label": "\"다음엔 손 말고 다른 것도 잡아도 될까요?\"", "outcome": "continue", "nextSceneId": "S033"},
-        {"id": "C030B", "label": "조용히 손만 잡고 있는다", "outcome": "continue", "nextSceneId": "S034"}
+        {"id": "C030A", "label": "구경하다 사진을 발견한다", "outcome": "continue", "nextSceneId": "S039"},
+        {"id": "C030B", "label": "소파에 앉아 이야기한다", "outcome": "continue", "nextSceneId": "S040"}
       ]
     },
     {
       "id": "S031",
-      "content": "와인을 한 잔씩 마셨다.\n희수의 볼이 살짝 붉어진다.\n\n\"저 술 약해요...\"\n\"그럼 이만 마셔요.\"\n\n취기 어린 그녀가 더 예뻐 보인다.",
+      "content": "\"뭐가 맛있어요!\"\n\n희수가 부끄러운 듯 내 어깨를 친다.\n\n\"희수씨가 맛있다고요~\"\n\"진짜... 어휴.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C031A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S035"},
-        {"id": "C031B", "label": "\"2차 갈까요?\"", "outcome": "continue", "nextSceneId": "S036"}
+        {"id": "C031A", "label": "\"한 번 더?\"", "outcome": "continue", "nextSceneId": "S041"},
+        {"id": "C031B", "label": "\"이제 집에 가요\" (아쉽지만)", "outcome": "continue", "nextSceneId": "S022"}
       ]
     },
     {
       "id": "S032",
-      "content": "식사를 마치고 거리를 걸었다.\n어느새 해가 지고 가로등이 켜졌다.\n\n\"오늘 진짜 재밌었어요.\"\n\"저도요. 또 만나요.\"",
+      "content": "말없이 희수를 안았다.\n작은 몸이 내 품에 쏙 들어온다.\n\n\"...좋아요.\"\n\"저도요.\"\n\n영원히 이러고 싶다.",
       "isEnding": false,
       "choices": [
-        {"id": "C032A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S035"},
-        {"id": "C032B", "label": "\"아쉬운데... 2차 갈까요?\"", "outcome": "continue", "nextSceneId": "S036"}
+        {"id": "C032A", "label": "\"집에 갈까요?\"", "outcome": "continue", "nextSceneId": "S033"},
+        {"id": "C032B", "label": "\"더 있다 가요\"", "outcome": "continue", "nextSceneId": "S022"}
       ]
     },
     {
       "id": "S033",
-      "content": "\"...뭘요?\"\n\n희수가 의아하게 쳐다본다.\n\n\"농담이에요~\"\n\"뭐야, 진지하게 물었잖아요.\"\n\n장난치다 진심이 될 뻔했다.",
+      "content": "우리 집에 왔다.\n희수가 두리번거린다.\n\n\"깔끔하네요. 의외예요.\"\n\"의외라니! 저 깔끔한 사람이에요.\"\n\n희수가 웃는다.",
       "isEnding": false,
       "choices": [
-        {"id": "C033A", "label": "\"사실 진심이에요\"", "outcome": "continue", "nextSceneId": "S037"},
-        {"id": "C033B", "label": "\"다음에 알려줄게요~\"", "outcome": "continue", "nextSceneId": "S034"}
+        {"id": "C033A", "label": "영화를 본다", "outcome": "continue", "nextSceneId": "S042"},
+        {"id": "C033B", "label": "이야기를 나눈다", "outcome": "continue", "nextSceneId": "S040"}
       ]
     },
     {
       "id": "S034",
-      "content": "조용히 손을 잡고 있었다.\n말이 없어도 좋았다.\n\n\"...시간 가는 줄 몰랐네요.\"\n벌써 점심시간이 끝나간다.\n\n\"또 만나요.\"\n\"네, 퇴근하고 봐요.\"",
+      "content": "\"...그렇죠. 아직 빠르죠.\"\n\n희수가 살짝 실망한 표정을 짓는다.\n\n\"아, 싫다는 게 아니라...\"\n\"알아요. 연주씨가 저 배려해주는 거잖아요.\"\n\n다행이다.",
       "isEnding": false,
       "choices": [
-        {"id": "C034A", "label": "볼에 살짝 뽀뽀한다", "outcome": "continue", "nextSceneId": "S038"},
-        {"id": "C034B", "label": "손 흔들며 헤어진다", "outcome": "continue", "nextSceneId": "S039"}
+        {"id": "C034A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S017"}
       ]
     },
     {
       "id": "S035",
-      "content": "💕 EP2. 점점 가까워지는 우리\n\n희수네 집 앞에 도착했다.\n\n\"여기까지만요. 올라가지는 마세요.\"\n\"알죠알죠~ 아직 빠르니까.\"\n\n희수가 살짝 아쉬운 표정을 짓는다.",
+      "content": "한참을 그렇게 앉아있었다.\n해가 지고 별이 뜬다.\n\n\"연주씨, 저 행복해요.\"\n\"저도요.\"\n\n이 순간이 영원했으면.",
       "isEnding": false,
       "choices": [
-        {"id": "C035A", "label": "\"안녕히 주무세요\" (헤어진다)", "outcome": "continue", "nextSceneId": "S040"},
-        {"id": "C035B", "label": "\"...진짜 안 올라가도 돼요?\"", "outcome": "continue", "nextSceneId": "S041"}
+        {"id": "C035A", "label": "\"우리 오래 만나요\"", "outcome": "continue", "nextSceneId": "S043"},
+        {"id": "C035B", "label": "(그냥 손을 꼭 잡는다)", "outcome": "continue", "nextSceneId": "S043"}
       ]
     },
     {
       "id": "S036",
-      "content": "2차로 조용한 바에 갔다.\n분위기 좋은 음악이 흐른다.\n\n\"오늘 너무 좋아요.\"\n희수가 나를 바라보며 말한다.\n\n눈이 마주쳤다. 심장이 두근거린다.",
+      "content": "희수가 데려간 곳은 한강공원이었다.\n\n\"여기서 자전거 타고 싶었어요!\"\n\n\"자전거요? 좋아요!\"",
       "isEnding": false,
       "choices": [
-        {"id": "C036A", "label": "\"뽀뽀해도 돼요?\"", "outcome": "continue", "nextSceneId": "S042"},
-        {"id": "C036B", "label": "\"저도 좋아요\"", "outcome": "continue", "nextSceneId": "S043"}
+        {"id": "C036A", "label": "2인용 자전거를 탄다", "outcome": "continue", "nextSceneId": "S044"},
+        {"id": "C036B", "label": "각자 자전거를 탄다", "outcome": "continue", "nextSceneId": "S045"}
       ]
     },
     {
       "id": "S037",
-      "content": "\"진심이라면... 뭘 잡고 싶은데요?\"\n\n희수가 호기심 어린 눈으로 물어본다.\n\n이 분위기라면...",
+      "content": "\"사실 희수랑 사귀고 있어.\"\n\n민지가 눈이 동그래진다.\n\n\"진짜?! 축하해!! 언제부터야?\"\n\"한 달 됐어.\"\n\"야! 왜 이제 말해!\"",
       "isEnding": false,
       "choices": [
-        {"id": "C037A", "label": "\"희수씨 마음이요\"", "outcome": "continue", "nextSceneId": "S044"},
-        {"id": "C037B", "label": "\"비밀이에요~\"", "outcome": "continue", "nextSceneId": "S034"}
+        {"id": "C037A", "label": "\"비밀로 해줘\"", "outcome": "continue", "nextSceneId": "S046"},
+        {"id": "C037B", "label": "\"다른 사람한테는 말하지 마\"", "outcome": "continue", "nextSceneId": "S046"}
       ]
     },
     {
       "id": "S038",
-      "content": "볼에 살짝 입술을 댔다.\n희수가 얼굴이 빨개진다.\n\n\"야, 여기 카페라고!\"\n\"아무도 안 봤어요~\"\n\n귀까지 빨개진 희수. 너무 귀엽다.",
+      "content": "\"아무것도 아니긴~ 다 티나는데?\"\n\n민지가 눈을 찡긋한다.\n\n\"축하해. 비밀 지켜줄게.\"\n\n다행이다. 민지는 믿을 수 있으니까.",
       "isEnding": false,
       "choices": [
-        {"id": "C038A", "label": "\"퇴근하고 봐요~\"", "outcome": "continue", "nextSceneId": "S039"}
+        {"id": "C038A", "label": "\"고마워!\"", "outcome": "continue", "nextSceneId": "S046"}
       ]
     },
     {
       "id": "S039",
-      "content": "오후 내내 희수 생각뿐이었다.\n일이 손에 안 잡힌다.\n\n[카톡: 희수♥]\n'퇴근하면 어디서 만날까요?'\n\n심장이 콩닥콩닥.",
+      "content": "책장에 있는 사진을 봤다.\n희수랑 한 여자가 찍은 사진이다.\n\n\"이 사람은 누구예요?\"\n\n희수의 표정이 살짝 굳는다.\n\n\"...전 여자친구예요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C039A", "label": "'우리 집 근처 어때요?'", "outcome": "continue", "nextSceneId": "S045"},
-        {"id": "C039B", "label": "'희수씨가 골라요'", "outcome": "continue", "nextSceneId": "S046"}
+        {"id": "C039A", "label": "\"아... 그렇구나\" (담담하게)", "outcome": "continue", "nextSceneId": "S047"},
+        {"id": "C039B", "label": "\"왜 아직 사진이 있어요?\"", "outcome": "continue", "nextSceneId": "S048"}
       ]
     },
     {
       "id": "S040",
-      "content": "집에 돌아왔다.\n희수에게서 메시지가 왔다.\n\n'오늘 고마웠어요. 좋은 꿈 꿔요 💕'\n\n심장이 녹는다.",
+      "content": "소파에 앉아 이야기를 나눴다.\n희수의 취미, 좋아하는 것, 어린 시절 이야기...\n\n\"연주씨는요? 어떻게 자기가 여자를 좋아하는지 알게 됐어요?\"\n\n음, 이야기해줄까?",
       "isEnding": false,
       "choices": [
-        {"id": "C040A", "label": "'희수씨 꿈 꿀게요'", "outcome": "continue", "nextSceneId": "S047"},
-        {"id": "C040B", "label": "'저도요! 내일 봐요 ❤️'", "outcome": "continue", "nextSceneId": "S047"}
+        {"id": "C040A", "label": "솔직하게 이야기한다", "outcome": "continue", "nextSceneId": "S049"},
+        {"id": "C040B", "label": "\"그냥... 자연스럽게?\"", "outcome": "continue", "nextSceneId": "S050"}
       ]
     },
     {
       "id": "S041",
-      "content": "\"...진짜요?\"\n\n희수가 놀란 표정을 짓는다.\n잠깐, 이건 좀 빠르지 않나?\n\n\"농담이에요. 조심히 들어가요.\"\n\n\"뭐야... 기대했잖아요.\"\n\n기대했다고?!",
+      "content": "한 번 더 키스했다.\n이번엔 더 깊게.\n\n\"...연주씨.\"\n\"응?\"\n\"좋아해요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C041A", "label": "\"그럼 올라가도 될까요?\"", "outcome": "continue", "nextSceneId": "S048"},
-        {"id": "C041B", "label": "\"다음에 올라갈게요\" (참는다)", "outcome": "continue", "nextSceneId": "S040"}
+        {"id": "C041A", "label": "\"나도 좋아해요\"", "outcome": "continue", "nextSceneId": "S051"},
+        {"id": "C041B", "label": "(대답 대신 안아준다)", "outcome": "continue", "nextSceneId": "S051"}
       ]
     },
     {
       "id": "S042",
-      "content": "\"...네.\"\n\n희수가 눈을 감는다.\n심장이 터질 것 같다.\n\n조심스럽게 다가가 입술을 포갠다.\n달콤한 첫 키스.",
+      "content": "영화를 보다가 희수가 내 어깨에 기댔다.\n영화는 눈에 안 들어온다.\n\n\"...졸려요?\"\n\"아니요, 그냥 이러고 싶어서.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C042A", "label": "\"...맛있다\"", "outcome": "continue", "nextSceneId": "S049"},
-        {"id": "C042B", "label": "(아무 말 없이 안아준다)", "outcome": "continue", "nextSceneId": "S050"}
+        {"id": "C042A", "label": "머리를 쓰다듬어준다", "outcome": "continue", "nextSceneId": "S052"},
+        {"id": "C042B", "label": "\"오늘 자고 가요\"", "outcome": "continue", "nextSceneId": "S053"}
       ]
     },
     {
       "id": "S043",
-      "content": "분위기가 무르익었다.\n희수가 내 손을 잡는다.\n\n\"연주씨... 저 오늘 집에 가기 싫어요.\"\n\n심장이 멎을 것 같다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C043A", "label": "\"그럼 우리 집 갈래요?\"", "outcome": "continue", "nextSceneId": "S051"},
-        {"id": "C043B", "label": "\"아직 빠르지 않아요?\"", "outcome": "continue", "nextSceneId": "S052"}
-      ]
+      "content": "🎉 해피 엔딩 1: 행복한 시작\n\n\"평생이라... 진심이에요?\"\n\n희수가 진지하게 물어본다.\n\n\"응. 희수씨랑 계속 함께하고 싶어요.\"\n\"...저도요.\"\n\n우리의 이야기는 이제 막 시작됐다.\n\n💕 THE END - 우리의 시작\n\n(Part 2에서 계속됩니다...)",
+      "isEnding": true,
+      "choices": []
     },
     {
       "id": "S044",
-      "content": "\"제 마음은 이미 연주씨 거예요.\"\n\n희수가 웃으며 말한다.\n\n\"...진짜요?\"\n\"네, 진짜요.\"\n\n세상에서 가장 행복한 순간이다.",
+      "content": "2인용 자전거를 타고 한강을 달린다.\n\n\"앞에서 열심히 밟아요~\"\n\"야! 뒤에서도 밟아!\"\n\n깔깔 웃으며 달리는 우리.\n바람이 시원하다.",
       "isEnding": false,
       "choices": [
-        {"id": "C044A", "label": "\"저도 희수씨한테 마음 뺏겼어요\"", "outcome": "continue", "nextSceneId": "S039"}
+        {"id": "C044A", "label": "치킨 사 먹자고 한다", "outcome": "continue", "nextSceneId": "S054"},
+        {"id": "C044B", "label": "노을 보며 쉰다", "outcome": "continue", "nextSceneId": "S055"}
       ]
     },
     {
       "id": "S045",
-      "content": "우리 집 근처 공원에서 만났다.\n해 질 녘, 벤치에 나란히 앉았다.\n\n\"여기 좋다. 조용하고.\"\n\"그쵸? 자주 와요.\"\n\n희수가 내 어깨에 머리를 기댄다.",
+      "content": "각자 자전거를 타고 달린다.\n희수가 앞서 달리며 뒤돌아본다.\n\n\"빨리 와요~!\"\n\"기다려!\"",
       "isEnding": false,
       "choices": [
-        {"id": "C045A", "label": "\"우리 집 구경할래요?\"", "outcome": "continue", "nextSceneId": "S051"},
-        {"id": "C045B", "label": "그냥 이대로 있는다", "outcome": "continue", "nextSceneId": "S053"}
+        {"id": "C045A", "label": "전속력으로 쫓아간다", "outcome": "continue", "nextSceneId": "S054"}
       ]
     },
     {
       "id": "S046",
-      "content": "'그럼 제가 가고 싶은 데 있는데... 괜찮아요?'\n\n어디길래?\n\n'좋아요, 어딘데요?'\n'비밀~ 퇴근하고 알려줄게요'",
+      "content": "💕 EP3. 연인의 일상 (계속)\n\n며칠 후, 팀 회식이 있었다.\n희수도 같이 참석한다.\n술자리에서 모르는 남자가 희수에게 작업을 건다.\n\n\"통역사님, 술 한 잔 받아요~\"",
       "isEnding": false,
       "choices": [
-        {"id": "C046A", "label": "기대된다!", "outcome": "continue", "nextSceneId": "S054"}
+        {"id": "C046A", "label": "끼어들어서 막는다", "outcome": "continue", "nextSceneId": "S056"},
+        {"id": "C046B", "label": "희수가 알아서 하도록 둔다", "outcome": "continue", "nextSceneId": "S057"}
       ]
     },
     {
       "id": "S047",
-      "content": "💕 EP3. 연인의 일상\n\n사귄 지 한 달이 지났다.\n이제 회사에서도 슬슬 눈치채는 사람들이 생겼다.\n\n\"너네 둘 뭐야? 요즘 분위기가?\"\n\n친한 동료 민지가 물어온다.",
+      "content": "\"헤어진 지 1년 됐어요. 근데 사진은 그냥... 추억이니까.\"\n\n희수가 조심스럽게 말한다.\n\n\"불편하면 치울게요.\"\n\n흠, 어떻게 하지?",
       "isEnding": false,
       "choices": [
-        {"id": "C047A", "label": "\"사실은...\" (털어놓는다)", "outcome": "continue", "nextSceneId": "S055"},
-        {"id": "C047B", "label": "\"무슨 소리야~ 아무것도 아니야\"", "outcome": "continue", "nextSceneId": "S056"}
+        {"id": "C047A", "label": "\"아니에요, 괜찮아요\"", "outcome": "continue", "nextSceneId": "S058"},
+        {"id": "C047B", "label": "\"솔직히 조금 불편해요\"", "outcome": "continue", "nextSceneId": "S059"}
       ]
     },
     {
       "id": "S048",
-      "content": "희수네 집에 올라왔다.\n아담하고 아늑한 원룸이다.\n\n\"좁죠? 부끄럽네요.\"\n\"아니에요, 희수씨 답게 예뻐요.\"",
+      "content": "\"왜 아직 사진이 있냐고요?\"\n\n희수의 표정이 굳어진다.\n\n\"...그냥 정리 안 한 거예요.\"\n\"미련 있는 거 아니에요?\"\n\n분위기가 싸해진다.",
       "isEnding": false,
       "choices": [
-        {"id": "C048A", "label": "구경하다 사진을 발견한다", "outcome": "continue", "nextSceneId": "S057"},
-        {"id": "C048B", "label": "소파에 앉아 이야기한다", "outcome": "continue", "nextSceneId": "S058"}
+        {"id": "C048A", "label": "\"미안해요, 제가 너무 그랬네\"", "outcome": "continue", "nextSceneId": "S058"},
+        {"id": "C048B", "label": "\"솔직하게 말해줘요\"", "outcome": "continue", "nextSceneId": "S060"}
       ]
     },
     {
       "id": "S049",
-      "content": "\"뭐가 맛있어요!\"\n\n희수가 부끄러운 듯 내 어깨를 친다.\n\n\"희수씨가 맛있다고요~\"\n\"진짜... 어휴.\"",
+      "content": "\"고등학교 때 친한 친구가 있었는데... 걔한테 설렜어요.\"\n\n희수가 고개를 끄덕인다.\n\n\"그때 알았어요. 아, 나 여자 좋아하는구나.\"\n\"용기 있다. 나도 비슷해요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C049A", "label": "\"한 번 더?\"", "outcome": "continue", "nextSceneId": "S059"},
-        {"id": "C049B", "label": "\"이제 집에 가요\" (아쉽지만)", "outcome": "continue", "nextSceneId": "S040"}
+        {"id": "C049A", "label": "\"희수씨는 어땠어요?\"", "outcome": "continue", "nextSceneId": "S061"},
+        {"id": "C049B", "label": "\"우리 잘 맞는 것 같아요\"", "outcome": "continue", "nextSceneId": "S051"}
       ]
     },
     {
       "id": "S050",
-      "content": "말없이 희수를 안았다.\n작은 몸이 내 품에 쏙 들어온다.\n\n\"...좋아요.\"\n\"저도요.\"\n\n영원히 이러고 싶다.",
+      "content": "\"자연스럽게요? 그게 다야?\"\n\n희수가 의아하다는 표정을 짓는다.\n\n\"뭐... 복잡하게 생각 안 했어요.\"\n\"부럽다. 난 엄청 고민했거든요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C050A", "label": "\"집에 갈까요?\"", "outcome": "continue", "nextSceneId": "S051"},
-        {"id": "C050B", "label": "\"더 있다 가요\"", "outcome": "continue", "nextSceneId": "S040"}
+        {"id": "C050A", "label": "\"무슨 고민이요?\"", "outcome": "continue", "nextSceneId": "S061"}
       ]
     },
     {
       "id": "S051",
-      "content": "우리 집에 왔다.\n희수가 두리번거린다.\n\n\"깔끔하네요. 의외예요.\"\n\"의외라니! 저 깔끔한 사람이에요.\"\n\n희수가 웃는다.",
-      "isEnding": false,
-      "choices": [
-        {"id": "C051A", "label": "영화를 본다", "outcome": "continue", "nextSceneId": "S060"},
-        {"id": "C051B", "label": "이야기를 나눈다", "outcome": "continue", "nextSceneId": "S058"}
-      ]
+      "content": "🎉 해피 엔딩 2: 고백의 밤\n\n\"좋아해요.\"\n\"저도 좋아해요.\"\n\n서로의 마음을 확인한 밤.\n별이 유난히 빛난다.\n\n이 사람과 함께라면\n어디든, 뭐든 괜찮을 것 같다.\n\n💕 THE END - 서로를 확인한 밤\n\n(Part 2에서 계속됩니다...)",
+      "isEnding": true,
+      "choices": []
     },
     {
       "id": "S052",
-      "content": "\"...그렇죠. 아직 빠르죠.\"\n\n희수가 살짝 실망한 표정을 짓는다.\n\n\"아, 싫다는 게 아니라...\"\n\"알아요. 연주씨가 저 배려해주는 거잖아요.\"\n\n다행이다.",
+      "content": "머리를 쓰다듬자 희수가 눈을 감는다.\n평화로운 표정.\n\n\"...행복해요.\"\n\"저도요.\"\n\n영화가 끝나도 우리는 그대로였다.",
       "isEnding": false,
       "choices": [
-        {"id": "C052A", "label": "\"집까지 바래다줄게요\"", "outcome": "continue", "nextSceneId": "S035"}
+        {"id": "C052A", "label": "\"오늘 자고 가요\"", "outcome": "continue", "nextSceneId": "S053"}
       ]
     },
     {
       "id": "S053",
-      "content": "한참을 그렇게 앉아있었다.\n해가 지고 별이 뜬다.\n\n\"연주씨, 저 행복해요.\"\n\"저도요.\"\n\n이 순간이 영원했으면.",
+      "content": "희수가 처음으로 우리 집에서 잤다.\n아침에 눈을 뜨니 옆에 희수가 있다.\n\n\"...안녕?\"\n\"안녕.\"\n\n이게 꿈이 아니길.",
       "isEnding": false,
       "choices": [
-        {"id": "C053A", "label": "\"우리 오래 만나요\"", "outcome": "continue", "nextSceneId": "S061"},
-        {"id": "C053B", "label": "(그냥 손을 꼭 잡는다)", "outcome": "continue", "nextSceneId": "S061"}
+        {"id": "C053A", "label": "아침 만들어준다", "outcome": "continue", "nextSceneId": "S062"},
+        {"id": "C053B", "label": "더 자자고 한다", "outcome": "continue", "nextSceneId": "S063"}
       ]
     },
     {
       "id": "S054",
-      "content": "희수가 데려간 곳은 한강공원이었다.\n\n\"여기서 자전거 타고 싶었어요!\"\n\n아까 용산 얘기할 때 거절당했던 게 생각난다.\n\n\"자전거요? 좋아요!\"",
+      "content": "한강에서 치킨을 먹었다.\n\n\"이게 인생이지~\"\n\"인정. 치킨에 맥주 최고.\"\n\n석양이 진다. 희수 얼굴이 노을빛으로 물든다.\n\n'예쁘다...'",
       "isEnding": false,
       "choices": [
-        {"id": "C054A", "label": "2인용 자전거를 탄다", "outcome": "continue", "nextSceneId": "S062"},
-        {"id": "C054B", "label": "각자 자전거를 탄다", "outcome": "continue", "nextSceneId": "S063"}
+        {"id": "C054A", "label": "\"희수씨 너무 예뻐요\"", "outcome": "continue", "nextSceneId": "S064"},
+        {"id": "C054B", "label": "(몰래 사진 찍는다)", "outcome": "continue", "nextSceneId": "S065"}
       ]
     },
     {
       "id": "S055",
-      "content": "\"사실 희수랑 사귀고 있어.\"\n\n민지가 눈이 동그래진다.\n\n\"진짜?! 축하해!! 언제부터야?\"\n\"한 달 됐어.\"\n\"야! 왜 이제 말해!\"",
+      "content": "벤치에 앉아 노을을 본다.\n\n\"여기 진짜 좋다...\"\n\"그쵸? 자주 와요 우리.\"\n\n희수가 내 어깨에 기댄다.",
       "isEnding": false,
       "choices": [
-        {"id": "C055A", "label": "\"비밀로 해줘\"", "outcome": "continue", "nextSceneId": "S064"},
-        {"id": "C055B", "label": "\"다른 사람한테는 말하지 마\"", "outcome": "continue", "nextSceneId": "S064"}
+        {"id": "C055A", "label": "\"평생 이러고 살고 싶다\"", "outcome": "continue", "nextSceneId": "S043"}
       ]
     },
     {
       "id": "S056",
-      "content": "\"아무것도 아니긴~ 다 티나는데?\"\n\n민지가 눈을 찡긋한다.\n\n\"축하해. 비밀 지켜줄게.\"\n\n다행이다. 민지는 믿을 수 있으니까.",
+      "content": "\"저희 여자친구예요.\"\n\n남자가 당황한다.\n\n\"아, 죄송합니다...\"\n\n희수가 날 본다. 놀란 표정... 인 줄 알았는데 웃고 있다.",
       "isEnding": false,
       "choices": [
-        {"id": "C056A", "label": "\"고마워!\"", "outcome": "continue", "nextSceneId": "S064"}
+        {"id": "C056A", "label": "\"너무 그랬나...?\"", "outcome": "continue", "nextSceneId": "S066"},
+        {"id": "C056B", "label": "\"질투했어요\"", "outcome": "continue", "nextSceneId": "S067"}
       ]
     },
     {
       "id": "S057",
-      "content": "책장에 있는 사진을 봤다.\n희수랑 한 여자가 찍은 사진이다.\n\n\"이 사람은 누구예요?\"\n\n희수의 표정이 살짝 굳는다.\n\n\"...전 여자친구예요.\"",
+      "content": "희수가 알아서 거절한다.\n\n\"죄송해요, 저 사람 있어요.\"\n\n돌아와서 내 옆에 앉으며 속삭인다.\n\n\"질투 안 나요?\"\n\"...났어요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C057A", "label": "\"아... 그렇구나\" (담담하게)", "outcome": "continue", "nextSceneId": "S065"},
-        {"id": "C057B", "label": "\"왜 아직 사진이 있어요?\"", "outcome": "continue", "nextSceneId": "S066"}
+        {"id": "C057A", "label": "\"다음엔 내가 막을게\"", "outcome": "continue", "nextSceneId": "S067"}
       ]
     },
     {
       "id": "S058",
-      "content": "소파에 앉아 이야기를 나눴다.\n희수의 취미, 좋아하는 것, 어린 시절 이야기...\n\n\"연주씨는요? 어떻게 자기가 여자를 좋아하는지 알게 됐어요?\"\n\n음, 이야기해줄까?",
+      "content": "\"고마워요. 이해해줘서.\"\n\n희수가 안심한 표정을 짓는다.\n\n\"과거는 과거니까요. 지금 제 옆에 있는 건 저잖아요.\"\n\"맞아요. 지금은 연주씨가 제일 소중해요.\"",
       "isEnding": false,
       "choices": [
-        {"id": "C058A", "label": "솔직하게 이야기한다", "outcome": "continue", "nextSceneId": "S067"},
-        {"id": "C058B", "label": "\"그냥... 자연스럽게?\"", "outcome": "continue", "nextSceneId": "S068"}
+        {"id": "C058A", "label": "\"저도요\"", "outcome": "continue", "nextSceneId": "S051"}
       ]
+    },
+    {
+      "id": "S059",
+      "content": "\"불편해요? 그럼 바로 치울게요.\"\n\n희수가 사진을 서랍에 넣는다.\n\n\"미안해요. 제가 신경을 못 썼네.\"\n\"아니에요, 괜찮아요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C059A", "label": "\"이제 됐어요. 고마워요\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S060",
+      "content": "\"솔직히? 미련 없어요. 그 사람이 저 버렸거든요.\"\n\n희수의 목소리가 떨린다.\n\n\"...미안해요. 제가 너무 그랬네.\"\n\"아니에요. 물어볼 수 있죠.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C060A", "label": "(안아준다)", "outcome": "continue", "nextSceneId": "S068"},
+        {"id": "C060B", "label": "\"다신 그런 일 없을 거예요\"", "outcome": "continue", "nextSceneId": "S068"}
+      ]
+    },
+    {
+      "id": "S061",
+      "content": "\"저는 대학교 때 커밍아웃했는데... 부모님이 안 좋아하셨어요.\"\n\n희수가 쓸쓸히 웃는다.\n\n\"지금은 좀 나아졌지만... 아직도 어려워요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C061A", "label": "\"힘들었겠다...\"", "outcome": "continue", "nextSceneId": "S069"},
+        {"id": "C061B", "label": "\"우리 부모님은 어떨까...\"", "outcome": "continue", "nextSceneId": "S070"}
+      ]
+    },
+    {
+      "id": "S062",
+      "content": "아침을 만들어줬다.\n계란프라이와 토스트.\n\n\"맛있다! 연주씨 요리 잘하네요?\"\n\"이 정도는 뭐~\"\n\n사실 처음 해봤다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C062A", "label": "\"매일 해줄게요\"", "outcome": "continue", "nextSceneId": "S043"}
+      ]
+    },
+    {
+      "id": "S063",
+      "content": "\"5분만 더...\"\n\n희수가 이불 속으로 파고든다.\n\n결국 점심때 일어났다.\n게으른 주말. 나쁘지 않다.",
+      "isEnding": false,
+      "choices": [
+        {"id": "C063A", "label": "\"배달 시켜 먹자\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S064",
+      "content": "\"뭐야, 갑자기~\"\n\n희수가 부끄러워한다.\n\n\"사실이니까. 진짜 예뻐요.\"\n\"...고마워요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C064A", "label": "\"평생 옆에 있을게요\"", "outcome": "continue", "nextSceneId": "S043"}
+      ]
+    },
+    {
+      "id": "S065",
+      "content": "몰래 사진을 찍었는데 희수가 눈치챘다.\n\n\"야! 찍었어요?\"\n\"아니~\"\n\"거짓말! 보여줘요!\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C065A", "label": "보여준다", "outcome": "continue", "nextSceneId": "S043"}
+      ]
+    },
+    {
+      "id": "S066",
+      "content": "\"아니요, 좋았어요. 우리 사이 공개한 거잖아요.\"\n\n희수가 웃는다.\n\n\"이제 숨길 필요 없겠네요.\"\n\"응, 이제 당당하게 사귀자.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C066A", "label": "\"사랑해요\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S067",
+      "content": "\"질투요? 귀여워~\"\n\n희수가 웃는다.\n\n\"귀엽긴! 진심으로 질투났다고요.\"\n\"알아요. 그래서 더 좋아요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C067A", "label": "\"앞으로도 질투할 거예요\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S068",
+      "content": "\"이제 저한테 연주씨가 있으니까 괜찮아요.\"\n\n희수가 미소 짓는다.\n\n\"저도 희수씨 안 버릴 거예요.\"\n\"알아요. 믿어요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C068A", "label": "\"평생 함께해요\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S069",
+      "content": "\"지금은 괜찮아요. 연주씨가 옆에 있으니까.\"\n\n희수가 손을 잡는다.\n\n\"우리 앞으로 뭐든 함께 이겨내요.\"",
+      "isEnding": false,
+      "choices": [
+        {"id": "C069A", "label": "\"약속해요\"", "outcome": "continue", "nextSceneId": "S051"}
+      ]
+    },
+    {
+      "id": "S070",
+      "content": "😢 솔로 엔딩: 가족의 반대\n\n\"우리 부모님은 어떨까...\" 생각이 깊어졌다.\n\n결국 두려움이 앞섰다.\n희수와 점점 멀어졌고,\n1년 후 우리는 헤어졌다.\n\n\"미안해... 나 아직 준비가 안 됐어.\"\n\n용기를 내지 못한 게 너무 후회된다.\n\n💔 THE END - 용기 없는 사랑",
+      "isEnding": true,
+      "choices": []
     }
   ]
 }
