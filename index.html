@@ -545,7 +545,8 @@
                 <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
                 <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
                 <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
-                <button style="background: #9b59b6; color: white;" onclick="startTestPlay()">▶️ 테스트</button>
+                <button style="background: #9b59b6; color: white;" onclick="startTestPlay()">▶️ 처음부터</button>
+                <button id="testFromCurrentBtn" style="background: #8e44ad; color: white; display: none;" onclick="startTestPlayFromCurrent()">▶️ 현재 씬</button>
                 <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
             </div>
         </div>
@@ -630,7 +631,7 @@
         let testPathHistory = []; // 표시용 경로
         let testSceneStack = []; // 뒤로가기용 씬 스택
 
-        // 테스트 플레이 시작
+        // 테스트 플레이 시작 (씬 1부터)
         function startTestPlay() {
             // 현재 편집 내용 저장
             autoSaveCurrentEdit();
@@ -647,6 +648,38 @@
             document.getElementById('testPlayModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
             showTestScene(1, false);
+        }
+
+        // 현재 선택된 씬부터 테스트 플레이 시작
+        function startTestPlayFromCurrent() {
+            // 현재 편집 내용 저장
+            autoSaveCurrentEdit();
+
+            const startScene = currentEditingScene || 1;
+
+            // 선택된 씬이 있는지 확인
+            if (!gameData[startScene] || !gameData[startScene].content) {
+                alert(`씬 ${startScene}에 내용을 입력해주세요.`);
+                return;
+            }
+
+            testCurrentScene = startScene;
+            testPathHistory = [];
+            testSceneStack = [];
+            document.getElementById('testPlayModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            showTestScene(startScene, false);
+        }
+
+        // "현재 씬" 테스트 버튼 표시/숨김
+        function updateTestFromCurrentButton() {
+            const btn = document.getElementById('testFromCurrentBtn');
+            if (currentEditingScene && currentEditingScene !== 1) {
+                btn.style.display = 'inline-block';
+                btn.textContent = `▶️ 씬 ${currentEditingScene}부터`;
+            } else {
+                btn.style.display = 'none';
+            }
         }
 
         // 테스트 플레이 닫기
@@ -1173,6 +1206,9 @@
 
             renderTree();
             showSceneEditor(sceneNum);
+
+            // "현재 씬부터 테스트" 버튼 업데이트
+            updateTestFromCurrentButton();
 
             // 모바일에서는 자동으로 편집 탭으로 전환
             if (isMobile) {
