@@ -586,6 +586,7 @@
                 <div>사용: <span class="stat-value" id="usedScenes">1</span></div>
                 <div>남음: <span class="stat-value" id="availableScenes">999</span></div>
                 <div>전체: <span class="stat-value">1000</span></div>
+                <div style="border-left: 1px solid #ddd; padding-left: 15px;">⏱️ 예상: <span class="stat-value" id="estimatedTime">0분</span></div>
             </div>
         </div>
     </div>
@@ -1761,9 +1762,127 @@
         function updateStats() {
             const used = usedSceneNumbers.size;
             const available = 1000 - used;
-            
+
             document.getElementById('usedScenes').textContent = used;
             document.getElementById('availableScenes').textContent = available;
+
+            // 예상 플레이 시간 계산
+            const estimatedTime = calculateEstimatedPlayTime();
+            document.getElementById('estimatedTime').textContent = estimatedTime;
+        }
+
+        // 예상 플레이 시간 계산
+        // 한국어 평균 읽기 속도: 약 200자/분 (성인 기준)
+        // 선택지 고민 시간: 약 3-5초 추가
+        function calculateEstimatedPlayTime() {
+            const CHARS_PER_MINUTE = 200; // 한국어 읽기 속도
+            const CHOICE_THINKING_SECONDS = 4; // 선택지당 고민 시간
+
+            // 모든 경로 탐색하여 평균 경로 길이 계산
+            const paths = findAllPaths();
+
+            if (paths.length === 0) {
+                return '0분';
+            }
+
+            // 각 경로의 플레이 시간 계산
+            const pathTimes = paths.map(path => {
+                let totalChars = 0;
+                let totalChoices = 0;
+
+                path.forEach(sceneNum => {
+                    const scene = gameData[sceneNum];
+                    if (scene) {
+                        // 씬 내용 글자 수
+                        totalChars += (scene.content || '').length;
+
+                        // 선택지 글자 수 및 개수
+                        if (scene.choices && !scene.isEnding) {
+                            scene.choices.forEach(choice => {
+                                if (choice.text) {
+                                    totalChars += choice.text.length;
+                                    totalChoices++;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // 읽기 시간(분) + 선택 고민 시간(분)
+                const readingMinutes = totalChars / CHARS_PER_MINUTE;
+                const thinkingMinutes = (totalChoices * CHOICE_THINKING_SECONDS) / 60;
+
+                return readingMinutes + thinkingMinutes;
+            });
+
+            // 최소, 최대, 평균 계산
+            const minTime = Math.min(...pathTimes);
+            const maxTime = Math.max(...pathTimes);
+            const avgTime = pathTimes.reduce((a, b) => a + b, 0) / pathTimes.length;
+
+            // 포맷팅
+            if (avgTime < 1) {
+                const seconds = Math.round(avgTime * 60);
+                return `${seconds}초`;
+            } else if (minTime === maxTime) {
+                return `약 ${Math.round(avgTime)}분`;
+            } else {
+                return `${Math.round(minTime)}-${Math.round(maxTime)}분`;
+            }
+        }
+
+        // 씬 1부터 모든 가능한 경로 탐색 (DFS)
+        function findAllPaths() {
+            const paths = [];
+            const maxDepth = 100; // 무한 루프 방지
+
+            function dfs(sceneNum, currentPath, visited) {
+                if (currentPath.length > maxDepth) return;
+                if (visited.has(sceneNum)) return; // 순환 방지
+
+                const scene = gameData[sceneNum];
+                if (!scene || !scene.content) return;
+
+                const newPath = [...currentPath, sceneNum];
+                const newVisited = new Set(visited);
+                newVisited.add(sceneNum);
+
+                // 엔딩이거나 선택지가 없으면 경로 완성
+                if (scene.isEnding || !scene.choices || scene.choices.length === 0) {
+                    paths.push(newPath);
+                    return;
+                }
+
+                // 유효한 선택지가 있는지 확인
+                let hasValidChoice = false;
+                scene.choices.forEach(choice => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+
+                        if (outcome === 'success' || outcome === 'failure') {
+                            // 엔딩 선택지 - 경로 완성
+                            paths.push(newPath);
+                            hasValidChoice = true;
+                        } else if (choice.next > 0) {
+                            // 다음 씬으로 이동
+                            dfs(choice.next, newPath, newVisited);
+                            hasValidChoice = true;
+                        }
+                    }
+                });
+
+                // 유효한 선택지가 없으면 여기서 경로 종료
+                if (!hasValidChoice) {
+                    paths.push(newPath);
+                }
+            }
+
+            // 씬 1부터 시작
+            if (gameData[1] && gameData[1].content) {
+                dfs(1, [], new Set());
+            }
+
+            return paths;
         }
 
         // 초기화
