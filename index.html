@@ -101,6 +101,7 @@
 
         .main-content {
             display: flex;
+            flex-direction: column;
             min-height: 500px;
             position: relative;
         }
@@ -111,11 +112,10 @@
         }
 
         .tree-panel {
-            width: 40%;
-            min-width: 250px;
+            width: 100%;
             background: #fafafa;
-            border-right: 1px solid #eee;
-            max-height: 600px;
+            border-bottom: 1px solid #ddd;
+            max-height: 400px;
             display: flex;
             flex-direction: column;
         }
@@ -139,33 +139,14 @@
         }
 
         .resizer {
-            width: 5px;
-            cursor: col-resize;
-            background: #e0e0e0;
-            position: relative;
-            transition: background 0.2s;
-        }
-
-        .resizer:hover {
-            background: #007bff;
-        }
-
-        .resizer::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 3px;
-            height: 40px;
-            background: #999;
-            border-radius: 2px;
+            display: none;
         }
 
         .editor-panel {
             flex: 1;
             background: white;
-            max-height: 600px;
+            max-height: 500px;
+            border-top: 1px solid #ddd;
         }
 
         /* Tree Styles */
@@ -412,12 +393,8 @@
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
 
-            .resizer {
-                display: none;
-            }
-
             .tree-panel {
-                width: 100% !important;
+                max-height: none;
             }
 
             .title {
@@ -442,11 +419,6 @@
                 border-bottom: 1px solid #ddd;
             }
 
-            .main-content {
-                flex-direction: column;
-                gap: 0;
-            }
-
             .panel {
                 display: none;
                 min-height: calc(100vh - 200px);
@@ -455,11 +427,6 @@
 
             .panel.active {
                 display: block;
-            }
-
-            .tree-panel {
-                border-right: none;
-                border-bottom: 1px solid #eee;
             }
 
             /* 모바일에서 트리 터치 영역 확대 */
@@ -510,12 +477,8 @@
 
         /* 태블릿 */
         @media (min-width: 769px) and (max-width: 1024px) {
-            .main-content {
-                flex-direction: column;
-            }
-
-            .panel {
-                max-height: 400px;
+            .tree-panel, .editor-panel {
+                max-height: 350px;
             }
         }
 
