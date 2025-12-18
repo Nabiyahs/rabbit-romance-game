@@ -2638,7 +2638,7 @@
             // 기존 팝업이 열려있으면 포커스하고 해당 씬으로 이동
             if (previewPopup && !previewPopup.closed) {
                 previewPopup.focus();
-                previewPopup.postMessage({ type: 'refresh', scene: initialScene, restart: true }, '*');
+                previewPopup.postMessage({ type: 'refresh', scene: initialScene, restart: true, gameData: gameData }, '*');
                 return;
             }
 
@@ -2651,6 +2651,9 @@
         }
 
         function generatePreviewPopupHTML(initialScene = 1) {
+            // gameData를 JSON으로 직렬화하여 팝업에 전달
+            const gameDataJSON = JSON.stringify(gameData);
+
             return `
 <!DOCTYPE html>
 <html lang="ko">
@@ -2814,8 +2817,19 @@
         let sceneStack = [];
         let startedScene = ${initialScene};
 
+        // 팝업 생성 시 전달받은 gameData (초기값)
+        let localGameData = ${gameDataJSON};
+
         function getGameData() {
-            return window.opener ? window.opener.gameData : {};
+            // 부모 창에서 최신 데이터를 가져오거나, 로컬 데이터 사용
+            try {
+                if (window.opener && !window.opener.closed && window.opener.gameData) {
+                    return window.opener.gameData;
+                }
+            } catch(e) {
+                // cross-origin 접근 오류 시 무시
+            }
+            return localGameData;
         }
 
         function getCurrentSelectedScene() {
@@ -2946,8 +2960,15 @@
 
         function refreshCurrent() {
             // 부모 창에서 최신 데이터 가져와서 현재 씬 다시 렌더링
-            if (window.opener && !window.opener.closed) {
-                window.opener.autoSaveCurrentEdit();
+            try {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.autoSaveCurrentEdit();
+                    if (window.opener.gameData) {
+                        localGameData = window.opener.gameData;
+                    }
+                }
+            } catch(e) {
+                // cross-origin 오류 무시
             }
             showScene(currentScene, false);
             pathHistory.pop(); // showScene에서 추가한 것 제거
@@ -2968,6 +2989,10 @@
         // 부모 창에서 메시지 수신
         window.addEventListener('message', function(e) {
             if (e.data.type === 'refresh') {
+                // 메시지에 gameData가 포함되어 있으면 업데이트
+                if (e.data.gameData) {
+                    localGameData = e.data.gameData;
+                }
                 if (e.data.restart) {
                     restart(e.data.scene || 1);
                 } else {
@@ -2993,7 +3018,7 @@
         // 팝업 새로고침 함수 (편집 후 호출)
         function refreshPreviewPopup() {
             if (previewPopup && !previewPopup.closed) {
-                previewPopup.postMessage({ type: 'refresh' }, '*');
+                previewPopup.postMessage({ type: 'refresh', gameData: gameData }, '*');
             }
         }
     </script>
