@@ -149,95 +149,211 @@
             border-top: 1px solid #ddd;
         }
 
-        /* Tree Styles */
+        /* Tree Styles - Card Layout */
         .tree {
             font-size: 14px;
         }
 
-        .tree ul {
-            list-style: none;
-            margin: 0;
-            padding-left: 0;
+        .scene-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .tree li {
-            margin: 3px 0;
-            position: relative;
-        }
-
-        .tree li ul {
-            margin-left: 20px;
-        }
-
-        .tree li::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: -12px;
-            width: 10px;
-            height: 1px;
-            background: #999;
-        }
-
-        .tree li::after {
-            content: '';
-            position: absolute;
-            left: -12px;
-            top: -8px;
-            bottom: 12px;
-            width: 1px;
-            background: #999;
-        }
-
-        .tree > ul > li::before,
-        .tree > ul > li::after {
-            display: none;
-        }
-
-        .scene-node, .choice-node {
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 13px;
-            margin: 2px 0;
-            user-select: none;
-        }
-
-        .scene-node {
+        .scene-card {
             background: white;
             border: 2px solid #007bff;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .scene-node:active {
-            transform: scale(0.98);
+        .scene-card:hover {
+            box-shadow: 0 4px 12px rgba(0,123,255,0.2);
         }
 
-        .scene-node.selected {
+        .scene-card.selected {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.3);
+        }
+
+        .scene-card.ending {
+            border-color: #dc3545;
+        }
+
+        .scene-card.empty {
+            border-style: dashed;
+            opacity: 0.7;
+        }
+
+        .scene-card.highlight {
+            animation: highlightPulse 1.5s ease;
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(0,123,255,0.3); }
+            50% { box-shadow: 0 0 0 6px rgba(255,193,7,0.6); }
+        }
+
+        .scene-card-header {
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scene-card.selected .scene-card-header {
             background: #007bff;
             color: white;
         }
 
-        .scene-node.empty {
-            border-style: dashed;
-            opacity: 0.6;
-        }
-
-        .scene-node.ending {
-            border-color: #dc3545;
+        .scene-card.ending .scene-card-header {
             background: #fff5f5;
         }
 
-        .choice-node {
-            background: #f0f0f0;
-            border: 1px solid #999;
-            font-size: 12px;
+        .scene-card-num {
+            font-weight: bold;
+            font-size: 13px;
         }
 
-        .choice-node.selected {
+        .scene-card-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .ending-badge {
+            background: #dc3545;
+            color: white;
+        }
+
+        .scene-card-content {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+            border-bottom: 1px solid #eee;
+        }
+
+        .scene-card-choices {
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        .scene-card-choice {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .scene-card-choice:last-child {
+            margin-bottom: 0;
+        }
+
+        .scene-card-choice:hover {
+            background: #f0f0f0;
+            border-color: #999;
+        }
+
+        .scene-card-choice.selected {
             background: #6c757d;
             color: white;
+            border-color: #6c757d;
+        }
+
+        .scene-card-choice.success {
+            border-left: 3px solid #28a745;
+        }
+
+        .scene-card-choice.failure {
+            border-left: 3px solid #dc3545;
+        }
+
+        .scene-card-choice.empty {
+            opacity: 0.6;
+            border-style: dashed;
+        }
+
+        .choice-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .scene-card-choice.selected .choice-index {
+            background: white;
+            color: #6c757d;
+        }
+
+        .choice-text-preview {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .choice-next {
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #007bff;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .choice-next:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .scene-card-choice.selected .choice-next {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .success-label, .failure-label {
+            background: transparent;
+        }
+
+        .empty-next {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .orphan-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px dashed #ffc107;
+        }
+
+        .orphan-header {
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 13px;
         }
 
         /* Editor Styles */
@@ -508,9 +624,7 @@
                 <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
                 <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
                 <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
-                <button style="background: #9b59b6; color: white;" onclick="startTestPlay()">▶️ 처음부터</button>
-                <button id="testFromCurrentBtn" style="background: #8e44ad; color: white; display: none;" onclick="startTestPlayFromCurrent()">▶️ 현재 씬</button>
-                <button style="background: #e67e22; color: white;" onclick="openPreviewPopup()">🔲 팝업 미리보기</button>
+                <button style="background: #9b59b6; color: white;" onclick="showPlayDialog()">▶️ 플레이하기</button>
                 <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
             </div>
         </div>
@@ -564,30 +678,6 @@
         </div>
     </div>
 
-    <!-- 테스트 플레이 모달 -->
-    <div id="testPlayModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto;">
-        <div style="max-width: 800px; margin: 20px auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; min-height: calc(100vh - 40px);">
-            <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.2);">
-                <h2 style="color: white; margin: 0; font-size: 18px;">🎮 테스트 플레이</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button id="testBackBtn" onclick="goBackTestPlay()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; display: none;">⬅️ 이전</button>
-                    <button onclick="restartTestPlay()" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">🔄 처음부터</button>
-                    <button onclick="closeTestPlay()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">✕ 닫기</button>
-                </div>
-            </div>
-            <div style="padding: 20px;">
-                <div id="testPlayContent" style="background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; min-height: 200px;">
-                    <div id="testSceneNumber" style="font-size: 12px; color: #999; margin-bottom: 10px;"></div>
-                    <div id="testSceneContent" style="font-size: 16px; line-height: 1.8; color: #333; white-space: pre-wrap;"></div>
-                </div>
-                <div id="testChoices" style="display: flex; flex-direction: column; gap: 12px;"></div>
-                <div id="testHistory" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                    <div style="color: rgba(255,255,255,0.7); font-size: 12px; margin-bottom: 8px;">📍 경로:</div>
-                    <div id="testPathHistory" style="color: white; font-size: 13px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         // 스토리 버전 관리
@@ -690,7 +780,6 @@
             selectedType = null;
             currentEditingScene = null;
             currentEditingChoice = null;
-            updateTestFromCurrentButton();
 
             updateStatus(`"${storyVersions[index].name}" 버전으로 전환됨`);
         }
@@ -1475,13 +1564,34 @@
             }
         }
 
-        // 트리 렌더링
+        // 트리 렌더링 - 카드 형태로 씬과 선택지를 한눈에 보기
         function renderTree() {
             const treeDiv = document.getElementById('tree');
-            const connectedScenes = new Set();
 
-            // 메인 트리 (씬 1부터 연결된 씬들)
-            let html = buildTreeHTML(1, new Set(), connectedScenes);
+            // BFS로 씬 1부터 연결된 순서대로 씬 수집
+            const orderedScenes = [];
+            const connectedScenes = new Set();
+            const queue = [1];
+
+            while (queue.length > 0) {
+                const sceneNum = queue.shift();
+                if (connectedScenes.has(sceneNum)) continue;
+                connectedScenes.add(sceneNum);
+
+                const scene = gameData[sceneNum];
+                if (scene && scene.content && scene.content.trim()) {
+                    orderedScenes.push(sceneNum);
+
+                    // 선택지의 다음 씬들을 큐에 추가
+                    if (!scene.isEnding && scene.choices) {
+                        scene.choices.forEach(choice => {
+                            if (choice.next && choice.next > 0 && !connectedScenes.has(choice.next)) {
+                                queue.push(choice.next);
+                            }
+                        });
+                    }
+                }
+            }
 
             // 연결되지 않은 씬들 (고아 씬) 찾기
             const orphanScenes = [];
@@ -1491,76 +1601,103 @@
                 }
             }
 
+            // HTML 생성
+            let html = '<div class="scene-cards">';
+
+            orderedScenes.forEach(sceneNum => {
+                html += buildSceneCard(sceneNum);
+            });
+
             // 고아 씬들 표시
             if (orphanScenes.length > 0) {
-                html += `<div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ffc107;">
-                    <div style="color: #856404; font-weight: bold; margin-bottom: 10px; font-size: 13px;">
-                        ⚠️ 연결되지 않은 씬 (${orphanScenes.length}개)
-                    </div>`;
+                html += `<div class="orphan-section">
+                    <div class="orphan-header">⚠️ 연결되지 않은 씬 (${orphanScenes.length}개)</div>`;
                 orphanScenes.forEach(num => {
-                    // 이미 렌더링된 씬은 건너뛰도록 connectedScenes를 visited로 전달
-                    html += buildTreeHTML(num, new Set(connectedScenes), connectedScenes);
+                    html += buildSceneCard(num);
                 });
                 html += '</div>';
             }
 
+            html += '</div>';
             treeDiv.innerHTML = html;
         }
 
-        // 트리 HTML 생성
-        function buildTreeHTML(sceneNum, visited, connectedScenes = null) {
-            if (visited.has(sceneNum)) {
-                return `<li><span class="scene-node empty">씬 ${sceneNum} (순환)</span></li>`;
-            }
-
-            visited.add(sceneNum);
-            if (connectedScenes) connectedScenes.add(sceneNum);
+        // 씬 카드 HTML 생성
+        function buildSceneCard(sceneNum) {
             const scene = gameData[sceneNum];
-
-            // 씬이 없으면 빈 노드 표시
-            if (!scene) {
-                return `<ul><li><span class="scene-node empty" onclick="selectScene(${sceneNum})">📄 씬 ${sceneNum}: (없음)</span></li></ul>`;
-            }
+            if (!scene) return '';
 
             const hasContent = scene.content && scene.content.trim();
-            const nodeClass = `scene-node ${hasContent ? '' : 'empty'} ${scene.isEnding ? 'ending' : ''} ${selectedNode === sceneNum && selectedType === 'scene' ? 'selected' : ''}`;
-            
-            let html = '<ul><li>';
-            html += `<span class="${nodeClass}" onclick="selectScene(${sceneNum})">`;
-            html += `📄 씬 ${sceneNum}`;
-            if (hasContent) {
-                const preview = scene.content.substring(0, 12);
-                html += `: ${preview}${scene.content.length > 12 ? '...' : ''}`;
-            }
+            const isSelected = selectedNode === sceneNum && selectedType === 'scene';
+
+            let cardClass = 'scene-card';
+            if (isSelected) cardClass += ' selected';
+            if (scene.isEnding) cardClass += ' ending';
+            if (!hasContent) cardClass += ' empty';
+
+            let html = `<div class="${cardClass}" id="scene-card-${sceneNum}">`;
+
+            // 씬 헤더
+            html += `<div class="scene-card-header" onclick="selectScene(${sceneNum})">`;
+            html += `<span class="scene-card-num">📄 씬 ${sceneNum}</span>`;
             if (scene.isEnding) {
-                html += ' [END]';
+                html += '<span class="scene-card-badge ending-badge">END</span>';
             }
-            html += '</span>';
-            
-            if (!scene.isEnding && scene.choices.length > 0) {
-                html += '<ul>';
+            html += '</div>';
+
+            // 씬 내용 미리보기
+            if (hasContent) {
+                const preview = scene.content.substring(0, 40);
+                html += `<div class="scene-card-content" onclick="selectScene(${sceneNum})">${preview}${scene.content.length > 40 ? '...' : ''}</div>`;
+            }
+
+            // 선택지 목록
+            if (!scene.isEnding && scene.choices && scene.choices.length > 0) {
+                html += '<div class="scene-card-choices">';
                 scene.choices.forEach((choice, index) => {
-                    const choiceClass = `choice-node ${choice.text ? '' : 'empty'} ${selectedNode === `${sceneNum}-${index}` && selectedType === 'choice' ? 'selected' : ''}`;
-                    html += '<li>';
-                    html += `<span class="${choiceClass}" onclick="selectChoice(${sceneNum}, ${index})">`;
-                    html += `▶ ${index + 1}. ${choice.text ? choice.text.substring(0, 15) + (choice.text.length > 15 ? '...' : '') : '(빈 선택지)'}`;
-                    if (choice.next) {
-                        html += ` → ${choice.next}`;
+                    const isChoiceSelected = selectedNode === `${sceneNum}-${index}` && selectedType === 'choice';
+                    let choiceClass = 'scene-card-choice';
+                    if (isChoiceSelected) choiceClass += ' selected';
+                    if (!choice.text) choiceClass += ' empty';
+
+                    // 결과 타입에 따른 스타일
+                    const outcome = choice.outcome || 'continue';
+                    if (outcome === 'success') choiceClass += ' success';
+                    else if (outcome === 'failure') choiceClass += ' failure';
+
+                    html += `<div class="${choiceClass}" onclick="selectChoice(${sceneNum}, ${index})">`;
+                    html += `<span class="choice-index">${index + 1}</span>`;
+                    html += `<span class="choice-text-preview">${choice.text ? choice.text.substring(0, 25) + (choice.text.length > 25 ? '...' : '') : '(빈 선택지)'}</span>`;
+
+                    // 다음 씬 또는 결과 표시
+                    if (outcome === 'success') {
+                        html += '<span class="choice-next success-label">🎉</span>';
+                    } else if (outcome === 'failure') {
+                        html += '<span class="choice-next failure-label">💔</span>';
+                    } else if (choice.next && choice.next > 0) {
+                        html += `<span class="choice-next" onclick="event.stopPropagation(); scrollToScene(${choice.next})" title="씬 ${choice.next}로 이동">→ ${choice.next}</span>`;
+                    } else {
+                        html += '<span class="choice-next empty-next">?</span>';
                     }
-                    html += '</span>';
-                    
-                    if (choice.next && choice.next > 0) {
-                        html += buildTreeHTML(choice.next, new Set([...visited]), connectedScenes);
-                    }
-                    
-                    html += '</li>';
+
+                    html += '</div>';
                 });
-                html += '</ul>';
+                html += '</div>';
             }
-            
-            html += '</li></ul>';
-            
+
+            html += '</div>';
             return html;
+        }
+
+        // 특정 씬 카드로 스크롤
+        function scrollToScene(sceneNum) {
+            const card = document.getElementById(`scene-card-${sceneNum}`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // 잠시 하이라이트
+                card.classList.add('highlight');
+                setTimeout(() => card.classList.remove('highlight'), 1500);
+            }
         }
 
         // 현재 편집 중인 내용 자동 저장
@@ -1633,9 +1770,6 @@
 
             renderTree();
             showSceneEditor(sceneNum);
-
-            // "현재 씬부터 테스트" 버튼 업데이트
-            updateTestFromCurrentButton();
 
             // 모바일에서는 자동으로 편집 탭으로 전환
             if (isMobile) {
@@ -2426,10 +2560,10 @@
             }
         });
 
-        // ========== 팝업 미리보기 기능 ==========
+        // ========== 팝업 플레이 기능 ==========
         let previewPopup = null;
 
-        function openPreviewPopup() {
+        function showPlayDialog() {
             autoSaveCurrentEdit();
 
             if (!gameData[1] || !gameData[1].content) {
@@ -2437,28 +2571,92 @@
                 return;
             }
 
-            // 기존 팝업이 열려있으면 포커스
+            // 사용 중인 씬 목록 생성
+            const usedScenes = [];
+            for (let i = 1; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim()) {
+                    usedScenes.push(i);
+                }
+            }
+
+            // 현재 선택된 씬
+            const currentSelectedScene = (selectedType === 'scene' && selectedNode) ? selectedNode : 1;
+
+            // 다이얼로그 생성
+            const dialog = document.createElement('div');
+            dialog.id = 'playDialog';
+            dialog.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center;';
+
+            let sceneOptions = usedScenes.map(num => {
+                const preview = gameData[num].content.substring(0, 20);
+                const selected = num === currentSelectedScene ? 'selected' : '';
+                return `<option value="${num}" ${selected}>씬 ${num}: ${preview}${gameData[num].content.length > 20 ? '...' : ''}</option>`;
+            }).join('');
+
+            dialog.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 25px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">🎮 플레이하기</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-size: 14px;">시작할 씬 선택:</label>
+                        <select id="playStartScene" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            ${sceneOptions}
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="document.getElementById('playDialog').remove();" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">취소</button>
+                        <button onclick="startPlayFromDialog();" style="flex: 1; padding: 12px; background: #9b59b6; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">▶️ 시작</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(dialog);
+
+            // ESC 키로 닫기
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) dialog.remove();
+            });
+        }
+
+        function startPlayFromDialog() {
+            const select = document.getElementById('playStartScene');
+            const startScene = parseInt(select.value);
+            document.getElementById('playDialog').remove();
+            openPreviewPopup(startScene);
+        }
+
+        function openPreviewPopup(startScene = null) {
+            autoSaveCurrentEdit();
+
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            // 시작 씬 결정: 인자로 받거나, 현재 선택된 씬 또는 1
+            const initialScene = startScene || (selectedType === 'scene' && selectedNode ? selectedNode : 1);
+
+            // 기존 팝업이 열려있으면 포커스하고 해당 씬으로 이동
             if (previewPopup && !previewPopup.closed) {
                 previewPopup.focus();
-                previewPopup.postMessage({ type: 'refresh', scene: 1 }, '*');
+                previewPopup.postMessage({ type: 'refresh', scene: initialScene, restart: true }, '*');
                 return;
             }
 
             // 팝업 HTML 생성
-            const popupContent = generatePreviewPopupHTML();
+            const popupContent = generatePreviewPopupHTML(initialScene);
 
             previewPopup = window.open('', 'PreviewPopup', 'width=500,height=700,scrollbars=yes,resizable=yes');
             previewPopup.document.write(popupContent);
             previewPopup.document.close();
         }
 
-        function generatePreviewPopupHTML() {
+        function generatePreviewPopupHTML(initialScene = 1) {
             return `
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>🎮 미리보기</title>
+    <title>🎮 플레이하기</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -2476,7 +2674,7 @@
             border-bottom: 2px solid rgba(255,255,255,0.2);
         }
         .header h1 { color: white; font-size: 18px; }
-        .header-btns { display: flex; gap: 8px; }
+        .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
         .header-btns button {
             padding: 8px 12px;
             border: none;
@@ -2484,6 +2682,21 @@
             cursor: pointer;
             font-size: 13px;
         }
+        .start-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .start-options button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .start-options button:hover { transform: translateY(-2px); }
         .content-box {
             background: white;
             border-radius: 10px;
@@ -2566,15 +2779,28 @@
             padding: 20px;
         }
         .warning-icon { font-size: 40px; margin-bottom: 10px; }
+        .current-scene-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: white;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🎮 미리보기</h1>
+        <h1>🎮 플레이하기</h1>
         <div class="header-btns">
             <button onclick="goBack()" id="backBtn" style="background: #6c757d; color: white; display: none;">⬅️ 이전</button>
-            <button onclick="restart()" style="background: #28a745; color: white;">🔄 처음부터</button>
+            <button onclick="refreshCurrent()" style="background: #17a2b8; color: white;">🔄 새로고침</button>
         </div>
+    </div>
+    <div class="start-options">
+        <button onclick="restart(1)" style="background: #9b59b6; color: white;">📖 처음부터</button>
+        <button onclick="restartFromCurrent()" id="currentSceneBtn" style="background: #e67e22; color: white;">📍 현재 씬부터</button>
     </div>
     <div id="content"></div>
     <div class="path-box">
@@ -2583,12 +2809,22 @@
     </div>
 
     <script>
-        let currentScene = 1;
+        let currentScene = ${initialScene};
         let pathHistory = [];
         let sceneStack = [];
+        let startedScene = ${initialScene};
 
         function getGameData() {
             return window.opener ? window.opener.gameData : {};
+        }
+
+        function getCurrentSelectedScene() {
+            if (window.opener && !window.opener.closed) {
+                const type = window.opener.selectedType;
+                const node = window.opener.selectedNode;
+                if (type === 'scene' && node) return node;
+            }
+            return 1;
         }
 
         function showScene(sceneNum, addToStack = true) {
@@ -2603,6 +2839,9 @@
 
             document.getElementById('pathDisplay').textContent = pathHistory.join(' → ');
             document.getElementById('backBtn').style.display = sceneStack.length > 0 ? 'inline-block' : 'none';
+
+            // 현재 씬 버튼 업데이트
+            updateCurrentSceneBtn();
 
             const content = document.getElementById('content');
 
@@ -2692,11 +2931,32 @@
             }
         }
 
-        function restart() {
-            currentScene = 1;
+        function restart(startFrom = 1) {
+            currentScene = startFrom;
             pathHistory = [];
             sceneStack = [];
-            showScene(1, false);
+            startedScene = startFrom;
+            showScene(startFrom, false);
+        }
+
+        function restartFromCurrent() {
+            const scene = getCurrentSelectedScene();
+            restart(scene);
+        }
+
+        function refreshCurrent() {
+            // 부모 창에서 최신 데이터 가져와서 현재 씬 다시 렌더링
+            if (window.opener && !window.opener.closed) {
+                window.opener.autoSaveCurrentEdit();
+            }
+            showScene(currentScene, false);
+            pathHistory.pop(); // showScene에서 추가한 것 제거
+        }
+
+        function updateCurrentSceneBtn() {
+            const scene = getCurrentSelectedScene();
+            const btn = document.getElementById('currentSceneBtn');
+            btn.textContent = '📍 씬 ' + scene + '부터';
         }
 
         function escapeHtml(text) {
@@ -2708,12 +2968,19 @@
         // 부모 창에서 메시지 수신
         window.addEventListener('message', function(e) {
             if (e.data.type === 'refresh') {
-                showScene(e.data.scene || currentScene, false);
+                if (e.data.restart) {
+                    restart(e.data.scene || 1);
+                } else {
+                    showScene(e.data.scene || currentScene, false);
+                    pathHistory.pop();
+                }
+                updateCurrentSceneBtn();
             }
         });
 
         // 초기화
-        showScene(1, false);
+        showScene(${initialScene}, false);
+        updateCurrentSceneBtn();
     <\/script>
 </body>
 </html>`;
