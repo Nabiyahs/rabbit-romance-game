@@ -2979,9 +2979,13 @@
         });
 
         // 초기화
-        showScene(${initialScene}, false);
-        updateCurrentSceneBtn();
-    <\/script>
+        try {
+            showScene(${initialScene}, false);
+            updateCurrentSceneBtn();
+        } catch(e) {
+            document.getElementById('content').innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>초기화 오류: ' + e.message + '</div></div></div>';
+        }
+    </` + `script>
 </body>
 </html>`;
         }
