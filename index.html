@@ -2563,6 +2563,20 @@
         // ========== 팝업 플레이 기능 ==========
         let previewPopup = null;
 
+        // 팝업에서 데이터 요청 메시지 수신
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'requestGameData') {
+                autoSaveCurrentEdit();
+                if (previewPopup && !previewPopup.closed) {
+                    previewPopup.postMessage({
+                        type: 'gameDataResponse',
+                        gameData: gameData,
+                        selectedScene: (selectedType === 'scene' && selectedNode) ? selectedNode : 1
+                    }, '*');
+                }
+            }
+        });
+
         function showPlayDialog() {
             autoSaveCurrentEdit();
 
@@ -2959,25 +2973,28 @@
         }
 
         function refreshCurrent() {
-            // 부모 창에서 최신 데이터 가져와서 현재 씬 다시 렌더링
-            try {
-                if (window.opener && !window.opener.closed) {
-                    window.opener.autoSaveCurrentEdit();
-                    if (window.opener.gameData) {
-                        localGameData = window.opener.gameData;
-                    }
-                }
-            } catch(e) {
-                // cross-origin 오류 무시
+            // 부모 창에 최신 데이터 요청
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ type: 'requestGameData' }, '*');
+            } else {
+                // 부모 창이 없으면 현재 데이터로 다시 렌더링
+                showScene(currentScene, false);
+                pathHistory.pop();
             }
-            showScene(currentScene, false);
-            pathHistory.pop(); // showScene에서 추가한 것 제거
         }
 
         function updateCurrentSceneBtn() {
-            const scene = getCurrentSelectedScene();
-            const btn = document.getElementById('currentSceneBtn');
-            btn.textContent = '📍 씬 ' + scene + '부터';
+            try {
+                if (window.opener && !window.opener.closed) {
+                    const type = window.opener.selectedType;
+                    const node = window.opener.selectedNode;
+                    if (type === 'scene' && node) {
+                        document.getElementById('currentSceneBtn').textContent = '📍 씬 ' + node + '부터';
+                        return;
+                    }
+                }
+            } catch(e) {}
+            document.getElementById('currentSceneBtn').textContent = '📍 현재 씬부터';
         }
 
         function escapeHtml(text) {
@@ -2988,8 +3005,17 @@
 
         // 부모 창에서 메시지 수신
         window.addEventListener('message', function(e) {
+            // 데이터 응답 처리 (새로고침 요청에 대한 응답)
+            if (e.data.type === 'gameDataResponse') {
+                localGameData = e.data.gameData;
+                updateCurrentSceneBtn();
+                showScene(currentScene, false);
+                pathHistory.pop(); // showScene에서 추가한 것 제거
+                return;
+            }
+
+            // 일반 refresh 메시지 처리
             if (e.data.type === 'refresh') {
-                // 메시지에 gameData가 포함되어 있으면 업데이트
                 if (e.data.gameData) {
                     localGameData = e.data.gameData;
                 }
