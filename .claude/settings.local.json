@@ -4,7 +4,14 @@
       "Bash(powershell -Command \"cd ''C:\\\\Users\\\\Nabiy\\\\Desktop\\\\rabbity-games\\\\rabbit-romance-game''; git init\")",
       "Bash(echo:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd editor functionality with JSON file reference\n\n- Load game data from Catch!-Love.json via fetch\n- Add real-time editing for scenes and choices\n- Add JSON export feature with updated content\n- Include scene list navigation modal\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
