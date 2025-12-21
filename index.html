@@ -2,1197 +2,3118 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catch! Love - 게임 예고편</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Tree Editor - Mobile</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Lato', sans-serif;
-            background: #F0EBF4;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 10px;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* ===== EDITOR TOOLBAR ===== */
-        .editor-toolbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #E64398 0%, #B39BC8 100%);
-            padding: 12px 20px;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(230, 67, 152, 0.3);
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .editor-toolbar.hidden {
-            display: none;
-        }
-
-        .toolbar-title {
-            color: white;
-            font-weight: 700;
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 14px;
-            letter-spacing: 1px;
+            transition: all 0.3s;
+            touch-action: manipulation;
         }
 
-        .toolbar-buttons {
-            display: flex;
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        /* 탭 네비게이션 */
+        .tab-nav {
+            display: none;
+            background: #f8f9fa;
+            padding: 10px;
             gap: 10px;
         }
 
-        .toolbar-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
+            font-size: 14px;
         }
 
-        .btn-toggle-edit {
-            background: white;
-            color: #E64398;
-        }
-
-        .btn-toggle-edit:hover {
-            background: #F0EBF4;
-            transform: translateY(-2px);
-        }
-
-        .btn-toggle-edit.active {
-            background: #F172A1;
+        .tab-btn.active {
+            background: #007bff;
             color: white;
+            border-color: #007bff;
         }
 
-        .btn-export {
-            background: #A1C3D1;
-            color: white;
-        }
-
-        .btn-export:hover {
-            background: #8BB5C5;
-            transform: translateY(-2px);
-        }
-
-        .btn-scene-list {
-            background: #B39BC8;
-            color: white;
-        }
-
-        .btn-scene-list:hover {
-            background: #9F84B5;
-            transform: translateY(-2px);
-        }
-
-        .change-indicator {
-            background: #FFD700;
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            display: none;
-        }
-
-        .change-indicator.show {
-            display: block;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        /* ===== SCENE LIST MODAL ===== */
-        .scene-list-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .scene-list-modal.show {
+        .main-content {
             display: flex;
+            flex-direction: column;
+            min-height: 500px;
+            position: relative;
         }
 
-        .scene-list-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
+        .panel {
+            padding: 20px;
             overflow-y: auto;
         }
 
-        .scene-list-header {
+        .tree-panel {
+            width: 100%;
+            background: #fafafa;
+            border-bottom: 1px solid #ddd;
+            max-height: 400px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            flex-direction: column;
         }
 
-        .scene-list-title {
-            font-size: 24px;
-            color: #E64398;
-            font-weight: 900;
+        .tree-panel-header {
+            padding: 10px 0;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
         }
 
-        .close-modal-btn {
-            background: #F0EBF4;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            color: #B39BC8;
-        }
-
-        .scene-item {
-            padding: 15px;
-            border: 2px solid #F0EBF4;
-            border-radius: 12px;
+        .tree-panel-controls {
+            display: flex;
+            gap: 8px;
             margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .scene-item:hover {
-            border-color: #F172A1;
-            background: #FFF5F9;
+        .tree-panel-controls button {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 13px;
         }
 
-        .scene-item.ending {
-            border-color: #A1C3D1;
+        .resizer {
+            display: none;
         }
 
-        .scene-item-id {
-            font-size: 12px;
-            color: #B39BC8;
-            margin-bottom: 5px;
+        .editor-panel {
+            flex: 1;
+            background: white;
+            max-height: 500px;
+            border-top: 1px solid #ddd;
         }
 
-        .scene-item-preview {
+        /* Tree Styles - Card Layout */
+        .tree {
             font-size: 14px;
-            color: #333;
+        }
+
+        .scene-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .scene-card {
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .scene-card:hover {
+            box-shadow: 0 4px 12px rgba(0,123,255,0.2);
+        }
+
+        .scene-card.selected {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.3);
+        }
+
+        .scene-card.ending {
+            border-color: #dc3545;
+        }
+
+        .scene-card.empty {
+            border-style: dashed;
+            opacity: 0.7;
+        }
+
+        .scene-card.highlight {
+            animation: highlightPulse 1.5s ease;
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(0,123,255,0.3); }
+            50% { box-shadow: 0 0 0 6px rgba(255,193,7,0.6); }
+        }
+
+        .scene-card-header {
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scene-card.selected .scene-card-header {
+            background: #007bff;
+            color: white;
+        }
+
+        .scene-card.ending .scene-card-header {
+            background: #fff5f5;
+        }
+
+        .scene-card-num {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .scene-card-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .ending-badge {
+            background: #dc3545;
+            color: white;
+        }
+
+        .scene-card-content {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+            border-bottom: 1px solid #eee;
+        }
+
+        .scene-card-choices {
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        .scene-card-choice {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .scene-card-choice:last-child {
+            margin-bottom: 0;
+        }
+
+        .scene-card-choice:hover {
+            background: #f0f0f0;
+            border-color: #999;
+        }
+
+        .scene-card-choice.selected {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+
+        .scene-card-choice.success {
+            border-left: 3px solid #28a745;
+        }
+
+        .scene-card-choice.failure {
+            border-left: 3px solid #dc3545;
+        }
+
+        .scene-card-choice.empty {
+            opacity: 0.6;
+            border-style: dashed;
+        }
+
+        .choice-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .scene-card-choice.selected .choice-index {
+            background: white;
+            color: #6c757d;
+        }
+
+        .choice-text-preview {
+            flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        /* ===== INTRO SCREEN ===== */
-        .intro-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: 60px;
+        .choice-next {
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #007bff;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
-        .wave-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .wave {
-            position: absolute;
-            width: 150%;
-            height: 200px;
-            left: -25%;
-        }
-
-        .wave-1 { background: #A1C3D1; top: 0; border-radius: 0 0 50% 50%; transform: rotate(-2deg); }
-        .wave-2 { background: #F172A1; top: 15%; border-radius: 50%; height: 180px; transform: rotate(1deg); }
-        .wave-3 { background: #B39BC8; top: 30%; border-radius: 50%; height: 160px; transform: rotate(-1deg); }
-        .wave-4 { background: #E64398; top: 45%; border-radius: 50%; height: 140px; transform: rotate(2deg); }
-        .wave-5 { background: #A1C3D1; bottom: 0; border-radius: 50% 50% 0 0; height: 220px; transform: rotate(-1deg); }
-
-        .floating-heart {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            opacity: 0.3;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .floating-heart:nth-child(2) { top: 10%; left: 15%; animation-delay: 0s; }
-        .floating-heart:nth-child(3) { top: 20%; right: 10%; width: 30px; height: 30px; animation-delay: 1s; }
-        .floating-heart:nth-child(4) { bottom: 15%; left: 10%; width: 35px; height: 35px; animation-delay: 2s; }
-        .floating-heart:nth-child(5) { bottom: 25%; right: 20%; animation-delay: 1.5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .intro-container {
-            text-align: center;
-            z-index: 10;
-            padding: 40px;
-        }
-
-        .title-wrapper {
-            background: white;
-            padding: 60px 80px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(230, 67, 152, 0.3);
-            border: 4px solid #F172A1;
-            position: relative;
-        }
-
-        .title-wrapper::before,
-        .title-wrapper::after {
-            content: '';
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .title-wrapper::before { top: 20px; left: 30px; }
-        .title-wrapper::after { bottom: 20px; right: 30px; }
-
-        .intro-title {
-            font-size: 64px;
-            color: #E64398;
-            margin-bottom: 0;
-            letter-spacing: 8px;
-            font-weight: 900;
-            text-transform: uppercase;
-        }
-
-        .intro-subtitle {
-            font-size: 16px;
-            color: #B39BC8;
-            margin-top: 15px;
-            font-weight: 400;
-            letter-spacing: 3px;
-        }
-
-        .preview-badge {
-            display: inline-block;
-            background: #E64398;
+        .choice-next:hover {
+            background: #007bff;
             color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
+        }
+
+        .scene-card-choice.selected .choice-next {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .success-label, .failure-label {
+            background: transparent;
+        }
+
+        .empty-next {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .orphan-section {
             margin-top: 20px;
-            letter-spacing: 2px;
+            padding-top: 15px;
+            border-top: 2px dashed #ffc107;
         }
 
-        .start-prompt {
-            margin-top: 40px;
-            font-size: 16px;
-            color: #A1C3D1;
-            animation: blink 2s infinite;
-            font-weight: 400;
-            letter-spacing: 2px;
-            cursor: pointer;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* ===== GAME SCREEN ===== */
-        .game-screen {
-            display: none;
-            min-height: 100vh;
-            padding: 80px 20px 40px;
-            position: relative;
-        }
-
-        .wave-decoration {
-            position: absolute;
-            z-index: 0;
-        }
-
-        .wave-top-left {
-            top: 0;
-            left: 0;
-            width: 300px;
-            height: 150px;
-            background: #A1C3D1;
-            border-radius: 0 0 100% 0;
-            opacity: 0.4;
-        }
-
-        .wave-bottom-right {
-            bottom: 0;
-            right: 0;
-            width: 350px;
-            height: 180px;
-            background: #B39BC8;
-            border-radius: 100% 0 0 0;
-            opacity: 0.4;
-        }
-
-        .game-container {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .game-title {
-            font-size: 36px;
-            color: #E64398;
-            margin-bottom: 10px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        .scene-number {
-            font-size: 14px;
-            color: #B39BC8;
-            letter-spacing: 2px;
-        }
-
-        .scene-container {
-            background: white;
-            border-radius: 25px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 15px 40px rgba(179, 155, 200, 0.2);
-            border: 4px solid #F172A1;
-        }
-
-        .scene-text {
-            font-size: 18px;
-            line-height: 2;
-            color: #5a5a5a;
-            text-align: center;
-            padding: 30px;
-            background: #F0EBF4;
-            border-radius: 15px;
-            border-left: 6px solid #E64398;
-            font-weight: 400;
-            white-space: pre-line;
-        }
-
-        .scene-text.editable {
-            cursor: text;
-            border: 2px dashed #E64398;
-            background: #FFF5F9;
-        }
-
-        .scene-text.editable:focus {
-            outline: none;
-            border: 2px solid #E64398;
-            box-shadow: 0 0 10px rgba(230, 67, 152, 0.3);
-        }
-
-        .choices-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .choice-card {
-            flex: 1;
-            background: white;
-            border-radius: 20px;
-            padding: 30px 25px;
-            box-shadow: 0 10px 30px rgba(161, 195, 209, 0.2);
-            border: 4px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .choice-card::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 20px;
-            height: 20px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            opacity: 0.4;
-            transition: all 0.3s ease;
-        }
-
-        .choice-card:nth-child(1) { border-color: #A1C3D1; }
-        .choice-card:nth-child(2) { border-color: #B39BC8; }
-
-        .choice-card:nth-child(1):hover {
-            border-color: #F172A1;
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(241, 114, 161, 0.3);
-        }
-
-        .choice-card:nth-child(2):hover {
-            border-color: #E64398;
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(230, 67, 152, 0.3);
-        }
-
-        .choice-card:hover::before {
-            opacity: 1;
-        }
-
-        .choice-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 20px;
-            display: block;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        .choice-card:nth-child(1) .choice-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-        }
-
-        .choice-card:nth-child(2) .choice-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-        }
-
-        .choice-label {
-            font-size: 12px;
-            color: #B39BC8;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+        .orphan-header {
+            color: #856404;
+            font-weight: bold;
             margin-bottom: 12px;
-            font-weight: 700;
+            font-size: 13px;
         }
 
-        .choice-text {
-            font-size: 16px;
-            color: #333;
-            line-height: 1.6;
-            font-weight: 400;
-            text-align: center;
-        }
-
-        .choice-text.editable {
-            cursor: text;
-            border: 1px dashed #B39BC8;
-            padding: 8px;
-            border-radius: 8px;
-            background: #FFF5F9;
-        }
-
-        .choice-text.editable:focus {
-            outline: none;
-            border: 1px solid #E64398;
-        }
-
-        .choice-card:hover .choice-text:not(.editable) {
-            color: #E64398;
-            font-weight: 700;
-        }
-
-        /* ===== ENDING SCREEN ===== */
-        .ending-screen {
-            display: none;
-            min-height: 100vh;
-            align-items: center;
-            justify-content: center;
-            padding: 80px 20px 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ending-screen.solo {
-            background: #A1C3D1;
-        }
-
-        .ending-screen.preview {
-            background: #F172A1;
-        }
-
-        .wave-celebration {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .celebrate-wave {
-            position: absolute;
-            width: 130%;
-            left: -15%;
-        }
-
-        .celebrate-wave-1 { background: #E64398; height: 140px; top: 10%; border-radius: 50%; opacity: 0.4; }
-        .celebrate-wave-2 { background: #B39BC8; height: 160px; top: 35%; border-radius: 50%; opacity: 0.4; }
-        .celebrate-wave-3 { background: #A1C3D1; height: 180px; bottom: 15%; border-radius: 50%; opacity: 0.4; }
-
-        .bg-wave {
-            position: absolute;
-            width: 120%;
-            left: -10%;
-        }
-
-        .bg-wave-1 { background: #B39BC8; height: 150px; top: 20%; border-radius: 50%; opacity: 0.3; }
-        .bg-wave-2 { background: #F172A1; height: 120px; bottom: 25%; border-radius: 50%; opacity: 0.3; }
-
-        .ending-container {
-            max-width: 800px;
-            width: 100%;
-            background: white;
-            border-radius: 30px;
-            padding: 50px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            z-index: 10;
-            position: relative;
-        }
-
-        .ending-screen.solo .ending-container {
-            border: 5px solid #B39BC8;
-        }
-
-        .ending-screen.preview .ending-container {
-            border: 6px solid #E64398;
-        }
-
-        .ending-container::before,
-        .ending-container::after {
-            content: '';
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .ending-screen.solo .ending-container::before,
-        .ending-screen.solo .ending-container::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            opacity: 0.3;
-        }
-
-        .ending-screen.preview .ending-container::before,
-        .ending-screen.preview .ending-container::after {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-        }
-
-        .ending-container::before { top: 20px; left: 25px; }
-        .ending-container::after { bottom: 20px; right: 25px; }
-
-        .ending-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 25px;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .ending-screen.solo .ending-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            opacity: 0.5;
-        }
-
-        .ending-screen.preview .ending-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
-            animation: heartbeat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .story-text-area {
-            background: #F0EBF4;
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 30px;
-            font-size: 18px;
-            line-height: 2;
-            color: #666;
-            text-align: center;
-            font-weight: 400;
-            white-space: pre-line;
-        }
-
-        .ending-screen.solo .story-text-area {
-            border: 4px solid #B39BC8;
-        }
-
-        .ending-screen.preview .story-text-area {
-            border: 5px solid #F172A1;
-        }
-
-        .ending-message {
-            font-size: 42px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 6px;
+        /* Editor Styles */
+        .editor-section {
             margin-bottom: 20px;
         }
 
-        .ending-screen.solo .ending-message {
-            color: #A1C3D1;
+        .editor-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
         }
 
-        .ending-screen.preview .ending-message {
-            color: #E64398;
+        .editor-input, .editor-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px; /* iOS 줌 방지 */
         }
 
-        .encouragement {
-            font-size: 18px;
-            font-style: italic;
-            margin-top: 15px;
-            font-weight: 400;
+        .editor-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
         }
 
-        .ending-screen.solo .encouragement {
-            color: #B39BC8;
+        .choice-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
         }
 
-        .ending-screen.preview .encouragement {
-            color: #E64398;
-        }
-
-        .retry-btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            border-radius: 25px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .ending-screen.solo .retry-btn {
-            background: #F172A1;
-        }
-
-        .ending-screen.preview .retry-btn {
-            background: #E64398;
-        }
-
-        .retry-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(230, 67, 152, 0.4);
-        }
-
-        /* ===== PREVIEW SPECIFIC ===== */
-        .preview-title {
-            font-size: 48px;
-            color: #E64398;
-            font-weight: 900;
-            letter-spacing: 6px;
-            margin-bottom: 15px;
-        }
-
-        .preview-tagline {
-            font-size: 22px;
-            color: #B39BC8;
-            margin-bottom: 10px;
-            font-weight: 400;
-        }
-
-        .preview-date {
-            font-size: 20px;
-            color: #F172A1;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        .hearts-row {
+        .choice-header {
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 25px 0;
-        }
-
-        .hearts-row .heart-icon {
-            width: 28px;
-            height: 28px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            animation: float 2s ease-in-out infinite;
-        }
-
-        .hearts-row .heart-icon:nth-child(1) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"); animation-delay: 0s; }
-        .hearts-row .heart-icon:nth-child(2) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"); animation-delay: 0.3s; }
-        .hearts-row .heart-icon:nth-child(3) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"); animation-delay: 0.6s; }
-        .hearts-row .heart-icon:nth-child(4) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"); animation-delay: 0.9s; }
-        .hearts-row .heart-icon:nth-child(5) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E"); animation-delay: 1.2s; }
-
-        /* ===== LOADING ===== */
-        .loading-screen {
-            display: flex;
-            min-height: 100vh;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 20px;
+            margin-bottom: 8px;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #F0EBF4;
-            border-top-color: #E64398;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .next-scene-control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: #B39BC8;
+        .next-scene-input {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
             font-size: 16px;
-            letter-spacing: 2px;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .auto-btn {
+            padding: 8px 12px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+
+        .delete-btn {
+            padding: 6px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .add-choice-btn {
+            padding: 10px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .editor-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .editor-controls button {
+            flex: 1;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .status-bar {
+            padding: 12px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .stats-info {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        /* 모바일 스타일 */
         @media (max-width: 768px) {
-            .intro-title { font-size: 42px; letter-spacing: 4px; }
-            .title-wrapper { padding: 40px 30px; }
-            .choices-container { flex-direction: column; }
-            .game-title { font-size: 28px; }
-            .scene-text { font-size: 16px; padding: 20px; }
-            .choice-card { padding: 25px 20px; }
-            .ending-message { font-size: 32px; letter-spacing: 4px; }
-            .preview-title { font-size: 36px; }
-            .preview-tagline { font-size: 18px; }
-            .editor-toolbar {
-                flex-wrap: wrap;
-                gap: 10px;
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .header {
+                position: sticky;
+                top: 0;
+                background: white;
+                z-index: 100;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+            .tree-panel {
+                max-height: none;
+            }
+
+            .title {
+                font-size: 18px;
+            }
+
+            .buttons {
+                gap: 5px;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .tab-nav {
+                display: flex;
+                position: sticky;
+                top: 60px;
+                z-index: 99;
+                background: white;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .panel {
+                display: none;
+                min-height: calc(100vh - 200px);
+                max-height: none !important;
+            }
+
+            .panel.active {
+                display: block;
+            }
+
+            /* 모바일에서 트리 터치 영역 확대 */
+            .scene-node, .choice-node {
+                padding: 10px 14px;
+                font-size: 14px;
+                margin: 4px 0;
+            }
+
+            .editor-input, .editor-textarea, .next-scene-input {
+                font-size: 16px; /* iOS 줌 방지 */
+            }
+
+            .editor-controls {
+                flex-direction: column;
+            }
+
+            .editor-controls button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .next-scene-control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .next-scene-input {
+                width: 100%;
+            }
+
+            .auto-btn {
+                width: 100%;
                 padding: 10px;
             }
-            .toolbar-buttons {
-                flex-wrap: wrap;
+
+            /* 스크롤 개선 */
+            .tree-panel, .editor-panel {
+                -webkit-overflow-scrolling: touch;
+                overflow-y: auto;
             }
-            .toolbar-btn {
-                font-size: 11px;
-                padding: 6px 12px;
+
+            /* 터치 피드백 */
+            button:active, .scene-node:active, .choice-node:active {
+                opacity: 0.8;
+            }
+        }
+
+        /* 태블릿 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .tree-panel, .editor-panel {
+                max-height: 350px;
+            }
+        }
+
+        /* 가로 모드 최적화 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                padding: 10px;
+            }
+
+            .title {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            .panel {
+                min-height: calc(100vh - 150px);
             }
         }
     </style>
 </head>
 <body>
-    <!-- EDITOR TOOLBAR -->
-    <div class="editor-toolbar" id="editorToolbar">
-        <div class="toolbar-title">CATCH! LOVE EDITOR</div>
-        <div class="toolbar-buttons">
-            <span class="change-indicator" id="changeIndicator">Changes Unsaved</span>
-            <button class="toolbar-btn btn-scene-list" onclick="showSceneList()">Scene List</button>
-            <button class="toolbar-btn btn-toggle-edit" id="editToggle" onclick="toggleEditMode()">Edit Mode: OFF</button>
-            <button class="toolbar-btn btn-export" onclick="exportJSON()">Export JSON</button>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🎮 Game Tree Editor</h1>
+            <div class="buttons">
+                <button class="btn-primary" onclick="saveToLocal()">💾 저장</button>
+                <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
+                <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
+                <button class="btn-info" onclick="importJSON()">📥 가져오기</button>
+                <button style="background: #9b59b6; color: white;" onclick="showPlayDialog()">▶️ 플레이하기</button>
+                <button class="btn-danger" onclick="clearAll()">🗑️ 초기화</button>
+            </div>
+        </div>
+
+        <!-- 스토리 버전 선택 바 -->
+        <div class="version-bar" style="padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-weight: bold; color: #555;">📚 스토리:</span>
+            <div id="versionTabs" style="display: flex; gap: 5px; flex-wrap: wrap;"></div>
+            <button onclick="addNewVersion()" style="padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;" id="addVersionBtn">➕ 새 버전</button>
+            <button onclick="importAsNewVersion()" style="padding: 6px 12px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">📥 새 버전으로</button>
+            <button onclick="appendToCurrentVersion()" style="padding: 6px 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">📎 이어붙이기</button>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('tree')">🌳 트리</button>
+            <button class="tab-btn" onclick="switchTab('editor')">✏️ 편집</button>
+        </div>
+
+        <div class="main-content">
+            <div class="panel tree-panel active" id="treePanel">
+                <div class="tree-panel-header">
+                    <div class="tree-panel-controls">
+                        <button class="btn-success" onclick="showAddSceneDialog()">➕ 새 씬</button>
+                        <button class="btn-info" onclick="showAllScenes()">📋 전체 목록</button>
+                    </div>
+                </div>
+                <div class="tree" id="tree" style="flex: 1; overflow-y: auto;">
+                    <div class="empty-state">로딩 중...</div>
+                </div>
+            </div>
+
+            <div class="resizer" id="resizer"></div>
+
+            <div class="panel editor-panel" id="editorPanel">
+                <div id="editor">
+                    <div class="empty-state">
+                        트리에서 씬이나 선택지를 탭하여 편집하세요
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div id="statusMessage">준비됨</div>
+            <div class="stats-info">
+                <div>사용: <span class="stat-value" id="usedScenes">1</span></div>
+                <div>남음: <span class="stat-value" id="availableScenes">999</span></div>
+                <div>전체: <span class="stat-value">1000</span></div>
+                <div style="border-left: 1px solid #ddd; padding-left: 15px;">⏱️ 예상: <span class="stat-value" id="estimatedTime">0분</span></div>
+            </div>
         </div>
     </div>
 
-    <!-- SCENE LIST MODAL -->
-    <div class="scene-list-modal" id="sceneListModal">
-        <div class="scene-list-container">
-            <div class="scene-list-header">
-                <h2 class="scene-list-title">Scene List</h2>
-                <button class="close-modal-btn" onclick="hideSceneList()">&times;</button>
-            </div>
-            <div id="sceneListContent"></div>
+
+    <script>
+        // 스토리 버전 관리
+        const MAX_VERSIONS = 5;
+        let storyVersions = []; // [{name: "버전1", data: {...}, title: "Catch! Love"}, ...]
+        let currentVersionIndex = 0;
+
+        // 현재 버전의 데이터 (기존 코드와의 호환성을 위해 getter/setter 사용)
+        let gameData = {};
+        let selectedNode = null;
+        let selectedType = null;
+        let usedSceneNumbers = new Set();
+        let isMobile = window.innerWidth <= 768;
+        let gameTitle = "Catch! Love"; // 게임 제목
+        let currentEditingScene = null; // 현재 편집 중인 씬 번호
+        let currentEditingChoice = null; // 현재 편집 중인 선택지 {scene, index}
+        let autoSaveTimer = null; // 자동 저장 타이머
+
+        // 버전 탭 렌더링
+        function renderVersionTabs() {
+            const container = document.getElementById('versionTabs');
+            let html = '';
+
+            storyVersions.forEach((version, index) => {
+                const isActive = index === currentVersionIndex;
+                const sceneCount = Object.keys(version.data).filter(k => version.data[k]?.content).length;
+                html += `
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <button onclick="switchVersion(${index})" style="
+                            padding: 6px 12px;
+                            background: ${isActive ? '#007bff' : '#e9ecef'};
+                            color: ${isActive ? 'white' : '#333'};
+                            border: ${isActive ? '2px solid #0056b3' : '1px solid #ccc'};
+                            border-radius: 5px 0 0 5px;
+                            cursor: pointer;
+                            font-size: 12px;
+                            font-weight: ${isActive ? 'bold' : 'normal'};
+                        ">${version.name} (${sceneCount}씬)</button>
+                        ${storyVersions.length > 1 ? `
+                            <button onclick="deleteVersion(${index})" style="
+                                padding: 6px 8px;
+                                background: ${isActive ? '#dc3545' : '#f8d7da'};
+                                color: ${isActive ? 'white' : '#721c24'};
+                                border: 1px solid ${isActive ? '#c82333' : '#f5c6cb'};
+                                border-radius: 0 5px 5px 0;
+                                cursor: pointer;
+                                font-size: 10px;
+                            ">✕</button>
+                        ` : `
+                            <span style="
+                                padding: 6px 8px;
+                                background: #e9ecef;
+                                color: #aaa;
+                                border: 1px solid #ccc;
+                                border-radius: 0 5px 5px 0;
+                                font-size: 10px;
+                            ">✕</span>
+                        `}
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+
+            // 버전 추가 버튼 활성화/비활성화
+            const addBtn = document.getElementById('addVersionBtn');
+            if (storyVersions.length >= MAX_VERSIONS) {
+                addBtn.disabled = true;
+                addBtn.style.opacity = '0.5';
+                addBtn.title = '최대 5개까지만 생성 가능합니다';
+            } else {
+                addBtn.disabled = false;
+                addBtn.style.opacity = '1';
+                addBtn.title = '';
+            }
+        }
+
+        // 버전 전환
+        function switchVersion(index) {
+            if (index < 0 || index >= storyVersions.length) return;
+
+            // 현재 버전 저장
+            autoSaveCurrentEdit();
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            // 새 버전으로 전환
+            currentVersionIndex = index;
+            gameData = storyVersions[index].data;
+            gameTitle = storyVersions[index].title || "Catch! Love";
+
+            // UI 업데이트
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+
+            // 에디터 초기화
+            document.getElementById('editor').innerHTML = '<div class="empty-state">씬을 선택하세요</div>';
+            selectedNode = null;
+            selectedType = null;
+            currentEditingScene = null;
+            currentEditingChoice = null;
+
+            updateStatus(`"${storyVersions[index].name}" 버전으로 전환됨`);
+        }
+
+        // 새 버전 추가
+        function addNewVersion() {
+            if (storyVersions.length >= MAX_VERSIONS) {
+                alert(`최대 ${MAX_VERSIONS}개까지만 생성 가능합니다.`);
+                return;
+            }
+
+            const name = prompt('새 버전 이름을 입력하세요:', `버전 ${storyVersions.length + 1}`);
+            if (!name) return;
+
+            // 현재 버전 저장
+            autoSaveCurrentEdit();
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            // 새 버전 생성 (빈 스토리)
+            const newVersion = {
+                name: name,
+                title: "Catch! Love",
+                data: { 1: { content: '', isEnding: false, choices: [] } }
+            };
+
+            storyVersions.push(newVersion);
+            currentVersionIndex = storyVersions.length - 1;
+            gameData = newVersion.data;
+            gameTitle = newVersion.title;
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+            updateStatus(`"${name}" 버전이 생성되었습니다.`);
+        }
+
+        // 파일을 새 버전으로 불러오기
+        function importAsNewVersion() {
+            if (storyVersions.length >= MAX_VERSIONS) {
+                alert(`최대 ${MAX_VERSIONS}개까지만 생성 가능합니다.`);
+                return;
+            }
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+
+                        // 현재 버전 저장
+                        autoSaveCurrentEdit();
+                        storyVersions[currentVersionIndex].data = gameData;
+                        storyVersions[currentVersionIndex].title = gameTitle;
+
+                        // 새 버전 생성
+                        const name = prompt('버전 이름을 입력하세요:', story.title || `버전 ${storyVersions.length + 1}`);
+                        if (!name) return;
+
+                        const newVersion = {
+                            name: name,
+                            title: story.title || "Catch! Love",
+                            data: {}
+                        };
+
+                        // STORY 형식을 에디터 형식으로 변환
+                        if (story.scenes && Array.isArray(story.scenes)) {
+                            story.scenes.forEach(scene => {
+                                const match = scene.id.match(/S(\d+)/);
+                                if (!match) return;
+
+                                const num = parseInt(match[1]);
+                                if (num < 1 || num > 1000) return;
+
+                                newVersion.data[num] = {
+                                    content: scene.content || '',
+                                    isEnding: scene.isEnding || false,
+                                    choices: []
+                                };
+
+                                if (!scene.isEnding && scene.choices) {
+                                    scene.choices.forEach(choice => {
+                                        if (choice.label) {
+                                            let nextNum = 0;
+                                            if (choice.nextSceneId) {
+                                                const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                                if (nextMatch) nextNum = parseInt(nextMatch[1]);
+                                            }
+                                            newVersion.data[num].choices.push({
+                                                text: choice.label,
+                                                next: nextNum,
+                                                outcome: choice.outcome || 'continue'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        // 최소 씬 1이라도 있게
+                        if (!newVersion.data[1]) {
+                            newVersion.data[1] = { content: '', isEnding: false, choices: [] };
+                        }
+
+                        storyVersions.push(newVersion);
+                        currentVersionIndex = storyVersions.length - 1;
+                        gameData = newVersion.data;
+                        gameTitle = newVersion.title;
+
+                        updateUsedScenes();
+                        renderTree();
+                        renderVersionTabs();
+                        saveAllVersionsToLocal();
+                        updateStatus(`"${name}" 버전으로 파일을 불러왔습니다.`);
+
+                    } catch (err) {
+                        alert('JSON 파싱 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // 현재 버전에 파일 내용 이어붙이기
+        function appendToCurrentVersion() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+
+                        // 현재 편집 내용 저장
+                        autoSaveCurrentEdit();
+
+                        // 현재 버전에서 사용 중인 최대 씬 번호 찾기
+                        let maxSceneNum = 0;
+                        for (let i = 1; i <= 1000; i++) {
+                            if (gameData[i] && gameData[i].content) {
+                                maxSceneNum = i;
+                            }
+                        }
+
+                        // 불러온 파일의 씬 번호 매핑 (기존 씬 이후로 이어붙이기)
+                        const sceneMapping = {}; // 원래 씬 번호 -> 새 씬 번호
+                        let importedCount = 0;
+
+                        if (story.scenes && Array.isArray(story.scenes)) {
+                            // 먼저 씬 번호 매핑 생성
+                            const sortedScenes = [...story.scenes].sort((a, b) => {
+                                const numA = parseInt(a.id.match(/S(\d+)/)?.[1] || 0);
+                                const numB = parseInt(b.id.match(/S(\d+)/)?.[1] || 0);
+                                return numA - numB;
+                            });
+
+                            sortedScenes.forEach(scene => {
+                                const match = scene.id.match(/S(\d+)/);
+                                if (!match) return;
+
+                                const originalNum = parseInt(match[1]);
+                                const newNum = maxSceneNum + originalNum;
+
+                                if (newNum > 1000) return; // 1000 초과하면 스킵
+
+                                sceneMapping[originalNum] = newNum;
+                            });
+
+                            // 씬 데이터 추가
+                            sortedScenes.forEach(scene => {
+                                const match = scene.id.match(/S(\d+)/);
+                                if (!match) return;
+
+                                const originalNum = parseInt(match[1]);
+                                const newNum = sceneMapping[originalNum];
+
+                                if (!newNum || newNum > 1000) return;
+
+                                gameData[newNum] = {
+                                    content: scene.content || '',
+                                    isEnding: scene.isEnding || false,
+                                    choices: []
+                                };
+
+                                if (!scene.isEnding && scene.choices) {
+                                    scene.choices.forEach(choice => {
+                                        // label 또는 text 둘 다 지원
+                                        const choiceText = choice.label || choice.text || '';
+                                        if (choiceText) {
+                                            let nextNum = 0;
+                                            // nextSceneId 또는 next 둘 다 지원
+                                            const nextSceneId = choice.nextSceneId || '';
+                                            const directNext = choice.next || 0;
+
+                                            if (nextSceneId) {
+                                                const nextMatch = nextSceneId.match(/S(\d+)/);
+                                                if (nextMatch) {
+                                                    const originalNext = parseInt(nextMatch[1]);
+                                                    nextNum = sceneMapping[originalNext] || 0;
+                                                }
+                                            } else if (directNext > 0) {
+                                                // 직접 숫자로 된 next도 매핑
+                                                nextNum = sceneMapping[directNext] || 0;
+                                            }
+
+                                            gameData[newNum].choices.push({
+                                                text: choiceText,
+                                                next: nextNum,
+                                                outcome: choice.outcome || 'continue'
+                                            });
+                                        }
+                                    });
+                                }
+
+                                importedCount++;
+                            });
+                        }
+
+                        // 버전 데이터 동기화
+                        storyVersions[currentVersionIndex].data = gameData;
+
+                        updateUsedScenes();
+                        renderTree();
+                        renderVersionTabs();
+                        saveAllVersionsToLocal();
+                        updateStatus(`${importedCount}개 씬을 현재 버전에 추가했습니다. (씬 ${maxSceneNum + 1}부터)`);
+
+                    } catch (err) {
+                        alert('JSON 파싱 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // 버전 삭제
+        function deleteVersion(index) {
+            if (storyVersions.length <= 1) {
+                alert('최소 1개의 버전은 유지해야 합니다.');
+                return;
+            }
+
+            const version = storyVersions[index];
+            if (!confirm(`"${version.name}" 버전을 삭제하시겠습니까?\n모든 씬이 삭제됩니다.`)) {
+                return;
+            }
+
+            storyVersions.splice(index, 1);
+
+            // 현재 버전이 삭제되었거나 인덱스 조정 필요
+            if (currentVersionIndex >= storyVersions.length) {
+                currentVersionIndex = storyVersions.length - 1;
+            } else if (currentVersionIndex > index) {
+                currentVersionIndex--;
+            }
+
+            // 현재 버전 데이터 로드
+            gameData = storyVersions[currentVersionIndex].data;
+            gameTitle = storyVersions[currentVersionIndex].title || "Catch! Love";
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+            saveAllVersionsToLocal();
+            updateStatus(`버전이 삭제되었습니다.`);
+        }
+
+        // 모든 버전을 로컬 스토리지에 저장
+        function saveAllVersionsToLocal() {
+            // 현재 버전 데이터 동기화
+            storyVersions[currentVersionIndex].data = gameData;
+            storyVersions[currentVersionIndex].title = gameTitle;
+
+            localStorage.setItem('gameTreeVersions', JSON.stringify({
+                versions: storyVersions,
+                currentIndex: currentVersionIndex
+            }));
+        }
+
+        // 모든 버전을 로컬 스토리지에서 불러오기
+        function loadAllVersionsFromLocal() {
+            const saved = localStorage.getItem('gameTreeVersions');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    storyVersions = data.versions || [];
+                    currentVersionIndex = data.currentIndex || 0;
+
+                    if (storyVersions.length === 0) {
+                        initDefaultVersion();
+                    } else {
+                        // 인덱스 유효성 검사
+                        if (currentVersionIndex >= storyVersions.length) {
+                            currentVersionIndex = 0;
+                        }
+                        gameData = storyVersions[currentVersionIndex].data;
+                        gameTitle = storyVersions[currentVersionIndex].title || "Catch! Love";
+                    }
+                    return true;
+                } catch (e) {
+                    console.error('버전 데이터 로드 실패:', e);
+                }
+            }
+            return false;
+        }
+
+        // 기본 버전 초기화
+        function initDefaultVersion() {
+            storyVersions = [{
+                name: '버전 1',
+                title: 'Catch! Love',
+                data: { 1: { content: '', isEnding: false, choices: [] } }
+            }];
+            currentVersionIndex = 0;
+            gameData = storyVersions[0].data;
+            gameTitle = storyVersions[0].title;
+        }
+
+        // JSON 파일에서 데이터 로드
+        async function loadFromJSON() {
+            try {
+                const response = await fetch('./Catch!-Love.json');
+                if (!response.ok) throw new Error('Failed to load JSON');
+                const story = await response.json();
+
+                const convertedData = {};
+                for (let i = 1; i <= 1000; i++) {
+                    convertedData[i] = { content: '', isEnding: false, choices: [] };
+                }
+
+                if (story.scenes && Array.isArray(story.scenes)) {
+                    story.scenes.forEach(scene => {
+                        const match = scene.id.match(/S(\d+)/);
+                        if (!match) return;
+
+                        const num = parseInt(match[1]);
+                        if (num < 1 || num > 1000) return;
+
+                        convertedData[num] = {
+                            content: scene.content || '',
+                            isEnding: scene.isEnding || false,
+                            choices: []
+                        };
+
+                        if (!scene.isEnding && scene.choices) {
+                            scene.choices.forEach(choice => {
+                                if (choice.label) {
+                                    let nextNum = 0;
+                                    if (choice.nextSceneId) {
+                                        const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                        if (nextMatch) nextNum = parseInt(nextMatch[1]);
+                                    }
+                                    convertedData[num].choices.push({
+                                        text: choice.label,
+                                        next: nextNum,
+                                        outcome: choice.outcome || 'continue'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+
+                storyVersions = [{
+                    name: '버전 1',
+                    title: story.title || 'Catch! Love',
+                    data: convertedData
+                }];
+                currentVersionIndex = 0;
+                gameData = storyVersions[0].data;
+                gameTitle = storyVersions[0].title;
+                return true;
+            } catch (e) {
+                console.error('JSON 로드 실패:', e);
+                return false;
+            }
+        }
+
+        // 테스트 플레이 관련 변수
+        let testCurrentScene = 1;
+        let testPathHistory = []; // 표시용 경로
+        let testSceneStack = []; // 뒤로가기용 씬 스택
+
+        // 테스트 플레이 시작 (씬 1부터)
+        function startTestPlay() {
+            // 현재 편집 내용 저장
+            autoSaveCurrentEdit();
+
+            // 씬 1이 있는지 확인
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            testCurrentScene = 1;
+            testPathHistory = [];
+            testSceneStack = [];
+            document.getElementById('testPlayModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            showTestScene(1, false);
+        }
+
+        // 현재 선택된 씬부터 테스트 플레이 시작
+        function startTestPlayFromCurrent() {
+            // 현재 편집 내용 저장
+            autoSaveCurrentEdit();
+
+            const startScene = currentEditingScene || 1;
+
+            // 선택된 씬이 있는지 확인
+            if (!gameData[startScene] || !gameData[startScene].content) {
+                alert(`씬 ${startScene}에 내용을 입력해주세요.`);
+                return;
+            }
+
+            testCurrentScene = startScene;
+            testPathHistory = [];
+            testSceneStack = [];
+            document.getElementById('testPlayModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            showTestScene(startScene, false);
+        }
+
+        // "현재 씬" 테스트 버튼 표시/숨김
+        function updateTestFromCurrentButton() {
+            const btn = document.getElementById('testFromCurrentBtn');
+            if (currentEditingScene && currentEditingScene !== 1) {
+                btn.style.display = 'inline-block';
+                btn.textContent = `▶️ 씬 ${currentEditingScene}부터`;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        // 테스트 플레이 닫기
+        function closeTestPlay() {
+            document.getElementById('testPlayModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // 테스트 플레이 재시작
+        function restartTestPlay() {
+            testCurrentScene = 1;
+            testPathHistory = [];
+            testSceneStack = [];
+            showTestScene(1, false);
+        }
+
+        // 이전 씬으로 돌아가기
+        function goBackTestPlay() {
+            if (testSceneStack.length > 0) {
+                // 현재 씬에서 추가된 경로 제거 (씬 + 선택)
+                if (testPathHistory.length > 0) testPathHistory.pop(); // 선택 제거
+                if (testPathHistory.length > 0) testPathHistory.pop(); // 씬 제거
+
+                const prevScene = testSceneStack.pop();
+                showTestScene(prevScene, false);
+            }
+        }
+
+        // 뒤로가기 버튼 표시/숨김
+        function updateBackButton() {
+            const backBtn = document.getElementById('testBackBtn');
+            if (testSceneStack.length > 0) {
+                backBtn.style.display = 'inline-block';
+            } else {
+                backBtn.style.display = 'none';
+            }
+        }
+
+        // 테스트 씬 표시
+        function showTestScene(sceneNum, addToStack = true) {
+            const scene = gameData[sceneNum];
+
+            // 스택에 현재 씬 저장 (뒤로가기용)
+            if (addToStack && testCurrentScene !== sceneNum) {
+                testSceneStack.push(testCurrentScene);
+            }
+
+            testCurrentScene = sceneNum;
+
+            // 경로 기록
+            testPathHistory.push(`씬 ${sceneNum}`);
+            document.getElementById('testPathHistory').textContent = testPathHistory.join(' → ');
+
+            // 씬 번호 표시
+            document.getElementById('testSceneNumber').textContent = `📍 씬 ${sceneNum}`;
+
+            // 뒤로가기 버튼 업데이트
+            updateBackButton();
+
+            if (!scene || !scene.content) {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="color: #dc3545; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <div style="font-size: 18px; font-weight: bold;">씬 ${sceneNum}이 비어있습니다</div>
+                        <div style="color: #666; margin-top: 10px;">에디터에서 이 씬의 내용을 작성해주세요.</div>
+                    </div>`;
+                document.getElementById('testChoices').innerHTML = '';
+                return;
+            }
+
+            // 씬 내용 표시
+            document.getElementById('testSceneContent').textContent = scene.content;
+
+            // 선택지 또는 엔딩 표시
+            const choicesDiv = document.getElementById('testChoices');
+
+            if (scene.isEnding) {
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+                        <div style="font-size: 24px; color: white; font-weight: bold;">~ THE END ~</div>
+                        <div style="color: rgba(255,255,255,0.9); margin-top: 10px;">엔딩에 도달했습니다!</div>
+                    </div>`;
+            } else if (scene.choices && scene.choices.length > 0) {
+                let choicesHTML = '';
+                scene.choices.forEach((choice, index) => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+                        let btnColor = '#007bff';
+                        let outcomeLabel = '';
+
+                        if (outcome === 'success') {
+                            btnColor = '#28a745';
+                            outcomeLabel = ' 🎉';
+                        } else if (outcome === 'failure') {
+                            btnColor = '#dc3545';
+                            outcomeLabel = ' 💔';
+                        }
+
+                        choicesHTML += `
+                            <button onclick="selectTestChoice(${sceneNum}, ${index})" style="
+                                padding: 15px 20px;
+                                background: ${btnColor};
+                                color: white;
+                                border: none;
+                                border-radius: 8px;
+                                font-size: 15px;
+                                cursor: pointer;
+                                text-align: left;
+                                transition: all 0.3s;
+                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                ${index + 1}. ${choice.text}${outcomeLabel}
+                            </button>`;
+                    }
+                });
+
+                if (choicesHTML === '') {
+                    choicesHTML = `<div style="color: white; text-align: center; padding: 20px;">선택지가 없습니다. 에디터에서 선택지를 추가해주세요.</div>`;
+                }
+
+                choicesDiv.innerHTML = choicesHTML;
+            } else {
+                choicesDiv.innerHTML = `<div style="color: white; text-align: center; padding: 20px;">선택지가 없습니다. 에디터에서 선택지를 추가해주세요.</div>`;
+            }
+        }
+
+        // 테스트 선택지 선택
+        function selectTestChoice(sceneNum, choiceIndex) {
+            const choice = gameData[sceneNum].choices[choiceIndex];
+            if (!choice) return;
+
+            const outcome = choice.outcome || 'continue';
+
+            // 경로에 선택 기록
+            testPathHistory.push(`"${choice.text.substring(0, 15)}${choice.text.length > 15 ? '...' : ''}"`);
+
+            if (outcome === 'success') {
+                showTestEnding('success');
+            } else if (outcome === 'failure') {
+                showTestEnding('failure');
+            } else if (choice.next && choice.next > 0) {
+                showTestScene(choice.next);
+            } else {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="color: #ffc107; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <div style="font-size: 18px; font-weight: bold;">다음 씬이 지정되지 않았습니다</div>
+                        <div style="color: #666; margin-top: 10px;">에디터에서 이 선택지의 다음 씬 번호를 설정해주세요.</div>
+                    </div>`;
+                document.getElementById('testChoices').innerHTML = '';
+            }
+        }
+
+        // 테스트 엔딩 표시
+        function showTestEnding(type) {
+            document.getElementById('testPathHistory').textContent = testPathHistory.join(' → ');
+
+            const choicesDiv = document.getElementById('testChoices');
+
+            if (type === 'success') {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">💕</div>
+                        <div style="font-size: 28px; color: #e91e63; font-weight: bold;">SUCCESS!</div>
+                        <div style="color: #666; margin-top: 15px; font-size: 16px;">축하합니다! 성공 엔딩에 도달했습니다.</div>
+                    </div>`;
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px;">
+                        <div style="font-size: 20px; color: white; font-weight: bold;">🎉 THE END 🎉</div>
+                    </div>`;
+            } else {
+                document.getElementById('testSceneContent').innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">💔</div>
+                        <div style="font-size: 28px; color: #607d8b; font-weight: bold;">MAYBE NEXT TIME...</div>
+                        <div style="color: #666; margin-top: 15px; font-size: 16px;">다른 선택을 해보세요.</div>
+                    </div>`;
+                choicesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); border-radius: 10px;">
+                        <div style="font-size: 20px; color: #455a64; font-weight: bold;">~ THE END ~</div>
+                    </div>`;
+            }
+        }
+
+        // 모바일 감지 및 리사이즈 처리
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+        });
+
+        // 패널 리사이저 기능
+        function initResizer() {
+            const resizer = document.getElementById('resizer');
+            const treePanel = document.getElementById('treePanel');
+            const editorPanel = document.getElementById('editorPanel');
+            let isResizing = false;
+
+            resizer.addEventListener('mousedown', function(e) {
+                if (isMobile) return;
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing || isMobile) return;
+
+                const container = document.querySelector('.main-content');
+                const containerRect = container.getBoundingClientRect();
+                const newWidth = e.clientX - containerRect.left;
+                const minWidth = 250;
+                const maxWidth = containerRect.width - 300;
+
+                if (newWidth >= minWidth && newWidth <= maxWidth) {
+                    const percentage = (newWidth / containerRect.width) * 100;
+                    treePanel.style.width = percentage + '%';
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        }
+
+        // 탭 전환 (모바일)
+        function switchTab(tab) {
+            if (!isMobile) return;
+            
+            const treePanel = document.getElementById('treePanel');
+            const editorPanel = document.getElementById('editorPanel');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'tree') {
+                treePanel.classList.add('active');
+                editorPanel.classList.remove('active');
+                tabBtns[0].classList.add('active');
+            } else {
+                treePanel.classList.remove('active');
+                editorPanel.classList.add('active');
+                tabBtns[1].classList.add('active');
+            }
+        }
+
+        // 초기화
+        function init() {
+            for (let i = 1; i <= 1000; i++) {
+                gameData[i] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+            }
+            gameData[1].content = '게임 시작';
+            updateUsedScenes();
+            renderTree();
+        }
+
+        // 사용된 씬 업데이트
+        function updateUsedScenes() {
+            usedSceneNumbers.clear();
+            usedSceneNumbers.add(1);
+            
+            function traverse(sceneNum) {
+                const scene = gameData[sceneNum];
+                if (!scene) return;
+                
+                scene.choices.forEach(choice => {
+                    if (choice.next && choice.next > 0 && choice.next <= 1000) {
+                        if (!usedSceneNumbers.has(choice.next)) {
+                            usedSceneNumbers.add(choice.next);
+                            traverse(choice.next);
+                        }
+                    }
+                });
+            }
+            
+            traverse(1);
+            
+            for (let i = 1; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim()) {
+                    usedSceneNumbers.add(i);
+                }
+            }
+            
+            updateStats();
+        }
+
+        // 다음 사용 가능한 씬 찾기
+        function getNextAvailableScene() {
+            for (let i = 2; i <= 1000; i++) {
+                if (!usedSceneNumbers.has(i)) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        // 새 씬 추가 다이얼로그
+        function showAddSceneDialog() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
+            const nextScene = getNextAvailableScene();
+            if (nextScene === 0) {
+                alert('더 이상 사용 가능한 씬이 없습니다.');
+                return;
+            }
+
+            const sceneNum = prompt(`새 씬 번호를 입력하세요 (추천: ${nextScene})`, nextScene);
+            if (sceneNum === null) return;
+
+            const num = parseInt(sceneNum);
+            if (isNaN(num) || num < 1 || num > 1000) {
+                alert('1~1000 사이의 숫자를 입력하세요.');
+                return;
+            }
+
+            if (usedSceneNumbers.has(num)) {
+                if (!confirm(`씬 ${num}은(는) 이미 사용 중입니다. 수정하시겠습니까?`)) {
+                    return;
+                }
+            }
+
+            // 새 씬 생성 또는 수정
+            if (!gameData[num]) {
+                gameData[num] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+            }
+
+            selectScene(num);
+            updateUsedScenes();
+            renderTree();
+            updateStatus(`씬 ${num} 준비됨`);
+        }
+
+        // 전체 씬 목록 보기
+        function showAllScenes() {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
+            const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
+
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">전체 씬 목록 (${sceneList.length}개)</h3>
+                </div>
+
+                <div class="editor-section">
+                    <div style="display: grid; gap: 8px; max-height: 500px; overflow-y: auto;">`;
+
+            sceneList.forEach(num => {
+                const scene = gameData[num];
+                const preview = scene.content ? scene.content.substring(0, 30) : '(내용 없음)';
+                const endingBadge = scene.isEnding ? '<span style="color: #dc3545; font-weight: bold;"> [END]</span>' : '';
+                const choicesInfo = !scene.isEnding ? ` (선택지: ${scene.choices.length})` : '';
+
+                html += `
+                    <div style="
+                        padding: 12px;
+                        background: ${num === 1 ? '#e3f2fd' : 'white'};
+                        border: 2px solid ${scene.isEnding ? '#dc3545' : '#007bff'};
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    " onclick="selectScene(${num})"
+                       onmouseover="this.style.background='#f0f0f0'"
+                       onmouseout="this.style.background='${num === 1 ? '#e3f2fd' : 'white'}'">
+                        <div style="font-weight: bold; margin-bottom: 5px;">
+                            씬 ${num}${endingBadge}${choicesInfo}
+                        </div>
+                        <div style="color: #666; font-size: 13px;">
+                            ${preview}${scene.content && scene.content.length > 30 ? '...' : ''}
+                        </div>
+                    </div>`;
+            });
+
+            html += `
+                    </div>
+                </div>
+
+                <div class="editor-controls">
+                    <button class="btn-info" onclick="renderTree(); document.getElementById('editor').innerHTML='<div class=\\'empty-state\\'>트리에서 씬이나 선택지를 탭하여 편집하세요</div>'">트리로 돌아가기</button>
+                </div>`;
+
+            document.getElementById('editor').innerHTML = html;
+
+            if (isMobile) {
+                switchTab('editor');
+            }
+        }
+
+        // 트리 렌더링 - 카드 형태로 씬과 선택지를 한눈에 보기
+        function renderTree() {
+            const treeDiv = document.getElementById('tree');
+
+            // BFS로 씬 1부터 연결된 순서대로 씬 수집
+            const orderedScenes = [];
+            const connectedScenes = new Set();
+            const queue = [1];
+
+            while (queue.length > 0) {
+                const sceneNum = queue.shift();
+                if (connectedScenes.has(sceneNum)) continue;
+                connectedScenes.add(sceneNum);
+
+                const scene = gameData[sceneNum];
+                if (scene && scene.content && scene.content.trim()) {
+                    orderedScenes.push(sceneNum);
+
+                    // 선택지의 다음 씬들을 큐에 추가
+                    if (!scene.isEnding && scene.choices) {
+                        scene.choices.forEach(choice => {
+                            if (choice.next && choice.next > 0 && !connectedScenes.has(choice.next)) {
+                                queue.push(choice.next);
+                            }
+                        });
+                    }
+                }
+            }
+
+            // 연결되지 않은 씬들 (고아 씬) 찾기
+            const orphanScenes = [];
+            for (let i = 2; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim() && !connectedScenes.has(i)) {
+                    orphanScenes.push(i);
+                }
+            }
+
+            // HTML 생성
+            let html = '<div class="scene-cards">';
+
+            orderedScenes.forEach(sceneNum => {
+                html += buildSceneCard(sceneNum);
+            });
+
+            // 고아 씬들 표시
+            if (orphanScenes.length > 0) {
+                html += `<div class="orphan-section">
+                    <div class="orphan-header">⚠️ 연결되지 않은 씬 (${orphanScenes.length}개)</div>`;
+                orphanScenes.forEach(num => {
+                    html += buildSceneCard(num);
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            treeDiv.innerHTML = html;
+        }
+
+        // 씬 카드 HTML 생성
+        function buildSceneCard(sceneNum) {
+            const scene = gameData[sceneNum];
+            if (!scene) return '';
+
+            const hasContent = scene.content && scene.content.trim();
+            const isSelected = selectedNode === sceneNum && selectedType === 'scene';
+
+            let cardClass = 'scene-card';
+            if (isSelected) cardClass += ' selected';
+            if (scene.isEnding) cardClass += ' ending';
+            if (!hasContent) cardClass += ' empty';
+
+            let html = `<div class="${cardClass}" id="scene-card-${sceneNum}">`;
+
+            // 씬 헤더
+            html += `<div class="scene-card-header" onclick="selectScene(${sceneNum})">`;
+            html += `<span class="scene-card-num">📄 씬 ${sceneNum}</span>`;
+            if (scene.isEnding) {
+                html += '<span class="scene-card-badge ending-badge">END</span>';
+            }
+            html += '</div>';
+
+            // 씬 내용 미리보기
+            if (hasContent) {
+                const preview = scene.content.substring(0, 40);
+                html += `<div class="scene-card-content" onclick="selectScene(${sceneNum})">${preview}${scene.content.length > 40 ? '...' : ''}</div>`;
+            }
+
+            // 선택지 목록
+            if (!scene.isEnding && scene.choices && scene.choices.length > 0) {
+                html += '<div class="scene-card-choices">';
+                scene.choices.forEach((choice, index) => {
+                    const isChoiceSelected = selectedNode === `${sceneNum}-${index}` && selectedType === 'choice';
+                    let choiceClass = 'scene-card-choice';
+                    if (isChoiceSelected) choiceClass += ' selected';
+                    if (!choice.text) choiceClass += ' empty';
+
+                    // 결과 타입에 따른 스타일
+                    const outcome = choice.outcome || 'continue';
+                    if (outcome === 'success') choiceClass += ' success';
+                    else if (outcome === 'failure') choiceClass += ' failure';
+
+                    html += `<div class="${choiceClass}" onclick="selectChoice(${sceneNum}, ${index})">`;
+                    html += `<span class="choice-index">${index + 1}</span>`;
+                    html += `<span class="choice-text-preview">${choice.text ? choice.text.substring(0, 25) + (choice.text.length > 25 ? '...' : '') : '(빈 선택지)'}</span>`;
+
+                    // 다음 씬 또는 결과 표시
+                    if (outcome === 'success') {
+                        html += '<span class="choice-next success-label">🎉</span>';
+                    } else if (outcome === 'failure') {
+                        html += '<span class="choice-next failure-label">💔</span>';
+                    } else if (choice.next && choice.next > 0) {
+                        html += `<span class="choice-next" onclick="event.stopPropagation(); scrollToScene(${choice.next})" title="씬 ${choice.next}로 이동">→ ${choice.next}</span>`;
+                    } else {
+                        html += '<span class="choice-next empty-next">?</span>';
+                    }
+
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        // 특정 씬 카드로 스크롤
+        function scrollToScene(sceneNum) {
+            const card = document.getElementById(`scene-card-${sceneNum}`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // 잠시 하이라이트
+                card.classList.add('highlight');
+                setTimeout(() => card.classList.remove('highlight'), 1500);
+            }
+        }
+
+        // 현재 편집 중인 내용 자동 저장
+        function autoSaveCurrentEdit() {
+            // 씬 편집 중이면 저장
+            if (currentEditingScene !== null && selectedType === 'scene') {
+                const contentEl = document.getElementById('sceneContent');
+                const isEndingEl = document.getElementById('isEnding');
+
+                if (contentEl) {
+                    gameData[currentEditingScene].content = contentEl.value;
+                }
+                if (isEndingEl) {
+                    gameData[currentEditingScene].isEnding = isEndingEl.checked;
+                }
+
+                // 선택지들도 저장
+                if (!gameData[currentEditingScene].isEnding) {
+                    gameData[currentEditingScene].choices.forEach((choice, index) => {
+                        const textInput = document.getElementById(`choice-text-${index}`);
+                        const nextInput = document.getElementById(`choice-next-${index}`);
+                        const outcomeInput = document.getElementById(`choice-outcome-${index}`);
+                        if (textInput) choice.text = textInput.value;
+                        if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                        if (outcomeInput) choice.outcome = outcomeInput.value;
+                    });
+                }
+
+                saveToLocal();
+            }
+
+            // 선택지 편집 중이면 저장
+            if (currentEditingChoice !== null && selectedType === 'choice') {
+                const textEl = document.getElementById('choiceText');
+                const outcomeEl = document.getElementById('choiceOutcome');
+                const nextEl = document.getElementById('choiceNext');
+
+                if (textEl && gameData[currentEditingChoice.scene]?.choices[currentEditingChoice.index]) {
+                    const choice = gameData[currentEditingChoice.scene].choices[currentEditingChoice.index];
+                    choice.text = textEl.value;
+                    if (outcomeEl) choice.outcome = outcomeEl.value;
+                    if (nextEl && choice.outcome === 'continue') {
+                        choice.next = parseInt(nextEl.value) || 0;
+                    }
+                    saveToLocal();
+                }
+            }
+        }
+
+        // 자동 저장 타이머 시작 (5초마다)
+        function startAutoSave() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            autoSaveTimer = setInterval(() => {
+                autoSaveCurrentEdit();
+                updateStatus('자동 저장됨');
+            }, 5000);
+        }
+
+        // 씬 선택
+        function selectScene(sceneNum) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
+            selectedNode = sceneNum;
+            selectedType = 'scene';
+            currentEditingScene = sceneNum;
+            currentEditingChoice = null;
+
+            renderTree();
+            showSceneEditor(sceneNum);
+
+            // 모바일에서는 자동으로 편집 탭으로 전환
+            if (isMobile) {
+                switchTab('editor');
+            }
+        }
+
+        // 선택지 선택
+        function selectChoice(sceneNum, choiceIndex) {
+            // 기존 편집 내용 먼저 저장
+            autoSaveCurrentEdit();
+
+            selectedNode = `${sceneNum}-${choiceIndex}`;
+            selectedType = 'choice';
+            currentEditingScene = null;
+            currentEditingChoice = { scene: sceneNum, index: choiceIndex };
+
+            renderTree();
+            showChoiceEditor(sceneNum, choiceIndex);
+
+            if (isMobile) {
+                switchTab('editor');
+            }
+        }
+
+        // 씬 에디터
+        function showSceneEditor(sceneNum) {
+            const scene = gameData[sceneNum];
+            const editor = document.getElementById('editor');
+            
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">씬 ${sceneNum}</h3>
+                </div>
+                
+                <div class="editor-section">
+                    <div class="editor-label">씬 내용</div>
+                    <textarea class="editor-textarea" id="sceneContent" 
+                              placeholder="이 씬의 내용을 입력하세요...">${scene.content}</textarea>
+                </div>
+                
+                <div class="editor-section">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isEnding" ${scene.isEnding ? 'checked' : ''} 
+                               onchange="toggleEnding(${sceneNum})">
+                        <span>엔딩 씬으로 설정</span>
+                    </label>
+                </div>
+                
+                <div class="editor-section" id="choicesSection" ${scene.isEnding ? 'style="display:none"' : ''}>
+                    <div class="editor-label">선택지 (${scene.choices.length}/3)</div>`;
+            
+            scene.choices.forEach((choice, index) => {
+                const outcomeValue = choice.outcome || 'continue';
+                html += `
+                    <div class="choice-container">
+                        <div class="choice-header">
+                            <span class="choice-number">선택지 ${index + 1}</span>
+                            <button class="delete-btn" onclick="deleteChoice(${sceneNum}, ${index})">삭제</button>
+                        </div>
+                        <input type="text" class="editor-input" id="choice-text-${index}"
+                               placeholder="선택지 텍스트를 입력하세요..." value="${choice.text}">
+                        <div class="next-scene-control">
+                            <select class="editor-input" id="choice-outcome-${index}" style="width: auto; min-width: 120px;">
+                                <option value="continue" ${outcomeValue === 'continue' ? 'selected' : ''}>다음 씬으로</option>
+                                <option value="success" ${outcomeValue === 'success' ? 'selected' : ''}>성공 엔딩</option>
+                                <option value="failure" ${outcomeValue === 'failure' ? 'selected' : ''}>실패 엔딩</option>
+                            </select>
+                            <input type="number" class="next-scene-input" id="choice-next-${index}"
+                                   min="1" max="1000" value="${choice.next || ''}"
+                                   placeholder="다음 씬" ${outcomeValue !== 'continue' ? 'disabled' : ''}>
+                            <button class="auto-btn" onclick="autoAssignNext(${sceneNum}, ${index})" ${outcomeValue !== 'continue' ? 'disabled' : ''}>자동</button>
+                            ${choice.next && choice.next > 0 && outcomeValue === 'continue' ? `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${choice.next})">→ 씬 ${choice.next}</button>` : ''}
+                        </div>
+                    </div>`;
+            });
+            
+            if (scene.choices.length < 3 && !scene.isEnding) {
+                html += `<button class="add-choice-btn" onclick="addChoice(${sceneNum})">+ 선택지 추가</button>`;
+            }
+            
+            html += `</div>`;
+
+            // 바로가기 섹션 추가
+            const parentScenes = findParentScenes(sceneNum);
+            const childScenes = scene.choices.filter(c => c.next && c.next > 0 && (c.outcome || 'continue') === 'continue').map(c => c.next);
+
+            if (parentScenes.length > 0 || childScenes.length > 0) {
+                html += `<div class="editor-section">
+                    <div class="editor-label">🔗 바로가기</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">`;
+
+                parentScenes.forEach(p => {
+                    html += `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${p.scene})">← 씬 ${p.scene} (선택지 ${p.choiceIdx + 1})</button>`;
+                });
+
+                childScenes.forEach(nextScene => {
+                    html += `<button class="auto-btn" style="background: #17a2b8;" onclick="selectScene(${nextScene})">→ 씬 ${nextScene}</button>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            html += `
+                <div class="editor-controls">
+                    <button class="btn-success" onclick="saveScene(${sceneNum})">저장</button>
+                    ${sceneNum !== 1 ? `<button class="btn-danger" onclick="deleteScene(${sceneNum})">씬 삭제</button>` : ''}
+                    ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
+                </div>`;
+
+            editor.innerHTML = html;
+        }
+
+        // 특정 씬을 연결하는 부모 씬들 찾기
+        function findParentScenes(targetScene) {
+            const parents = [];
+            Object.keys(gameData).forEach(key => {
+                const sceneNum = parseInt(key);
+                const scene = gameData[sceneNum];
+                if (scene && scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.next === targetScene && (choice.outcome || 'continue') === 'continue') {
+                            parents.push({ scene: sceneNum, choiceIdx: idx });
+                        }
+                    });
+                }
+            });
+            return parents;
+        }
+
+        // 선택지 에디터
+        function showChoiceEditor(sceneNum, choiceIndex) {
+            const choice = gameData[sceneNum].choices[choiceIndex];
+            const editor = document.getElementById('editor');
+            const outcomeValue = choice.outcome || 'continue';
+
+            let html = `
+                <div class="editor-section">
+                    <h3 style="margin: 0 0 15px 0; color: #333;">씬 ${sceneNum} - 선택지 ${choiceIndex + 1}</h3>
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-label">선택지 텍스트</div>
+                    <input type="text" class="editor-input" id="choiceText"
+                           placeholder="선택지 텍스트를 입력하세요..." value="${choice.text || ''}">
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-label">결과 유형</div>
+                    <select class="editor-input" id="choiceOutcome" onchange="toggleNextSceneInput()">
+                        <option value="continue" ${outcomeValue === 'continue' ? 'selected' : ''}>다음 씬으로 진행</option>
+                        <option value="success" ${outcomeValue === 'success' ? 'selected' : ''}>성공 엔딩</option>
+                        <option value="failure" ${outcomeValue === 'failure' ? 'selected' : ''}>실패 엔딩</option>
+                    </select>
+                </div>
+
+                <div class="editor-section" id="nextSceneSection" ${outcomeValue !== 'continue' ? 'style="display:none"' : ''}>
+                    <div class="editor-label">다음 씬 번호</div>
+                    <div class="next-scene-control">
+                        <input type="number" class="editor-input" id="choiceNext"
+                               min="1" max="1000" value="${choice.next || ''}"
+                               placeholder="1-1000">
+                        <button class="auto-btn" onclick="autoAssignNextForChoice(${sceneNum}, ${choiceIndex})">자동 채번</button>
+                        ${choice.next && choice.next > 0 ? `<button class="auto-btn" style="background: #6c757d;" onclick="selectScene(${choice.next})">→ 씬 ${choice.next} 편집</button>` : ''}
+                    </div>
+                </div>
+
+                <div class="editor-section">
+                    <div class="editor-label">바로가기</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="auto-btn" style="background: #007bff;" onclick="selectScene(${sceneNum})">← 씬 ${sceneNum}으로</button>
+                    </div>
+                </div>
+
+                <div class="editor-controls">
+                    <button class="btn-success" onclick="saveChoice(${sceneNum}, ${choiceIndex})">저장</button>
+                    <button class="btn-danger" onclick="deleteChoice(${sceneNum}, ${choiceIndex})">삭제</button>
+                    ${isMobile ? `<button class="btn-info" onclick="switchTab('tree')">트리로 돌아가기</button>` : ''}
+                </div>`;
+
+            editor.innerHTML = html;
+        }
+
+        // 다음 씬 입력창 토글
+        function toggleNextSceneInput() {
+            const outcome = document.getElementById('choiceOutcome').value;
+            const section = document.getElementById('nextSceneSection');
+            if (section) {
+                section.style.display = outcome === 'continue' ? 'block' : 'none';
+            }
+        }
+
+        // 엔딩 토글
+        function toggleEnding(sceneNum) {
+            const isEnding = document.getElementById('isEnding').checked;
+            gameData[sceneNum].isEnding = isEnding;
+            
+            const choicesSection = document.getElementById('choicesSection');
+            if (isEnding) {
+                choicesSection.style.display = 'none';
+                gameData[sceneNum].choices = [];
+            } else {
+                choicesSection.style.display = 'block';
+            }
+            
+            updateUsedScenes();
+            renderTree();
+        }
+
+        // 자동 채번 (현재 화면의 입력값도 고려)
+        function autoAssignNext(sceneNum, choiceIndex) {
+            // 현재 화면에 이미 입력된 다음 씬 번호들 수집
+            const usedInCurrentForm = new Set();
+            const scene = gameData[sceneNum];
+            if (scene && scene.choices) {
+                scene.choices.forEach((choice, idx) => {
+                    // 현재 편집 중인 선택지가 아닌 경우, 입력 필드에서 값 확인
+                    const inputEl = document.getElementById(`choice-next-${idx}`);
+                    if (inputEl && inputEl.value) {
+                        usedInCurrentForm.add(parseInt(inputEl.value));
+                    }
+                });
+            }
+
+            const nextScene = getNextAvailableSceneExcluding(usedInCurrentForm);
+            if (nextScene > 0) {
+                document.getElementById(`choice-next-${choiceIndex}`).value = nextScene;
+                updateStatus(`씬 ${nextScene} 자동 할당`);
+            } else {
+                alert('사용 가능한 씬이 없습니다');
+            }
+        }
+
+        function autoAssignNextForChoice(sceneNum, choiceIndex) {
+            // 같은 씬의 다른 선택지에서 사용 중인 번호 수집
+            const usedInCurrentScene = new Set();
+            const scene = gameData[sceneNum];
+            if (scene && scene.choices) {
+                scene.choices.forEach((choice, idx) => {
+                    if (idx !== choiceIndex && choice.next > 0) {
+                        usedInCurrentScene.add(choice.next);
+                    }
+                });
+            }
+
+            const nextScene = getNextAvailableSceneExcluding(usedInCurrentScene);
+            if (nextScene > 0) {
+                document.getElementById('choiceNext').value = nextScene;
+                updateStatus(`씬 ${nextScene} 자동 할당`);
+            } else {
+                alert('사용 가능한 씬이 없습니다');
+            }
+        }
+
+        // 특정 번호들을 제외하고 다음 사용 가능한 씬 찾기
+        function getNextAvailableSceneExcluding(excludeSet) {
+            for (let i = 2; i <= 1000; i++) {
+                if (!usedSceneNumbers.has(i) && !excludeSet.has(i)) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        // 씬 저장
+        function saveScene(sceneNum) {
+            const content = document.getElementById('sceneContent').value;
+            const isEnding = document.getElementById('isEnding').checked;
+            
+            gameData[sceneNum].content = content;
+            gameData[sceneNum].isEnding = isEnding;
+            
+            if (!isEnding) {
+                gameData[sceneNum].choices.forEach((choice, index) => {
+                    const textInput = document.getElementById(`choice-text-${index}`);
+                    const nextInput = document.getElementById(`choice-next-${index}`);
+                    const outcomeInput = document.getElementById(`choice-outcome-${index}`);
+                    if (textInput) choice.text = textInput.value;
+                    if (nextInput) choice.next = parseInt(nextInput.value) || 0;
+                    if (outcomeInput) choice.outcome = outcomeInput.value;
+                });
+            }
+            
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
+            updateStatus('씬 ' + sceneNum + ' 저장됨');
+            
+            if (isMobile) {
+                setTimeout(() => switchTab('tree'), 500);
+            }
+        }
+
+        // 선택지 저장
+        function saveChoice(sceneNum, choiceIndex) {
+            const text = document.getElementById('choiceText').value;
+            const outcomeEl = document.getElementById('choiceOutcome');
+            const nextEl = document.getElementById('choiceNext');
+
+            const outcome = outcomeEl ? outcomeEl.value : 'continue';
+            const next = outcome === 'continue' ? (parseInt(nextEl?.value) || 0) : 0;
+
+            gameData[sceneNum].choices[choiceIndex] = { text, next, outcome };
+
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
+            updateStatus('선택지 저장됨');
+
+            if (isMobile) {
+                setTimeout(() => switchTab('tree'), 500);
+            }
+        }
+
+        // 선택지 추가
+        function addChoice(sceneNum) {
+            if (gameData[sceneNum].choices.length < 3) {
+                gameData[sceneNum].choices.push({ text: '', next: 0, outcome: 'continue' });
+                showSceneEditor(sceneNum);
+                updateStatus('선택지 추가됨');
+            }
+        }
+
+        // 선택지 삭제
+        function deleteChoice(sceneNum, choiceIndex) {
+            if (confirm('선택지를 삭제하시겠습니까?')) {
+                gameData[sceneNum].choices.splice(choiceIndex, 1);
+                updateUsedScenes();
+                renderTree();
+                if (selectedType === 'choice') {
+                    showSceneEditor(sceneNum);
+                }
+                saveToLocal();
+                updateStatus('선택지 삭제됨');
+            }
+        }
+
+        // 씬 삭제
+        function deleteScene(sceneNum) {
+            if (sceneNum === 1) {
+                alert('씬 1은 삭제할 수 없습니다');
+                return;
+            }
+            
+            if (confirm(`씬 ${sceneNum}을 삭제하시겠습니까?`)) {
+                gameData[sceneNum] = {
+                    content: '',
+                    isEnding: false,
+                    choices: []
+                };
+                updateUsedScenes();
+                renderTree();
+                document.getElementById('editor').innerHTML = '<div class="empty-state">트리에서 씬이나 선택지를 탭하여 편집하세요</div>';
+                saveToLocal();
+                updateStatus('씬 ' + sceneNum + ' 삭제됨');
+                
+                if (isMobile) {
+                    switchTab('tree');
+                }
+            }
+        }
+
+        // 로컬 저장 (버전 시스템과 통합)
+        function saveToLocal() {
+            saveAllVersionsToLocal();
+            renderVersionTabs(); // 씬 개수 업데이트
+        }
+
+        // 로컬에서 불러오기 (현재 버전만 다시 로드)
+        function loadFromLocal() {
+            if (loadAllVersionsFromLocal()) {
+                updateUsedScenes();
+                renderTree();
+                renderVersionTabs();
+                updateStatus('데이터 불러옴');
+            } else {
+                updateStatus('저장된 데이터 없음');
+            }
+        }
+
+        // 초기화 (현재 버전만)
+        function clearAll() {
+            const currentName = storyVersions[currentVersionIndex].name;
+            if (confirm(`"${currentName}" 버전의 모든 씬을 초기화하시겠습니까?`)) {
+                gameData = { 1: { content: '', isEnding: false, choices: [] } };
+                storyVersions[currentVersionIndex].data = gameData;
+                usedSceneNumbers.clear();
+                usedSceneNumbers.add(1);
+
+                document.getElementById('editor').innerHTML = '<div class="empty-state">트리에서 씬이나 선택지를 탭하여 편집하세요</div>';
+                selectedNode = null;
+                selectedType = null;
+                currentEditingScene = null;
+                currentEditingChoice = null;
+
+                renderTree();
+                renderVersionTabs();
+                saveToLocal();
+                updateStatus(`"${currentName}" 초기화 완료`);
+            }
+        }
+
+        // game.html 호환 JSON 내보내기
+        function exportJSON() {
+            const story = convertToStoryFormat();
+            const errors = validateStory(story);
+
+            if (errors.length > 0) {
+                alert('유효성 검사 경고:\n' + errors.join('\n') + '\n\n내보내기를 계속합니다.');
+            }
+
+            const json = JSON.stringify(story, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${gameTitle.replace(/\s+/g, '-')}-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            updateStatus('JSON 파일 생성됨 (game.html 호환)');
+        }
+
+        // 에디터 데이터를 game.html STORY 형식으로 변환
+        function convertToStoryFormat() {
+            const scenes = [];
+            const sceneList = Array.from(usedSceneNumbers).sort((a, b) => a - b);
+
+            sceneList.forEach(num => {
+                const scene = gameData[num];
+                if (!scene || (!scene.content && scene.choices.length === 0)) return;
+
+                const sceneId = `S${String(num).padStart(3, '0')}`;
+                const sceneObj = {
+                    id: sceneId,
+                    name: `씬 ${num}`,
+                    content: scene.content || '',
+                    isEnding: scene.isEnding || false,
+                    choices: []
+                };
+
+                if (scene.isEnding) {
+                    sceneObj.endingInfo = {
+                        code: `END-${num}`,
+                        title: `엔딩 ${num}`,
+                        summary: scene.content || ''
+                    };
+                    // 엔딩 씬도 빈 선택지 2개 필요 (game.html 형식)
+                    sceneObj.choices = [
+                        { id: `C${String(num).padStart(3, '0')}A`, label: '', outcome: 'continue', nextSceneId: '' },
+                        { id: `C${String(num).padStart(3, '0')}B`, label: '', outcome: 'continue', nextSceneId: '' }
+                    ];
+                } else {
+                    // 선택지 변환 (최대 2개만)
+                    for (let i = 0; i < 2; i++) {
+                        const choice = scene.choices[i];
+                        const choiceId = `C${String(num).padStart(3, '0')}${i === 0 ? 'A' : 'B'}`;
+
+                        if (choice && choice.text) {
+                            const outcome = choice.outcome || 'continue';
+                            let nextSceneId = '';
+
+                            if (outcome === 'continue' && choice.next > 0) {
+                                nextSceneId = `S${String(choice.next).padStart(3, '0')}`;
+                            }
+
+                            sceneObj.choices.push({
+                                id: choiceId,
+                                label: choice.text,
+                                outcome: outcome,
+                                nextSceneId: nextSceneId
+                            });
+                        } else {
+                            // 빈 선택지
+                            sceneObj.choices.push({
+                                id: choiceId,
+                                label: '',
+                                outcome: 'continue',
+                                nextSceneId: ''
+                            });
+                        }
+                    }
+                }
+
+                scenes.push(sceneObj);
+            });
+
+            return {
+                title: gameTitle,
+                startSceneId: 'S001',
+                scenes: scenes
+            };
+        }
+
+        // STORY 형식 유효성 검사
+        function validateStory(story) {
+            const errors = [];
+
+            if (!story.startSceneId) {
+                errors.push('시작 씬 ID가 없습니다.');
+            } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
+                errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
+            }
+
+            story.scenes.forEach(scene => {
+                if (!scene.choices || scene.choices.length !== 2) {
+                    errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+                }
+
+                if (scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.outcome === 'continue' && choice.label && !choice.nextSceneId) {
+                            errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
+                        }
+
+                        if (choice.outcome === 'continue' && choice.nextSceneId) {
+                            if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
+                                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
+                            }
+                        }
+                    });
+                }
+            });
+
+            return errors;
+        }
+
+        // JSON 가져오기
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const story = JSON.parse(event.target.result);
+                        convertFromStoryFormat(story);
+                        updateStatus('JSON 파일 가져오기 완료');
+                    } catch (err) {
+                        alert('JSON 파싱 실패: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // game.html STORY 형식을 에디터 형식으로 변환
+        function convertFromStoryFormat(story) {
+            if (story.title) {
+                gameTitle = story.title;
+            }
+
+            // 기존 데이터 초기화
+            init();
+
+            if (story.scenes && Array.isArray(story.scenes)) {
+                story.scenes.forEach(scene => {
+                    // 씬 ID에서 번호 추출 (S001 -> 1)
+                    const match = scene.id.match(/S(\d+)/);
+                    if (!match) return;
+
+                    const num = parseInt(match[1]);
+                    if (num < 1 || num > 1000) return;
+
+                    gameData[num] = {
+                        content: scene.content || '',
+                        isEnding: scene.isEnding || false,
+                        choices: []
+                    };
+
+                    if (!scene.isEnding && scene.choices) {
+                        scene.choices.forEach(choice => {
+                            if (choice.label) {
+                                let nextNum = 0;
+                                if (choice.nextSceneId) {
+                                    const nextMatch = choice.nextSceneId.match(/S(\d+)/);
+                                    if (nextMatch) {
+                                        nextNum = parseInt(nextMatch[1]);
+                                    }
+                                }
+
+                                gameData[num].choices.push({
+                                    text: choice.label,
+                                    next: nextNum,
+                                    outcome: choice.outcome || 'continue'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            updateUsedScenes();
+            renderTree();
+            saveToLocal();
+        }
+
+        // 상태 업데이트
+        function updateStatus(message) {
+            document.getElementById('statusMessage').textContent = message;
+            updateStats();
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const used = usedSceneNumbers.size;
+            const available = 1000 - used;
+
+            document.getElementById('usedScenes').textContent = used;
+            document.getElementById('availableScenes').textContent = available;
+
+            // 예상 플레이 시간 계산
+            const estimatedTime = calculateEstimatedPlayTime();
+            document.getElementById('estimatedTime').textContent = estimatedTime;
+        }
+
+        // 예상 플레이 시간 계산
+        // 한국어 평균 읽기 속도: 약 200자/분 (성인 기준)
+        // 선택지 고민 시간: 약 3-5초 추가
+        function calculateEstimatedPlayTime() {
+            const CHARS_PER_MINUTE = 200; // 한국어 읽기 속도
+            const CHOICE_THINKING_SECONDS = 4; // 선택지당 고민 시간
+
+            // 모든 경로 탐색하여 평균 경로 길이 계산
+            const paths = findAllPaths();
+
+            if (paths.length === 0) {
+                return '0분';
+            }
+
+            // 각 경로의 플레이 시간 계산
+            const pathTimes = paths.map(path => {
+                let totalChars = 0;
+                let totalChoices = 0;
+
+                path.forEach(sceneNum => {
+                    const scene = gameData[sceneNum];
+                    if (scene) {
+                        // 씬 내용 글자 수
+                        totalChars += (scene.content || '').length;
+
+                        // 선택지 글자 수 및 개수
+                        if (scene.choices && !scene.isEnding) {
+                            scene.choices.forEach(choice => {
+                                if (choice.text) {
+                                    totalChars += choice.text.length;
+                                    totalChoices++;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // 읽기 시간(분) + 선택 고민 시간(분)
+                const readingMinutes = totalChars / CHARS_PER_MINUTE;
+                const thinkingMinutes = (totalChoices * CHOICE_THINKING_SECONDS) / 60;
+
+                return readingMinutes + thinkingMinutes;
+            });
+
+            // 최소, 최대, 평균 계산
+            const minTime = Math.min(...pathTimes);
+            const maxTime = Math.max(...pathTimes);
+            const avgTime = pathTimes.reduce((a, b) => a + b, 0) / pathTimes.length;
+
+            // 포맷팅
+            if (avgTime < 1) {
+                const seconds = Math.round(avgTime * 60);
+                return `${seconds}초`;
+            } else if (minTime === maxTime) {
+                return `약 ${Math.round(avgTime)}분`;
+            } else {
+                return `${Math.round(minTime)}-${Math.round(maxTime)}분`;
+            }
+        }
+
+        // 씬 1부터 모든 가능한 경로 탐색 (DFS)
+        function findAllPaths() {
+            const paths = [];
+            const maxDepth = 100; // 무한 루프 방지
+
+            function dfs(sceneNum, currentPath, visited) {
+                if (currentPath.length > maxDepth) return;
+                if (visited.has(sceneNum)) return; // 순환 방지
+
+                const scene = gameData[sceneNum];
+                if (!scene || !scene.content) return;
+
+                const newPath = [...currentPath, sceneNum];
+                const newVisited = new Set(visited);
+                newVisited.add(sceneNum);
+
+                // 엔딩이거나 선택지가 없으면 경로 완성
+                if (scene.isEnding || !scene.choices || scene.choices.length === 0) {
+                    paths.push(newPath);
+                    return;
+                }
+
+                // 유효한 선택지가 있는지 확인
+                let hasValidChoice = false;
+                scene.choices.forEach(choice => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+
+                        if (outcome === 'success' || outcome === 'failure') {
+                            // 엔딩 선택지 - 경로 완성
+                            paths.push(newPath);
+                            hasValidChoice = true;
+                        } else if (choice.next > 0) {
+                            // 다음 씬으로 이동
+                            dfs(choice.next, newPath, newVisited);
+                            hasValidChoice = true;
+                        }
+                    }
+                });
+
+                // 유효한 선택지가 없으면 여기서 경로 종료
+                if (!hasValidChoice) {
+                    paths.push(newPath);
+                }
+            }
+
+            // 씬 1부터 시작
+            if (gameData[1] && gameData[1].content) {
+                dfs(1, [], new Set());
+            }
+
+            return paths;
+        }
+
+        // 초기화
+        window.onload = async function() {
+            // 먼저 JSON 파일에서 데이터 로드 시도
+            const jsonLoaded = await loadFromJSON();
+
+            if (!jsonLoaded) {
+                // JSON 로드 실패 시 로컬 스토리지에서 로드
+                if (!loadAllVersionsFromLocal()) {
+                    // 기존 단일 데이터 마이그레이션 시도
+                    const oldSaved = localStorage.getItem('gameTreeDataMobile');
+                    if (oldSaved) {
+                        try {
+                            const oldData = JSON.parse(oldSaved);
+                            storyVersions = [{
+                                name: '버전 1',
+                                title: 'Catch! Love',
+                                data: oldData
+                            }];
+                            currentVersionIndex = 0;
+                            gameData = oldData;
+                            gameTitle = 'Catch! Love';
+                            // 마이그레이션 후 새 형식으로 저장
+                            saveAllVersionsToLocal();
+                        } catch (e) {
+                            initDefaultVersion();
+                        }
+                    } else {
+                        initDefaultVersion();
+                    }
+                }
+            }
+
+            updateUsedScenes();
+            renderTree();
+            renderVersionTabs();
+
+            // 데스크톱에서는 패널 모두 표시
+            if (!isMobile) {
+                document.getElementById('treePanel').classList.add('active');
+                document.getElementById('editorPanel').classList.add('active');
+            }
+
+            // 리사이저 초기화
+            initResizer();
+
+            // 자동 저장 타이머 시작
+            startAutoSave();
+
+            updateStatus('Catch!-Love.json에서 데이터를 불러왔습니다.');
+        };
+
+        // 페이지를 떠날 때 저장
+        window.onbeforeunload = function() {
+            autoSaveCurrentEdit();
+        };
+
+        // 탭이 비활성화될 때도 저장 (모바일 브라우저용)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                autoSaveCurrentEdit();
+            }
+        });
+
+        // ========== 팝업 플레이 기능 ==========
+        let previewPopup = null;
+
+        // 팝업에서 데이터 요청 메시지 수신
+        window.addEventListener('message', function(e) {
+            if (e.data.type === 'requestGameData') {
+                autoSaveCurrentEdit();
+                if (previewPopup && !previewPopup.closed) {
+                    previewPopup.postMessage({
+                        type: 'gameDataResponse',
+                        gameData: gameData,
+                        selectedScene: (selectedType === 'scene' && selectedNode) ? selectedNode : 1
+                    }, '*');
+                }
+            }
+        });
+
+        function showPlayDialog() {
+            autoSaveCurrentEdit();
+
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            // 사용 중인 씬 목록 생성
+            const usedScenes = [];
+            for (let i = 1; i <= 1000; i++) {
+                if (gameData[i] && gameData[i].content && gameData[i].content.trim()) {
+                    usedScenes.push(i);
+                }
+            }
+
+            // 현재 선택된 씬
+            const currentSelectedScene = (selectedType === 'scene' && selectedNode) ? selectedNode : 1;
+
+            // 다이얼로그 생성
+            const dialog = document.createElement('div');
+            dialog.id = 'playDialog';
+            dialog.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center;';
+
+            let sceneOptions = usedScenes.map(num => {
+                const preview = gameData[num].content.substring(0, 20);
+                const selected = num === currentSelectedScene ? 'selected' : '';
+                return `<option value="${num}" ${selected}>씬 ${num}: ${preview}${gameData[num].content.length > 20 ? '...' : ''}</option>`;
+            }).join('');
+
+            dialog.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 25px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                    <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px;">🎮 플레이하기</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #666; font-size: 14px;">시작할 씬 선택:</label>
+                        <select id="playStartScene" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            ${sceneOptions}
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="document.getElementById('playDialog').remove();" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">취소</button>
+                        <button onclick="startPlayFromDialog();" style="flex: 1; padding: 12px; background: #9b59b6; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">▶️ 시작</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(dialog);
+
+            // ESC 키로 닫기
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) dialog.remove();
+            });
+        }
+
+        function startPlayFromDialog() {
+            const select = document.getElementById('playStartScene');
+            const startScene = parseInt(select.value);
+            document.getElementById('playDialog').remove();
+            openPreviewPopup(startScene);
+        }
+
+        function openPreviewPopup(startScene = null) {
+            autoSaveCurrentEdit();
+
+            if (!gameData[1] || !gameData[1].content) {
+                alert('씬 1에 내용을 입력해주세요.');
+                return;
+            }
+
+            // 시작 씬 결정: 인자로 받거나, 현재 선택된 씬 또는 1
+            const initialScene = startScene || (selectedType === 'scene' && selectedNode ? selectedNode : 1);
+
+            // 기존 팝업이 열려있으면 포커스하고 해당 씬으로 이동
+            if (previewPopup && !previewPopup.closed) {
+                previewPopup.focus();
+                previewPopup.postMessage({ type: 'refresh', scene: initialScene, restart: true, gameData: gameData }, '*');
+                return;
+            }
+
+            // 팝업 HTML 생성
+            const popupContent = generatePreviewPopupHTML(initialScene);
+
+            previewPopup = window.open('', 'PreviewPopup', 'width=500,height=700,scrollbars=yes,resizable=yes');
+            previewPopup.document.write(popupContent);
+            previewPopup.document.close();
+        }
+
+        function generatePreviewPopupHTML(initialScene = 1) {
+            // gameData를 JSON으로 직렬화하여 팝업에 전달
+            const gameDataJSON = JSON.stringify(gameData);
+
+            return `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🎮 플레이하기</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        .header h1 { color: white; font-size: 18px; }
+        .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .header-btns button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .start-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .start-options button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .start-options button:hover { transform: translateY(-2px); }
+        .content-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 150px;
+        }
+        .scene-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .scene-num { font-size: 12px; color: #999; }
+        .edit-btn {
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .edit-btn:hover { background: #0056b3; }
+        .scene-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+        .choices { display: flex; flex-direction: column; gap: 10px; }
+        .choice-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .choice-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .choice-btn.success { background: #28a745; }
+        .choice-btn.failure { background: #dc3545; }
+        .choice-text { flex: 1; }
+        .choice-edit {
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        .choice-edit:hover { background: rgba(255,255,255,0.3); }
+        .ending {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+        }
+        .ending-icon { font-size: 48px; margin-bottom: 10px; }
+        .ending-text { font-size: 20px; color: white; font-weight: bold; }
+        .path-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        .path-label { color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 5px; }
+        .path-content { color: white; font-size: 12px; word-break: break-all; }
+        .warning {
+            text-align: center;
+            color: #dc3545;
+            padding: 20px;
+        }
+        .warning-icon { font-size: 40px; margin-bottom: 10px; }
+        .current-scene-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: white;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 플레이하기</h1>
+        <div class="header-btns">
+            <button onclick="goBack()" id="backBtn" style="background: #6c757d; color: white; display: none;">⬅️ 이전</button>
+            <button onclick="refreshCurrent()" style="background: #17a2b8; color: white;">🔄 새로고침</button>
         </div>
     </div>
-
-    <!-- LOADING SCREEN -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">LOADING GAME DATA...</div>
+    <div class="start-options">
+        <button onclick="restart(1)" style="background: #9b59b6; color: white;">📖 처음부터</button>
+        <button onclick="restartFromCurrent()" id="currentSceneBtn" style="background: #e67e22; color: white;">📍 현재 씬부터</button>
     </div>
-
-    <!-- INTRO SCREEN -->
-    <div class="intro-screen" id="introScreen" style="display: none;">
-        <div class="wave-layer">
-            <div class="wave wave-1"></div>
-            <div class="wave wave-2"></div>
-            <div class="wave wave-3"></div>
-            <div class="wave wave-4"></div>
-            <div class="wave wave-5"></div>
-        </div>
-
-        <div class="floating-heart"></div>
-        <div class="floating-heart"></div>
-        <div class="floating-heart"></div>
-        <div class="floating-heart"></div>
-
-        <div class="intro-container">
-            <div class="title-wrapper">
-                <h1 class="intro-title">CATCH! LOVE</h1>
-                <div class="intro-subtitle">A ROMANTIC ADVENTURE AWAITS</div>
-                <div class="preview-badge">PREVIEW</div>
-            </div>
-            <div class="start-prompt" onclick="startGame()">CLICK TO BEGIN YOUR JOURNEY</div>
-        </div>
-    </div>
-
-    <!-- GAME SCREEN -->
-    <div class="game-screen" id="gameScreen">
-        <div class="wave-decoration wave-top-left"></div>
-        <div class="wave-decoration wave-bottom-right"></div>
-
-        <div class="game-container">
-            <div class="header">
-                <h1 class="game-title">CATCH! LOVE</h1>
-                <div class="scene-number" id="sceneNumber">SCENE 1</div>
-            </div>
-
-            <div class="scene-container">
-                <div class="scene-text" id="sceneText"></div>
-            </div>
-
-            <div class="choices-container" id="choicesContainer"></div>
-        </div>
-    </div>
-
-    <!-- SOLO ENDING SCREEN -->
-    <div class="ending-screen solo" id="soloEndingScreen">
-        <div class="wave-background">
-            <div class="bg-wave bg-wave-1"></div>
-            <div class="bg-wave bg-wave-2"></div>
-        </div>
-
-        <div class="ending-container">
-            <div class="ending-icon"></div>
-            <div class="story-text-area" id="soloEndingText"></div>
-            <div class="ending-message">MAYBE NEXT TIME...</div>
-            <div class="encouragement">모든 끝은 새로운 시작이에요. 다시 도전해볼까요?</div>
-            <button class="retry-btn" onclick="restartGame()">다시 시작하기</button>
-        </div>
-    </div>
-
-    <!-- PREVIEW ENDING SCREEN -->
-    <div class="ending-screen preview" id="previewEndingScreen">
-        <div class="wave-celebration">
-            <div class="celebrate-wave celebrate-wave-1"></div>
-            <div class="celebrate-wave celebrate-wave-2"></div>
-            <div class="celebrate-wave celebrate-wave-3"></div>
-        </div>
-
-        <div class="ending-container">
-            <div class="ending-icon"></div>
-
-            <div class="hearts-row">
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-            </div>
-
-            <div class="preview-title">Catch! Love</div>
-            <div class="preview-tagline">당신의 사랑을 Catch! 하세요.</div>
-            <div class="preview-date">2025년 12월 말 대공개</div>
-
-            <div class="hearts-row">
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-                <div class="heart-icon"></div>
-            </div>
-
-            <div class="encouragement">이야기는 계속됩니다...</div>
-            <button class="retry-btn" onclick="restartGame()">처음부터 다시 보기</button>
-        </div>
+    <div id="content"></div>
+    <div class="path-box">
+        <div class="path-label">📍 경로:</div>
+        <div class="path-content" id="pathDisplay"></div>
     </div>
 
     <script>
-        // Game state
-        let gameData = null;
-        let currentSceneId = null;
-        let editMode = false;
-        let hasChanges = false;
-        let sceneMap = {};
+        let currentScene = ${initialScene};
+        let pathHistory = [];
+        let sceneStack = [];
+        let startedScene = ${initialScene};
 
-        // Load game data from JSON file
-        async function loadGameData() {
+        // 팝업 생성 시 전달받은 gameData (초기값)
+        let localGameData = ${gameDataJSON};
+
+        function getGameData() {
+            // 부모 창에서 최신 데이터를 가져오거나, 로컬 데이터 사용
             try {
-                const response = await fetch('./Catch!-Love.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load game data');
+                if (window.opener && !window.opener.closed && window.opener.gameData) {
+                    return window.opener.gameData;
                 }
-                gameData = await response.json();
-
-                // Build scene map for quick lookup
-                gameData.scenes.forEach(scene => {
-                    sceneMap[scene.id] = scene;
-                });
-
-                // Hide loading, show intro
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('introScreen').style.display = 'flex';
-            } catch (error) {
-                console.error('Error loading game data:', error);
-                document.querySelector('.loading-text').textContent = 'Error loading game data. Please refresh.';
+            } catch(e) {
+                // cross-origin 접근 오류 시 무시
             }
+            return localGameData;
         }
 
-        function startGame() {
-            document.getElementById('introScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            showScene(gameData.startSceneId);
+        function getCurrentSelectedScene() {
+            if (window.opener && !window.opener.closed) {
+                const type = window.opener.selectedType;
+                const node = window.opener.selectedNode;
+                if (type === 'scene' && node) return node;
+            }
+            return 1;
         }
 
-        function showScene(sceneId) {
-            currentSceneId = sceneId;
-            const scene = sceneMap[sceneId];
+        function showScene(sceneNum, addToStack = true) {
+            const gameData = getGameData();
+            const scene = gameData[sceneNum];
 
-            // Scene doesn't exist - show preview ending
-            if (!scene) {
-                showPreviewEnding();
+            if (addToStack && currentScene !== sceneNum) {
+                sceneStack.push(currentScene);
+            }
+            currentScene = sceneNum;
+            pathHistory.push('씬 ' + sceneNum);
+
+            document.getElementById('pathDisplay').textContent = pathHistory.join(' → ');
+            document.getElementById('backBtn').style.display = sceneStack.length > 0 ? 'inline-block' : 'none';
+
+            // 현재 씬 버튼 업데이트
+            updateCurrentSceneBtn();
+
+            const content = document.getElementById('content');
+
+            if (!scene || !scene.content) {
+                content.innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>씬 ' + sceneNum + '이 비어있습니다</div></div></div>';
                 return;
             }
 
-            // It's an ending scene
+            let html = '<div class="content-box">';
+            html += '<div class="scene-info"><span class="scene-num">📍 씬 ' + sceneNum + '</span>';
+            html += '<button class="edit-btn" onclick="editScene(' + sceneNum + ')">✏️ 편집</button></div>';
+            html += '<div class="scene-content">' + escapeHtml(scene.content) + '</div></div>';
+
             if (scene.isEnding) {
-                showSoloEnding(scene.content);
+                html += '<div class="ending"><div class="ending-icon">🎉</div><div class="ending-text">~ THE END ~</div></div>';
+            } else if (scene.choices && scene.choices.length > 0) {
+                html += '<div class="choices">';
+                scene.choices.forEach((choice, idx) => {
+                    if (choice.text) {
+                        const outcome = choice.outcome || 'continue';
+                        let btnClass = '';
+                        let label = '';
+                        if (outcome === 'success') { btnClass = 'success'; label = ' 🎉'; }
+                        else if (outcome === 'failure') { btnClass = 'failure'; label = ' 💔'; }
+
+                        html += '<button class="choice-btn ' + btnClass + '" onclick="selectChoice(' + sceneNum + ',' + idx + ')">';
+                        html += '<span class="choice-text">' + (idx + 1) + '. ' + escapeHtml(choice.text) + label + '</span>';
+                        html += '<span class="choice-edit" onclick="event.stopPropagation(); editChoice(' + sceneNum + ',' + idx + ')">편집</span>';
+                        html += '</button>';
+                    }
+                });
+                html += '</div>';
+            } else {
+                html += '<div class="content-box"><div class="warning">선택지가 없습니다</div></div>';
+            }
+
+            content.innerHTML = html;
+        }
+
+        function selectChoice(sceneNum, choiceIdx) {
+            const gameData = getGameData();
+            const choice = gameData[sceneNum].choices[choiceIdx];
+            if (!choice) return;
+
+            pathHistory.push('"' + choice.text.substring(0, 15) + (choice.text.length > 15 ? '...' : '') + '"');
+            const outcome = choice.outcome || 'continue';
+
+            if (outcome === 'success') {
+                showEnding('success');
+            } else if (outcome === 'failure') {
+                showEnding('failure');
+            } else if (choice.next && choice.next > 0) {
+                showScene(choice.next);
+            } else {
+                document.getElementById('content').innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>다음 씬이 지정되지 않았습니다</div></div></div>';
+            }
+        }
+
+        function showEnding(type) {
+            document.getElementById('pathDisplay').textContent = pathHistory.join(' → ');
+            const icon = type === 'success' ? '💕' : '💔';
+            const text = type === 'success' ? 'SUCCESS!' : 'MAYBE NEXT TIME...';
+            const gradient = type === 'success' ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' : 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)';
+            document.getElementById('content').innerHTML = '<div class="ending" style="background: ' + gradient + '"><div class="ending-icon">' + icon + '</div><div class="ending-text">' + text + '</div></div>';
+        }
+
+        function editScene(sceneNum) {
+            if (window.opener && !window.opener.closed) {
+                window.opener.selectScene(sceneNum);
+                window.opener.focus();
+            }
+        }
+
+        function editChoice(sceneNum, choiceIdx) {
+            if (window.opener && !window.opener.closed) {
+                window.opener.selectChoice(sceneNum, choiceIdx);
+                window.opener.focus();
+            }
+        }
+
+        function goBack() {
+            if (sceneStack.length > 0) {
+                if (pathHistory.length > 0) pathHistory.pop();
+                if (pathHistory.length > 0) pathHistory.pop();
+                const prevScene = sceneStack.pop();
+                showScene(prevScene, false);
+            }
+        }
+
+        function restart(startFrom = 1) {
+            currentScene = startFrom;
+            pathHistory = [];
+            sceneStack = [];
+            startedScene = startFrom;
+            showScene(startFrom, false);
+        }
+
+        function restartFromCurrent() {
+            const scene = getCurrentSelectedScene();
+            restart(scene);
+        }
+
+        function refreshCurrent() {
+            // 부모 창에 최신 데이터 요청
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({ type: 'requestGameData' }, '*');
+            } else {
+                // 부모 창이 없으면 현재 데이터로 다시 렌더링
+                showScene(currentScene, false);
+                pathHistory.pop();
+            }
+        }
+
+        function updateCurrentSceneBtn() {
+            try {
+                if (window.opener && !window.opener.closed) {
+                    const type = window.opener.selectedType;
+                    const node = window.opener.selectedNode;
+                    if (type === 'scene' && node) {
+                        document.getElementById('currentSceneBtn').textContent = '📍 씬 ' + node + '부터';
+                        return;
+                    }
+                }
+            } catch(e) {}
+            document.getElementById('currentSceneBtn').textContent = '📍 현재 씬부터';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 부모 창에서 메시지 수신
+        window.addEventListener('message', function(e) {
+            // 데이터 응답 처리 (새로고침 요청에 대한 응답)
+            if (e.data.type === 'gameDataResponse') {
+                localGameData = e.data.gameData;
+                updateCurrentSceneBtn();
+                showScene(currentScene, false);
+                pathHistory.pop(); // showScene에서 추가한 것 제거
                 return;
             }
 
-            // Regular scene
-            const sceneNum = sceneId.replace('S', '').replace(/^0+/, '');
-            document.getElementById('sceneNumber').textContent = `SCENE ${sceneNum}`;
-
-            const sceneText = document.getElementById('sceneText');
-            sceneText.textContent = scene.content;
-            sceneText.dataset.sceneId = sceneId;
-
-            if (editMode) {
-                sceneText.classList.add('editable');
-                sceneText.contentEditable = true;
-            } else {
-                sceneText.classList.remove('editable');
-                sceneText.contentEditable = false;
-            }
-
-            // Display choices
-            const choicesContainer = document.getElementById('choicesContainer');
-            choicesContainer.innerHTML = '';
-
-            scene.choices.forEach((choice, index) => {
-                // Skip empty choices
-                if (!choice.label || choice.label.trim() === '') return;
-
-                const choiceCard = document.createElement('div');
-                choiceCard.className = 'choice-card';
-                choiceCard.innerHTML = `
-                    <div class="choice-content">
-                        <div class="choice-icon"></div>
-                        <div class="choice-label">Option ${String.fromCharCode(65 + index)}</div>
-                        <div class="choice-text ${editMode ? 'editable' : ''}"
-                             data-scene-id="${sceneId}"
-                             data-choice-index="${index}"
-                             contenteditable="${editMode}">${choice.label}</div>
-                    </div>
-                `;
-
-                if (!editMode) {
-                    choiceCard.onclick = () => showScene(choice.nextSceneId);
+            // 일반 refresh 메시지 처리
+            if (e.data.type === 'refresh') {
+                if (e.data.gameData) {
+                    localGameData = e.data.gameData;
                 }
-
-                choicesContainer.appendChild(choiceCard);
-            });
-
-            // Add event listeners for edit mode
-            if (editMode) {
-                setupEditListeners();
-            }
-        }
-
-        function setupEditListeners() {
-            const sceneText = document.getElementById('sceneText');
-            sceneText.addEventListener('input', handleSceneEdit);
-            sceneText.addEventListener('blur', handleSceneEdit);
-
-            document.querySelectorAll('.choice-text.editable').forEach(el => {
-                el.addEventListener('input', handleChoiceEdit);
-                el.addEventListener('blur', handleChoiceEdit);
-            });
-        }
-
-        function handleSceneEdit(e) {
-            const sceneId = e.target.dataset.sceneId;
-            const newContent = e.target.textContent;
-
-            if (sceneMap[sceneId]) {
-                sceneMap[sceneId].content = newContent;
-                markChanged();
-            }
-        }
-
-        function handleChoiceEdit(e) {
-            const sceneId = e.target.dataset.sceneId;
-            const choiceIndex = parseInt(e.target.dataset.choiceIndex);
-            const newLabel = e.target.textContent;
-
-            if (sceneMap[sceneId] && sceneMap[sceneId].choices[choiceIndex]) {
-                sceneMap[sceneId].choices[choiceIndex].label = newLabel;
-                markChanged();
-            }
-        }
-
-        function markChanged() {
-            hasChanges = true;
-            document.getElementById('changeIndicator').classList.add('show');
-        }
-
-        function showSoloEnding(text) {
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('soloEndingScreen').style.display = 'flex';
-            document.getElementById('soloEndingText').textContent = text;
-        }
-
-        function showPreviewEnding() {
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('previewEndingScreen').style.display = 'flex';
-        }
-
-        function restartGame() {
-            document.getElementById('soloEndingScreen').style.display = 'none';
-            document.getElementById('previewEndingScreen').style.display = 'none';
-            document.getElementById('introScreen').style.display = 'flex';
-        }
-
-        function toggleEditMode() {
-            editMode = !editMode;
-            const btn = document.getElementById('editToggle');
-
-            if (editMode) {
-                btn.textContent = 'Edit Mode: ON';
-                btn.classList.add('active');
-            } else {
-                btn.textContent = 'Edit Mode: OFF';
-                btn.classList.remove('active');
-            }
-
-            // Re-render current scene if in game
-            if (currentSceneId && document.getElementById('gameScreen').style.display === 'block') {
-                showScene(currentSceneId);
-            }
-        }
-
-        function showSceneList() {
-            const modal = document.getElementById('sceneListModal');
-            const content = document.getElementById('sceneListContent');
-
-            content.innerHTML = '';
-
-            gameData.scenes.forEach(scene => {
-                const item = document.createElement('div');
-                item.className = `scene-item ${scene.isEnding ? 'ending' : ''}`;
-                item.innerHTML = `
-                    <div class="scene-item-id">${scene.id} - ${scene.name}${scene.isEnding ? ' (Ending)' : ''}</div>
-                    <div class="scene-item-preview">${scene.content.substring(0, 60)}...</div>
-                `;
-                item.onclick = () => {
-                    hideSceneList();
-                    document.getElementById('introScreen').style.display = 'none';
-                    document.getElementById('soloEndingScreen').style.display = 'none';
-                    document.getElementById('previewEndingScreen').style.display = 'none';
-                    document.getElementById('gameScreen').style.display = 'block';
-                    showScene(scene.id);
-                };
-                content.appendChild(item);
-            });
-
-            modal.classList.add('show');
-        }
-
-        function hideSceneList() {
-            document.getElementById('sceneListModal').classList.remove('show');
-        }
-
-        function exportJSON() {
-            // Update the gameData.scenes array from sceneMap
-            gameData.scenes = gameData.scenes.map(scene => sceneMap[scene.id]);
-
-            // Also update endingInfo summary if it exists
-            gameData.scenes.forEach(scene => {
-                if (scene.isEnding && scene.endingInfo) {
-                    scene.endingInfo.summary = scene.content;
+                if (e.data.restart) {
+                    restart(e.data.scene || 1);
+                } else {
+                    showScene(e.data.scene || currentScene, false);
+                    pathHistory.pop();
                 }
-            });
-
-            const jsonString = JSON.stringify(gameData, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Catch!-Love-updated.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            hasChanges = false;
-            document.getElementById('changeIndicator').classList.remove('show');
-
-            alert('JSON file exported! The updated content has been saved.');
-        }
-
-        // Close modal on outside click
-        document.getElementById('sceneListModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('sceneListModal')) {
-                hideSceneList();
+                updateCurrentSceneBtn();
             }
         });
 
-        // Warn before leaving if there are unsaved changes
-        window.addEventListener('beforeunload', (e) => {
-            if (hasChanges) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        });
+        // 초기화
+        try {
+            showScene(${initialScene}, false);
+            updateCurrentSceneBtn();
+        } catch(e) {
+            document.getElementById('content').innerHTML = '<div class="content-box"><div class="warning"><div class="warning-icon">⚠️</div><div>초기화 오류: ' + e.message + '</div></div></div>';
+        }
+    </` + `script>
+</body>
+</html>`;
+        }
 
-        // Initialize
-        loadGameData();
+        // 팝업 새로고침 함수 (편집 후 호출)
+        function refreshPreviewPopup() {
+            if (previewPopup && !previewPopup.closed) {
+                previewPopup.postMessage({ type: 'refresh', gameData: gameData }, '*');
+            }
+        }
     </script>
 </body>
 </html>
