@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch! Love - Game</title>
+    <!--
+      디자인/문구는 원본 유지, 스토리는 내장 상수로 입력, JSON import/export 지원
+      단일 HTML 파일로 완결. 외부 라이브러리/번들러 불가.
+
+      병합 규칙(Merge Rules):
+      1. Scene 병합: scene.id 기준
+         - 존재하면: 빈 값이 아닌 필드만 덮어쓰기
+         - 없으면: scenes 배열에 추가
+      2. Choice 병합: choice.id 기준
+         - 존재하면: label, outcome, nextSceneId 갱신
+         - 없으면: 해당 씬의 choices[index] 교체
+      3. startSceneId, title은 incoming 값이 있으면 갱신
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ==================== Utility Bar ==================== */
+        .utility-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .utility-bar button,
+        .utility-bar label {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #E64398;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #E64398;
+            transition: all 0.2s;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .utility-bar button:hover,
+        .utility-bar label:hover {
+            background: #E64398;
+            color: white;
+        }
+
+        .utility-bar input[type="file"] {
+            display: none;
+        }
+
+        /* ==================== Common ==================== */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* ==================== Main Game Screen ==================== */
+        #main-screen {
+            background: #F0EBF4;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .wave-decoration {
+            position: absolute;
+            z-index: 0;
+        }
+
+        .wave-top-left {
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 150px;
+            background: #A1C3D1;
+            border-radius: 0 0 100% 0;
+            opacity: 0.4;
+        }
+
+        .wave-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 350px;
+            height: 180px;
+            background: #B39BC8;
+            border-radius: 100% 0 0 0;
+            opacity: 0.4;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .game-title {
+            font-size: 42px;
+            color: #E64398;
+            margin-bottom: 10px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .header::before,
+        .header::after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header::before {
+            left: calc(50% - 200px);
+        }
+
+        .header::after {
+            right: calc(50% - 200px);
+        }
+
+        .scene-container {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(179, 155, 200, 0.2);
+            border: 4px solid #F172A1;
+        }
+
+        .scene-image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #A1C3D1;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scene-image-placeholder::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: #B39BC8;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .scene-image-placeholder span {
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .scene-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #5a5a5a;
+            text-align: center;
+            padding: 30px;
+            background: #F0EBF4;
+            border-radius: 15px;
+            border-left: 6px solid #E64398;
+            font-weight: 400;
+            white-space: pre-wrap;
+        }
+
+        .choices-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .choice-card {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(161, 195, 209, 0.2);
+            border: 4px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .choice-card::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .choice-card:nth-child(1) {
+            border-color: #A1C3D1;
+        }
+
+        .choice-card:nth-child(1):hover {
+            border-color: #F172A1;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(241, 114, 161, 0.3);
+        }
+
+        .choice-card:nth-child(1):hover::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 1;
+        }
+
+        .choice-card:nth-child(2) {
+            border-color: #B39BC8;
+        }
+
+        .choice-card:nth-child(2):hover {
+            border-color: #E64398;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(230, 67, 152, 0.3);
+        }
+
+        .choice-card:nth-child(2):hover::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 1;
+        }
+
+        .choice-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .choice-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 25px;
+            display: block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .choice-card:nth-child(1) .choice-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .choice-card:nth-child(2) .choice-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .choice-label {
+            font-size: 14px;
+            color: #B39BC8;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .choice-text {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .choice-card:hover .choice-text {
+            color: #E64398;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .choices-container {
+                flex-direction: column;
+            }
+        }
+
+        /* ==================== Ending Success Screen ==================== */
+        #ending-success-screen {
+            background: #F172A1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-celebration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .celebrate-wave {
+            position: absolute;
+            width: 130%;
+            left: -15%;
+        }
+
+        .celebrate-wave-1 {
+            background: #E64398;
+            height: 140px;
+            top: 10%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .celebrate-wave-2 {
+            background: #B39BC8;
+            height: 160px;
+            top: 35%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .celebrate-wave-3 {
+            background: #A1C3D1;
+            height: 180px;
+            bottom: 15%;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .ending-container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+            border-radius: 35px;
+            padding: 70px 60px;
+            box-shadow: 0 25px 70px rgba(230, 67, 152, 0.4);
+            text-align: center;
+            border: 6px solid #E64398;
+            z-index: 10;
+            position: relative;
+        }
+
+        .ending-container::before,
+        .ending-container::after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .ending-container::before {
+            top: 25px;
+            left: 25px;
+        }
+
+        .ending-container::after {
+            bottom: 25px;
+            right: 25px;
+        }
+
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .story-text-area {
+            background: #F0EBF4;
+            border: 5px solid #F172A1;
+            border-radius: 25px;
+            padding: 50px;
+            min-height: 280px;
+            margin-bottom: 50px;
+            font-size: 18px;
+            line-height: 1.9;
+            color: #666;
+            text-align: left;
+            font-weight: 400;
+            white-space: pre-wrap;
+        }
+
+        .story-text-area::before {
+            content: '[Your beautiful love story concludes here...]';
+            color: #F172A1;
+            font-style: italic;
+            display: block;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .ending-message {
+            font-size: 64px;
+            color: #E64398;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 30px;
+        }
+
+        .congratulations {
+            font-size: 24px;
+            color: #E64398;
+            font-style: italic;
+            margin-top: 25px;
+            font-weight: 400;
+        }
+
+        .success-decoration {
+            margin-top: 40px;
+            padding: 30px;
+            background: #B39BC8;
+            border-radius: 20px;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 10px 30px rgba(179, 155, 200, 0.3);
+            font-weight: 400;
+        }
+
+        .hearts-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .hearts-row .heart-icon {
+            width: 32px;
+            height: 32px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .hearts-row .heart-icon:nth-child(1) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(2) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(3) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(4) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        .hearts-row .heart-icon:nth-child(5) {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+        }
+
+        /* ==================== Ending Failure Screen ==================== */
+        #ending-failure-screen {
+            background: #A1C3D1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #ending-failure-screen .ending-container {
+            border-color: #B39BC8;
+        }
+
+        #ending-failure-screen .ending-container::before,
+        #ending-failure-screen .ending-container::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B39BC8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        #ending-failure-screen .icon-container {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A1C3D1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            width: 80px;
+            height: 80px;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        #ending-failure-screen .story-text-area {
+            border-color: #B39BC8;
+            padding: 40px;
+            min-height: 250px;
+            margin-bottom: 40px;
+        }
+
+        #ending-failure-screen .story-text-area::before {
+            content: '[Story text will appear here]';
+            color: #B39BC8;
+        }
+
+        #ending-failure-screen .ending-message {
+            font-size: 48px;
+            color: #A1C3D1;
+            letter-spacing: 6px;
+        }
+
+        .encouragement {
+            font-size: 20px;
+            color: #B39BC8;
+            font-style: italic;
+            margin-top: 20px;
+            font-weight: 400;
+        }
+
+        .retry-hint {
+            margin-top: 40px;
+            padding: 25px;
+            background: #F172A1;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .wave-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .bg-wave {
+            position: absolute;
+            width: 120%;
+            left: -10%;
+        }
+
+        .bg-wave-1 {
+            background: #B39BC8;
+            height: 150px;
+            top: 20%;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .bg-wave-2 {
+            background: #F172A1;
+            height: 120px;
+            bottom: 25%;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Restart button for ending screens */
+        .restart-button {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: #E64398;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Lato', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .restart-button:hover {
+            background: #F172A1;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(230, 67, 152, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Utility Bar -->
+    <div class="utility-bar">
+        <button id="btn-export" aria-label="JSON 내보내기">💾 Export</button>
+        <label aria-label="JSON 불러오기">
+            📂 Import
+            <input type="file" id="input-import" accept=".json">
+        </label>
+    </div>
+
+    <!-- Main Game Screen -->
+    <div id="main-screen" class="screen active">
+        <div class="wave-decoration wave-top-left"></div>
+        <div class="wave-decoration wave-bottom-right"></div>
+
+        <div class="game-container">
+            <div class="header">
+                <h1 class="game-title">💕 CATCH! LOVE 💕</h1>
+            </div>
+
+            <div class="scene-container">
+                <div class="scene-image-placeholder">
+                    <span>SCENE IMAGE</span>
+                </div>
+                <div class="scene-text" id="scene-content"></div>
+            </div>
+
+            <div class="choices-container">
+                <div class="choice-card" id="choice-a" data-choice="0">
+                    <div class="choice-content">
+                        <div class="choice-icon"></div>
+                        <div class="choice-label">Option A</div>
+                        <div class="choice-text" id="choice-a-text"></div>
+                    </div>
+                </div>
+
+                <div class="choice-card" id="choice-b" data-choice="1">
+                    <div class="choice-content">
+                        <div class="choice-icon"></div>
+                        <div class="choice-label">Option B</div>
+                        <div class="choice-text" id="choice-b-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ending Success Screen -->
+    <div id="ending-success-screen" class="screen">
+        <div class="wave-celebration">
+            <div class="celebrate-wave celebrate-wave-1"></div>
+            <div class="celebrate-wave celebrate-wave-2"></div>
+            <div class="celebrate-wave celebrate-wave-3"></div>
+        </div>
+
+        <div class="ending-container">
+            <div class="icon-container"></div>
+
+            <div class="story-text-area" id="success-story-text"></div>
+
+            <div class="hearts-row">
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+                <div class="heart-icon"></div>
+            </div>
+
+            <div class="ending-message">THE END</div>
+
+            <div class="congratulations">
+                Congratulations! You've caught love! 🎉
+            </div>
+
+            <div class="success-decoration">
+                True love conquers all. Your hearts are now forever intertwined! 💑
+            </div>
+
+            <button class="restart-button" id="restart-success">Restart Journey</button>
+        </div>
+    </div>
+
+    <!-- Ending Failure Screen -->
+    <div id="ending-failure-screen" class="screen">
+        <div class="wave-background">
+            <div class="bg-wave bg-wave-1"></div>
+            <div class="bg-wave bg-wave-2"></div>
+        </div>
+
+        <div class="ending-container">
+            <div class="icon-container"></div>
+
+            <div class="story-text-area" id="failure-story-text"></div>
+
+            <div class="ending-message">MAYBE NEXT TIME...</div>
+
+            <div class="encouragement">
+                Every ending is a new beginning. Try again? 💫
+            </div>
+
+            <div class="retry-hint">
+                Love is a journey of many paths. Choose differently and discover new possibilities! 🌈
+            </div>
+
+            <button class="restart-button" id="restart-failure">Restart Journey</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== STORY DATA ====================
+        let STORY = {
+            title: "Catch! Love",
+            startSceneId: "S001",
+            scenes: [
+                {
+                    id: "S001",
+                    name: "씬 1",
+                    content: "오늘도 지겨운 회사... 담타를 가지러 이동하던 중 새로 온 통역사를 봤다. \n내 스타일인데?",
+                    isEnding: false,
+                    choices: [
+                        { id: "C001A", label: "얼른 자기소개를 한다.", outcome: "continue", nextSceneId: "S002" },
+                        { id: "C001B", label: "제 스타일이시네요. 저랑 잘래요?", outcome: "continue", nextSceneId: "S003" }
+                    ]
+                },
+                {
+                    id: "S002",
+                    name: "씬 2",
+                    content: "\"안녕하세요, 성연주입니다.\"\n\"안녕하세요? 조희수예요.\"\n\n조희수... 이 사람과 가까워지고 싶다.",
+                    isEnding: false,
+                    choices: [
+                        { id: "C002A", label: "마음이 급하니 빠르게 다가간다.", outcome: "continue", nextSceneId: "S006" },
+                        { id: "C002B", label: "뭘 좋아하는지 조용히 관찰한다.", outcome: "continue", nextSceneId: "S004" }
+                    ]
+                },
+                {
+                    id: "S003",
+                    name: "씬 3",
+                    content: "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-3", title: "엔딩 3", summary: "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다." },
+                    choices: [
+                        { id: "C003A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C003B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S004",
+                    name: "씬 4",
+                    content: "아침마다 콜드브루를 마시는 그녀 주위를 기웃거리다가 \n얼결에 커피를 몇 번 얻어마셨다.\n명색이 그래도 온깁인데... 커피깁만 받을 순 없지!",
+                    isEnding: false,
+                    choices: [
+                        { id: "C004A", label: "통 크게 커피 한 병을 선물한다.", outcome: "continue", nextSceneId: "S005" },
+                        { id: "C004B", label: "카페에서 만나자고 한다.", outcome: "continue", nextSceneId: "S006" }
+                    ]
+                },
+                {
+                    id: "S005",
+                    name: "씬 5",
+                    content: "그녀가 부담스러워하지만 일단 받아준다.\n한 발 더 다가가본다.",
+                    isEnding: false,
+                    choices: [
+                        { id: "C005A", label: "주말에 맛있는 커피 마시러 카페 갈까요?", outcome: "continue", nextSceneId: "S007" },
+                        { id: "C005B", label: "자전거 타고 용산 가서 영화 본 다음에 시원한 커피 마셔요.", outcome: "continue", nextSceneId: "S008" }
+                    ]
+                },
+                {
+                    id: "S006",
+                    name: "씬 6",
+                    content: "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-6", title: "엔딩 6", summary: "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다." },
+                    choices: [
+                        { id: "C006A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C006B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S007",
+                    name: "씬 7",
+                    content: "그녀의 눈이 반짝인다. 대체 커피를 얼마나 좋아하는 거야...\n부지런히 음식점과 카페를 검색해서 약속을 잡았다.\n그런데 만나서 무슨 대화를 하지?",
+                    isEnding: false,
+                    choices: [
+                        { id: "C007A", label: "커밍아웃을 한다.", outcome: "continue", nextSceneId: "S009" },
+                        { id: "C007B", label: "좋아한다고 고백한다.", outcome: "continue", nextSceneId: "S010" }
+                    ]
+                },
+                {
+                    id: "S008",
+                    name: "씬 8",
+                    content: "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n",
+                    isEnding: true,
+                    endingInfo: { code: "END-8", title: "엔딩 8", summary: "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n" },
+                    choices: [
+                        { id: "C008A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C008B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S009",
+                    name: "씬 9",
+                    content: "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍이다.\n",
+                    isEnding: false,
+                    choices: [
+                        { id: "C009A", label: "저, 여자 좋아해요...", outcome: "continue", nextSceneId: "S011" },
+                        { id: "C009B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S010",
+                    name: "씬 10",
+                    content: "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍인데... 죽어도 입이 떨어지지 않는다.\n그녀가 날 의아하게 바라본다. 무슨 말이라도 해야 하는데...",
+                    isEnding: false,
+                    choices: [
+                        { id: "C010A", label: "저, 희... 희... 그냥 여자 좋아해요.", outcome: "continue", nextSceneId: "S011" },
+                        { id: "C010B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S011",
+                    name: "씬 11",
+                    content: "그녀가 싱긋 웃는다. \n이어지는 말에 난 그만 정신이 혼미해지고 말았다.\n\n\"저도 호감있어요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C011A", label: "어... 그... 네??? 나는 그만 고장나고 말았다.", outcome: "continue", nextSceneId: "S012" },
+                        { id: "C011B", label: "감사합니다.", outcome: "continue", nextSceneId: "S013" }
+                    ]
+                },
+                {
+                    id: "S012",
+                    name: "씬 12",
+                    content: "나도 호감이 있다니? 내가 고백을 했었나?\n혼란스러운 가운데 환하게 웃는 그녀의 얼굴만 눈에 들어온다.\n아차, 내가 또 멍하니 있었네.",
+                    isEnding: false,
+                    choices: [
+                        { id: "C012A", label: "혹시나 해서 말씀드리는데, 저 희수씨 몸 보고 좋아하는 거 아닙니다.", outcome: "continue", nextSceneId: "S014" },
+                        { id: "C012B", label: "제가 낮져밤이거든요.", outcome: "continue", nextSceneId: "S015" }
+                    ]
+                },
+                {
+                    id: "S013",
+                    name: "씬 13",
+                    content: "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-13", title: "엔딩 13", summary: "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다." },
+                    choices: [
+                        { id: "C013A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C013B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S014",
+                    name: "씬 14",
+                    content: "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-14", title: "엔딩 14", summary: "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다." },
+                    choices: [
+                        { id: "C014A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C014B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S015",
+                    name: "씬 15",
+                    content: "\"아, 네...\"\n방금 눈이 반짝인 것 같은데... 기분 탓이겠지. \n당황해서 아무 말이나 짖는 내게 그녀가 제안해온다.\n\"우리 만나봐요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C015A", label: "네, 좋아요.", outcome: "continue", nextSceneId: "S016" },
+                        { id: "C015B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S016",
+                    name: "씬 16",
+                    content: "희수씨가 내 썸녀라니!\n하지만 아직 얼떨떨하다. \n한참을 더 횡설수설하자 그녀가 의아하다는 듯 다시 물어본다.\n\"우리 만나보자니까요?\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C016A", label: "네!!! 좋아요......???", outcome: "continue", nextSceneId: "S017" },
+                        { id: "C016B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S017",
+                    name: "씬 17",
+                    content: "\"연주씨... 지금 제가 한 말 이해하는 거 맞아요?\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C017A", label: "사실 무슨 말인지 잘 모르겠어요.", outcome: "continue", nextSceneId: "S018" },
+                        { id: "C017B", label: "왜 자꾸 물어보지...? 일단 이해했다고 가오를 잡는다.", outcome: "continue", nextSceneId: "S019" }
+                    ]
+                },
+                {
+                    id: "S018",
+                    name: "씬 18",
+                    content: "\"사실... 무슨 말인지 모르겠어요.\"\n솔직하게 말하자 그녀가 피식 웃는다.\n\"마지막으로 말할게요. 연주씨, 저랑 사귀자는 말이에요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C018A", label: "좋아요! 저도... 희수씨 좋아해요.", outcome: "continue", nextSceneId: "S020" },
+                        { id: "C018B", label: "...좋아요. (쿨하게 대답한다)", outcome: "continue", nextSceneId: "S021" }
+                    ]
+                },
+                {
+                    id: "S019",
+                    name: "씬 19",
+                    content: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-19", title: "엔딩 19", summary: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다." },
+                    choices: [
+                        { id: "C019A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C019B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S020",
+                    name: "씬 20",
+                    content: "\"알아요.\" 희수가 당연하다는 듯이 말한다.\n\"다 티 났거든요. 귀여웠어요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C020A", label: "어떻게 티가 났어요?", outcome: "continue", nextSceneId: "S032" },
+                        { id: "C020B", label: "일부러 티 낸 거예요. (가오를 지킨다)", outcome: "continue", nextSceneId: "S023" }
+                    ]
+                },
+                {
+                    id: "S021",
+                    name: "씬 21",
+                    content: "\"연주씨는 정말 거짓말을 못 하네요. \n말은 퉁명스러워도 좋아하는 게 눈빛에 다 티나요. \n그것마저도 귀여워요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C021A", label: "어떻게 티가 났어요?", outcome: "continue", nextSceneId: "S032" },
+                        { id: "C021B", label: "일부러 티 낸 거예요.", outcome: "continue", nextSceneId: "S023" }
+                    ]
+                },
+                {
+                    id: "S023",
+                    name: "씬 23",
+                    content: "\"정말요?\"\n희수가 더 가까이 다가온다. 심장이 미친 듯이 뛴다.\n\"그럼 지금 두근거리는 티 나는 것도 다 계산된 거예요?\"\n\n이 눈빛... 거짓말하면 안 될 것 같다.",
+                    isEnding: false,
+                    choices: [
+                        { id: "C023A", label: "아뇨, 지금은 진짜 떨려요...", outcome: "continue", nextSceneId: "S024" },
+                        { id: "C023B", label: "당연하죠. (끝까지 간다)", outcome: "continue", nextSceneId: "S025" }
+                    ]
+                },
+                {
+                    id: "S024",
+                    name: "씬 24",
+                    content: "\"저도요.\"\n희수가 자기 가슴에 내 손을 가져다 댄다. 심장이 빠르게 뛰고 있다.\n\"우리 둘 다 빠르게 뛰네요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C024A", label: "앞으로도 같이 뛰었으면 좋겠어요.", outcome: "continue", nextSceneId: "S026" },
+                        { id: "C024B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S025",
+                    name: "씬 25",
+                    content: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다.",
+                    isEnding: true,
+                    endingInfo: { code: "END-25", title: "엔딩 25", summary: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다." },
+                    choices: [
+                        { id: "C025A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C025B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S026",
+                    name: "씬 26",
+                    content: "\"같이 뛰자구요? 연주씨도 달리기 해요?\"\n희수의 눈이 또 반짝인다. \n뭔진 모르지만 실수한 기분이 든다.",
+                    isEnding: false,
+                    choices: [
+                        { id: "C026A", label: "네, 얼마 전부터 달리고 있어요. (이따가 바로 운동화 주문해야지)", outcome: "continue", nextSceneId: "S027" },
+                        { id: "C026B", label: "아뇨, 전 달리기는 정말 싫어요.", outcome: "continue", nextSceneId: "S028" }
+                    ]
+                },
+                {
+                    id: "S027",
+                    name: "씬 27",
+                    content: "\"그럼 첫 데이트로 용산역까지 달린 다음에 영화 보는 게 어때요?\"\n희수가 이상한 기시감이 드는 제안을 했다.\n아니, 근데 기시감이 문제가 아니잖아?",
+                    isEnding: false,
+                    choices: [
+                        { id: "C027A", label: "미안하지만 첫 데이트부터 땀 흘리는 건 아닌 것 같아요.", outcome: "continue", nextSceneId: "S029" },
+                        { id: "C027B", label: "좋죠. (가오가이거 출동!)", outcome: "continue", nextSceneId: "S030" }
+                    ]
+                },
+                {
+                    id: "S028",
+                    name: "씬 28",
+                    content: "\"연주씨는 정말 솔직한 게 매력이에요. 귀여워요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C028A", label: "귀여운 거 티났어요?", outcome: "continue", nextSceneId: "S032" },
+                        { id: "C028B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S029",
+                    name: "씬 29",
+                    content: "\"당연하죠. 그냥 장난쳐 본 거예요. 다음 주말에 정식으로 첫 데이트 해요.\"\n",
+                    isEnding: false,
+                    choices: [
+                        { id: "C029A", label: "좋아요. 그 전에 내일도 회사에서 만나요", outcome: "continue", nextSceneId: "S031" },
+                        { id: "C029B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S030",
+                    name: "씬 30",
+                    content: "\"연주씨는 정말 거짓말을 못 하네요. \n싫은 게 눈빛에 다 티나요. 그것마저도 귀여워요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C030A", label: "귀여운 거 티 났어요?", outcome: "continue", nextSceneId: "S032" },
+                        { id: "C030B", label: "휴, 정말 뛰어야 하는 줄 알았어요.", outcome: "continue", nextSceneId: "S033" }
+                    ]
+                },
+                {
+                    id: "S031",
+                    name: "씬 31",
+                    content: "[추가]데이트 하려고 만나는 장면",
+                    isEnding: false,
+                    choices: [
+                        { id: "C031A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C031B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S032",
+                    name: "씬 32",
+                    content: "\"여기에 티 났어요.\"\n희수가 내 볼을 손가락으로 콕 찍더니 뽀뽀를 한다.\n이 여자는 왜 귀엽기까지 한거지?",
+                    isEnding: false,
+                    choices: [
+                        { id: "C032A", label: "헤헤, 우리 재밌게 데이트 해요.", outcome: "continue", nextSceneId: "S031" },
+                        { id: "C032B", label: "너무 귀여워서 못 참겠어요. 우리 잘래요?", outcome: "continue", nextSceneId: "S035" }
+                    ]
+                },
+                {
+                    id: "S033",
+                    name: "씬 33",
+                    content: "\"당연하죠. 그냥 장난쳐 본 거예요. 다음 주말에 정식으로 첫 데이트 해요.\"",
+                    isEnding: false,
+                    choices: [
+                        { id: "C033A", label: "좋아요. 그 전에 내일도 회사에서 만나요", outcome: "continue", nextSceneId: "S031" },
+                        { id: "C033B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                },
+                {
+                    id: "S035",
+                    name: "씬 35",
+                    content: "아직 낮인",
+                    isEnding: false,
+                    choices: [
+                        { id: "C035A", label: "", outcome: "continue", nextSceneId: "" },
+                        { id: "C035B", label: "", outcome: "continue", nextSceneId: "" }
+                    ]
+                }
+            ]
+        };
+
+        // ==================== STATE ====================
+        let currentSceneId = null;
+        let crumbs = [];
+
+        // ==================== HELPERS ====================
+        function qs(sel) {
+            return document.querySelector(sel);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            qs('#' + screenId).classList.add('active');
+        }
+
+        function findScene(sceneId) {
+            return STORY.scenes.find(s => s.id === sceneId);
+        }
+
+        function validate(story) {
+            const errors = [];
+
+            if (!story.startSceneId) {
+                errors.push('시작 씬 ID가 없습니다.');
+            } else if (!story.scenes.find(s => s.id === story.startSceneId)) {
+                errors.push(`시작 씬 ${story.startSceneId}을(를) 찾을 수 없습니다.`);
+            }
+
+            story.scenes.forEach(scene => {
+                if (!scene.choices || scene.choices.length !== 2) {
+                    errors.push(`씬 ${scene.id}: 선택지가 정확히 2개여야 합니다.`);
+                }
+
+                if (scene.choices) {
+                    scene.choices.forEach((choice, idx) => {
+                        if (choice.outcome === 'continue' && !choice.nextSceneId) {
+                            errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: outcome이 'continue'인데 nextSceneId가 없습니다.`);
+                        }
+
+                        if (choice.outcome === 'continue' && choice.nextSceneId) {
+                            if (!story.scenes.find(s => s.id === choice.nextSceneId)) {
+                                errors.push(`씬 ${scene.id}, 선택지 ${idx + 1}: nextSceneId ${choice.nextSceneId}을(를) 찾을 수 없습니다.`);
+                            }
+                        }
+                    });
+                }
+            });
+
+            return errors;
+        }
+
+        function mergeStory(base, incoming) {
+            if (incoming.title) base.title = incoming.title;
+            if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
+
+            if (incoming.scenes && Array.isArray(incoming.scenes)) {
+                incoming.scenes.forEach(inScene => {
+                    const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
+
+                    if (existingIdx >= 0) {
+                        const existing = base.scenes[existingIdx];
+
+                        if (inScene.name) existing.name = inScene.name;
+                        if (inScene.content !== undefined) existing.content = inScene.content;
+                        if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
+                        if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
+
+                        if (inScene.choices && Array.isArray(inScene.choices)) {
+                            inScene.choices.forEach((inChoice, idx) => {
+                                if (idx < 2) {
+                                    const existingChoice = existing.choices[idx];
+                                    if (existingChoice && existingChoice.id === inChoice.id) {
+                                        if (inChoice.label) existingChoice.label = inChoice.label;
+                                        if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
+                                        if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
+                                    } else {
+                                        existing.choices[idx] = inChoice;
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        base.scenes.push(inScene);
+                    }
+                });
+            }
+
+            return base;
+        }
+
+        function downloadJSON(obj, filename) {
+            const json = JSON.stringify(obj, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== GAME LOGIC ====================
+        function startGame() {
+            currentSceneId = STORY.startSceneId;
+            crumbs = [];
+            showScene(currentSceneId);
+        }
+
+        function showScene(sceneId) {
+            const scene = findScene(sceneId);
+            if (!scene) {
+                alert(`씬 ${sceneId}을(를) 찾을 수 없습니다. 시작으로 돌아갑니다.`);
+                startGame();
+                return;
+            }
+
+            currentSceneId = sceneId;
+            crumbs.push(scene.name);
+
+            // Check if ending scene
+            if (scene.isEnding) {
+                showEndingScreen('failure', scene.endingInfo?.summary || scene.content);
+                return;
+            }
+
+            showScreen('main-screen');
+
+            qs('#scene-content').textContent = scene.content || '';
+
+            const choices = scene.choices || [];
+            qs('#choice-a-text').textContent = choices[0]?.label || 'Option A';
+            qs('#choice-b-text').textContent = choices[1]?.label || 'Option B';
+
+            // Store choice data
+            qs('#choice-a').dataset.outcome = choices[0]?.outcome || 'continue';
+            qs('#choice-a').dataset.nextSceneId = choices[0]?.nextSceneId || '';
+            qs('#choice-b').dataset.outcome = choices[1]?.outcome || 'continue';
+            qs('#choice-b').dataset.nextSceneId = choices[1]?.nextSceneId || '';
+        }
+
+        function handleChoice(choiceElement) {
+            const outcome = choiceElement.dataset.outcome;
+            const nextSceneId = choiceElement.dataset.nextSceneId;
+
+            switch (outcome) {
+                case 'continue':
+                    if (nextSceneId) {
+                        showScene(nextSceneId);
+                    } else {
+                        alert('다음 씬이 지정되지 않았습니다.');
+                    }
+                    break;
+
+                case 'success':
+                    showEndingScreen('success', '당신은 용기를 내어 진심을 전했고, 그 사람도 같은 마음이었다.\n\n두 사람은 손을 잡고 함께 걷기 시작한다.\n\n이것이 진정한 사랑의 시작이다.');
+                    break;
+
+                case 'failure':
+                    showEndingScreen('failure', '\"고맙지만... 나는 너를 친구로만 생각해.\"\n\n그 사람의 말에 당신의 마음은 무너진다.\n\n어색한 침묵이 흐르고, 두 사람은 서로 다른 방향으로 걸어간다.');
+                    break;
+            }
+        }
+
+        function showEndingScreen(type, storyText) {
+            if (type === 'success') {
+                showScreen('ending-success-screen');
+                qs('#success-story-text').textContent = storyText || '';
+            } else {
+                showScreen('ending-failure-screen');
+                qs('#failure-story-text').textContent = storyText || '';
+            }
+        }
+
+        function restartGame() {
+            currentSceneId = null;
+            crumbs = [];
+            startGame();
+        }
+
+        // ==================== EXPORT/IMPORT ====================
+        function exportJSON() {
+            const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
+            downloadJSON(STORY, filename);
+            alert('JSON을 내보냈습니다.');
+        }
+
+        function importJSON(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const incoming = JSON.parse(e.target.result);
+
+                    const errors = validate(incoming);
+                    if (errors.length > 0) {
+                        alert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
+                        return;
+                    }
+
+                    STORY = mergeStory(STORY, incoming);
+                    alert('JSON을 성공적으로 병합했습니다.');
+                } catch (err) {
+                    alert('JSON 파싱 실패: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==================== EVENT HANDLERS ====================
+        function init() {
+            const errors = validate(STORY);
+            if (errors.length > 0) {
+                alert('초기 스토리 유효성 검사 실패:\n' + errors.join('\n'));
+                return;
+            }
+
+            // Choice handlers
+            qs('#choice-a').addEventListener('click', function() {
+                handleChoice(this);
+            });
+
+            qs('#choice-b').addEventListener('click', function() {
+                handleChoice(this);
+            });
+
+            // Restart buttons
+            qs('#restart-success').addEventListener('click', restartGame);
+            qs('#restart-failure').addEventListener('click', restartGame);
+
+            // Export button
+            qs('#btn-export').addEventListener('click', exportJSON);
+
+            // Import button
+            qs('#input-import').addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    importJSON(e.target.files[0]);
+                    e.target.value = '';
+                }
+            });
+
+            // Start game automatically
+            startGame();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
