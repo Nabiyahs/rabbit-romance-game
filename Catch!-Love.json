@@ -1,0 +1,1236 @@
+{
+  "title": "Catch! Love",
+  "startSceneId": "S001",
+  "scenes": [
+    {
+      "id": "S001",
+      "name": "씬 1",
+      "content": "오늘도 지겨운 회사... 담타를 가지러 이동하던 중 새로 온 통역사를 봤다. \n내 스타일인데?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C001A",
+          "label": "얼른 자기소개를 한다.",
+          "outcome": "continue",
+          "nextSceneId": "S002"
+        },
+        {
+          "id": "C001B",
+          "label": "제 스타일이시네요. 저랑 잘래요?",
+          "outcome": "continue",
+          "nextSceneId": "S003"
+        }
+      ]
+    },
+    {
+      "id": "S002",
+      "name": "씬 2",
+      "content": "\"안녕하세요, 성연주입니다.\"\n\"안녕하세요? 조희수예요.\"\n\n조희수... 이 사람과 가까워지고 싶다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C002A",
+          "label": "마음이 급하니 빠르게 다가간다.",
+          "outcome": "continue",
+          "nextSceneId": "S006"
+        },
+        {
+          "id": "C002B",
+          "label": "뭘 좋아하는지 조용히 관찰한다.",
+          "outcome": "continue",
+          "nextSceneId": "S004"
+        }
+      ]
+    },
+    {
+      "id": "S003",
+      "name": "씬 3",
+      "content": "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C003A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C003B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-3",
+        "title": "엔딩 3",
+        "summary": "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S004",
+      "name": "씬 4",
+      "content": "아침마다 콜드브루를 마시는 그녀 주위를 기웃거리다가 \n얼결에 커피를 몇 번 얻어마셨다.\n명색이 그래도 온깁인데... 커피깁만 받을 순 없지!",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C004A",
+          "label": "통 크게 커피 한 병을 선물한다.",
+          "outcome": "continue",
+          "nextSceneId": "S005"
+        },
+        {
+          "id": "C004B",
+          "label": "카페에서 만나자고 한다.",
+          "outcome": "continue",
+          "nextSceneId": "S006"
+        }
+      ]
+    },
+    {
+      "id": "S005",
+      "name": "씬 5",
+      "content": "그녀가 부담스러워하지만 일단 받아준다.\n한 발 더 다가가본다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C005A",
+          "label": "주말에 맛있는 커피 마시러 카페 갈까요?",
+          "outcome": "continue",
+          "nextSceneId": "S007"
+        },
+        {
+          "id": "C005B",
+          "label": "자전거 타고 용산 가서 영화 본 다음에 시원한 커피 마셔요.",
+          "outcome": "continue",
+          "nextSceneId": "S008"
+        }
+      ]
+    },
+    {
+      "id": "S006",
+      "name": "씬 6",
+      "content": "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C006A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C006B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-6",
+        "title": "엔딩 6",
+        "summary": "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S007",
+      "name": "씬 7",
+      "content": "그녀의 눈이 반짝인다. 대체 커피를 얼마나 좋아하는 거야...\n부지런히 음식점과 카페를 검색해서 약속을 잡았다.\n그런데 만나서 무슨 대화를 하지?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C007A",
+          "label": "커밍아웃을 한다.",
+          "outcome": "continue",
+          "nextSceneId": "S009"
+        },
+        {
+          "id": "C007B",
+          "label": "좋아한다고 고백한다.",
+          "outcome": "continue",
+          "nextSceneId": "S010"
+        }
+      ]
+    },
+    {
+      "id": "S008",
+      "name": "씬 8",
+      "content": "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C008A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C008B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-8",
+        "title": "엔딩 8",
+        "summary": "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n"
+      }
+    },
+    {
+      "id": "S009",
+      "name": "씬 9",
+      "content": "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍이다.\n",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C009A",
+          "label": "저, 여자 좋아해요...",
+          "outcome": "continue",
+          "nextSceneId": "S011"
+        },
+        {
+          "id": "C009B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S010",
+      "name": "씬 10",
+      "content": "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍인데... 죽어도 입이 떨어지지 않는다.\n그녀가 날 의아하게 바라본다. 무슨 말이라도 해야 하는데...",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C010A",
+          "label": "저, 희... 희... 그냥 여자 좋아해요.",
+          "outcome": "continue",
+          "nextSceneId": "S011"
+        },
+        {
+          "id": "C010B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S011",
+      "name": "씬 11",
+      "content": "그녀가 싱긋 웃는다. \n이어지는 말에 난 그만 정신이 혼미해지고 말았다.\n\n\"저도 호감있어요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C011A",
+          "label": "어... 그... 네??? 나는 그만 고장나고 말았다.",
+          "outcome": "continue",
+          "nextSceneId": "S012"
+        },
+        {
+          "id": "C011B",
+          "label": "감사합니다.",
+          "outcome": "continue",
+          "nextSceneId": "S013"
+        }
+      ]
+    },
+    {
+      "id": "S012",
+      "name": "씬 12",
+      "content": "나도 호감이 있다니? 내가 고백을 했었나?\n혼란스러운 가운데 환하게 웃는 그녀의 얼굴만 눈에 들어온다.\n아차, 내가 또 멍하니 있었네.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C012A",
+          "label": "혹시나 해서 말씀드리는데, 저 희수씨 몸 보고 좋아하는 거 아닙니다.",
+          "outcome": "continue",
+          "nextSceneId": "S014"
+        },
+        {
+          "id": "C012B",
+          "label": "제가 낮져밤이거든요.",
+          "outcome": "continue",
+          "nextSceneId": "S015"
+        }
+      ]
+    },
+    {
+      "id": "S013",
+      "name": "씬 13",
+      "content": "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C013A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C013B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-13",
+        "title": "엔딩 13",
+        "summary": "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S014",
+      "name": "씬 14",
+      "content": "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C014A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C014B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-14",
+        "title": "엔딩 14",
+        "summary": "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S015",
+      "name": "씬 15",
+      "content": "\"아, 네...\"\n방금 눈이 반짝인 것 같은데... 기분 탓이겠지. \n당황해서 아무 말이나 짖는 내게 그녀가 제안해온다.\n\"우리 만나봐요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C015A",
+          "label": "네, 좋아요.",
+          "outcome": "continue",
+          "nextSceneId": "S016"
+        },
+        {
+          "id": "C015B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S016",
+      "name": "씬 16",
+      "content": "희수씨가 내 썸녀라니!\n하지만 아직 얼떨떨하다. \n한참을 더 횡설수설하자 그녀가 의아하다는 듯 다시 물어본다.\n\"우리 만나보자니까요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C016A",
+          "label": "네!!! 좋아요......???",
+          "outcome": "continue",
+          "nextSceneId": "S017"
+        },
+        {
+          "id": "C016B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S017",
+      "name": "씬 17",
+      "content": "\"연주씨... 지금 제가 한 말 이해하는 거 맞아요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C017A",
+          "label": "사실 무슨 말인지 잘 모르겠어요.",
+          "outcome": "continue",
+          "nextSceneId": "S018"
+        },
+        {
+          "id": "C017B",
+          "label": "왜 자꾸 물어보지...? 일단 이해했다고 가오를 잡는다.",
+          "outcome": "continue",
+          "nextSceneId": "S019"
+        }
+      ]
+    },
+    {
+      "id": "S018",
+      "name": "씬 18",
+      "content": "\"사실... 무슨 말인지 모르겠어요.\"\n솔직하게 말하자 그녀가 피식 웃는다.\n\"마지막으로 말할게요. 연주씨, 저랑 사귀자는 말이에요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C018A",
+          "label": "좋아요! 저도... 희수씨 좋아해요.",
+          "outcome": "continue",
+          "nextSceneId": "S020"
+        },
+        {
+          "id": "C018B",
+          "label": "...좋아요. (쿨하게 대답한다)",
+          "outcome": "continue",
+          "nextSceneId": "S021"
+        }
+      ]
+    },
+    {
+      "id": "S019",
+      "name": "씬 19",
+      "content": "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C019A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C019B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-19",
+        "title": "엔딩 19",
+        "summary": "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다."
+      }
+    },
+    {
+      "id": "S020",
+      "name": "씬 20",
+      "content": "\"알아요.\" 희수가 당연하다는 듯이 말한다.\n\"다 티 났거든요. 귀여웠어요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C020A",
+          "label": "어떻게 티가 났어요?",
+          "outcome": "continue",
+          "nextSceneId": "S032"
+        },
+        {
+          "id": "C020B",
+          "label": "일부러 티 낸 거예요. (가오를 지킨다)",
+          "outcome": "continue",
+          "nextSceneId": "S023"
+        }
+      ]
+    },
+    {
+      "id": "S021",
+      "name": "씬 21",
+      "content": "\"연주씨는 정말 거짓말을 못 하네요. \n말은 퉁명스러워도 좋아하는 게 눈빛에 다 티나요. \n그것마저도 귀여워요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C021A",
+          "label": "어떻게 티가 났어요?",
+          "outcome": "continue",
+          "nextSceneId": "S032"
+        },
+        {
+          "id": "C021B",
+          "label": "일부러 티 낸 거예요.",
+          "outcome": "continue",
+          "nextSceneId": "S023"
+        }
+      ]
+    },
+    {
+      "id": "S022",
+      "name": "씬 22",
+      "content": "\"연주씨... 이런 건 어디에서 샀어요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C022A",
+          "label": "이거 아끼는 옷인데 희수씨도 사줄까요?",
+          "outcome": "continue",
+          "nextSceneId": "S034"
+        },
+        {
+          "id": "C022B",
+          "label": "혹시 옷이 마음에 안 들어요?",
+          "outcome": "continue",
+          "nextSceneId": "S036"
+        }
+      ]
+    },
+    {
+      "id": "S023",
+      "name": "씬 23",
+      "content": "\"정말요?\"\n희수가 더 가까이 다가온다. 심장이 미친 듯이 뛴다.\n\"그럼 지금 두근거리는 티 나는 것도 다 계산된 거예요?\"\n\n이 눈빛... 거짓말하면 안 될 것 같다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C023A",
+          "label": "아뇨, 지금은 진짜 떨려요...",
+          "outcome": "continue",
+          "nextSceneId": "S024"
+        },
+        {
+          "id": "C023B",
+          "label": "당연하죠. (끝까지 간다)",
+          "outcome": "continue",
+          "nextSceneId": "S025"
+        }
+      ]
+    },
+    {
+      "id": "S024",
+      "name": "씬 24",
+      "content": "\"저도요.\"\n희수가 자기 가슴에 내 손을 가져다 댄다. 심장이 빠르게 뛰고 있다.\n\"우리 둘 다 빠르게 뛰고 있네요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C024A",
+          "label": "앞으로도 같이 뛰었으면 좋겠어요.",
+          "outcome": "continue",
+          "nextSceneId": "S026"
+        },
+        {
+          "id": "C024B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S026",
+      "name": "씬 26",
+      "content": "\"같이 뛰자구요? 연주씨도 달리기 해요?\"\n희수씨의 눈이 또 반짝인다. \n뭔진 모르지만 실수한 기분이 든다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C026A",
+          "label": "네, 러닝 좋아해요(바로 신발을 주문한다)",
+          "outcome": "continue",
+          "nextSceneId": "S027"
+        },
+        {
+          "id": "C026B",
+          "label": "아뇨, 걸을 수 있는데 왜 달려야 해요?",
+          "outcome": "continue",
+          "nextSceneId": "S028"
+        }
+      ]
+    },
+    {
+      "id": "S027",
+      "name": "씬 27",
+      "content": "\"그럼 첫 데이트로 용산역까지 달린 다음에 영화 보는 게 어때요?\"\n희수가 이상한 기시감이 드는 제안을 했다.\n아니, 근데 기시감이 문제가 아니잖아?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C027A",
+          "label": "미안하지만 첫 데이트부터 땀 흘리는 건 아닌 것 같아요.",
+          "outcome": "continue",
+          "nextSceneId": "S029"
+        },
+        {
+          "id": "C027B",
+          "label": "좋죠. (가오가이거 출동!)",
+          "outcome": "continue",
+          "nextSceneId": "S030"
+        }
+      ]
+    },
+    {
+      "id": "S028",
+      "name": "씬 28",
+      "content": "\"연주씨는 정말 솔직한 게 매력이에요. 귀여워요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C028A",
+          "label": "귀여운 거 티났어요?",
+          "outcome": "continue",
+          "nextSceneId": "S032"
+        },
+        {
+          "id": "C028B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S029",
+      "name": "씬 29",
+      "content": "\"당연하죠. 그냥 장난쳐 본 거예요. 다음 주말에 정식으로 첫 데이트 해요.\"\n",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C029A",
+          "label": "좋아요. 그 전에 내일도 회사에서 만나요",
+          "outcome": "continue",
+          "nextSceneId": "S031"
+        },
+        {
+          "id": "C029B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S030",
+      "name": "씬 30",
+      "content": "\"연주씨는 정말 거짓말을 못 하네요. \n싫은 게 눈빛에 다 티나요. 그것마저도 귀여워요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C030A",
+          "label": "귀여운 거 티 났어요?",
+          "outcome": "continue",
+          "nextSceneId": "S032"
+        },
+        {
+          "id": "C030B",
+          "label": "휴, 정말 뛰어야 하는 줄 알았어요.",
+          "outcome": "continue",
+          "nextSceneId": "S029"
+        }
+      ]
+    },
+    {
+      "id": "S031",
+      "name": "씬 31",
+      "content": "드디어 첫 데이트 날.\n아끼는 스카잔을 입고 강남역에서 희수를 기다린다.\n그런데 스카잔의 호랑이를 보고 어쩐지 표정이 어두워진 그녀.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C031A",
+          "label": "희수씨, 왜 그래요? 어디 아파요?",
+          "outcome": "continue",
+          "nextSceneId": "S022"
+        },
+        {
+          "id": "C031B",
+          "label": "어... 어흥 (한껏 애교를 부려본다)",
+          "outcome": "continue",
+          "nextSceneId": "S033"
+        }
+      ]
+    },
+    {
+      "id": "S032",
+      "name": "씬 32",
+      "content": "\"여기에 티 났어요.\"\n희수가 내 볼을 손가락으로 콕 찍더니 뽀뽀를 한다.\n이 여자는 왜 귀엽기까지 한거지?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C032A",
+          "label": "헤헤, 우리 재밌게 데이트 해요.",
+          "outcome": "continue",
+          "nextSceneId": "S031"
+        },
+        {
+          "id": "C032B",
+          "label": "너무 귀여워서 못 참겠어요. 우리 잘래요?",
+          "outcome": "continue",
+          "nextSceneId": "S035"
+        }
+      ]
+    },
+    {
+      "id": "S034",
+      "name": "씬 34",
+      "content": "\"괜찮아요. 오다가 연주씨한테 어울릴 만한 옷을 봤는데 같이 구경가요!\"\n어느새 내 손엔 쇼핑백이 들려있다.\n뭔가 이상하지만... 예쁜 옷이 생겨서 좋은... 거겠지?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C034A",
+          "label": "저 예쁘죠. 나랑 잘래요?",
+          "outcome": "continue",
+          "nextSceneId": "S037"
+        },
+        {
+          "id": "C034B",
+          "label": "이제 커피 마시러 갈까요?",
+          "outcome": "continue",
+          "nextSceneId": "S038"
+        }
+      ]
+    },
+    {
+      "id": "S035",
+      "name": "씬 35",
+      "content": "\"아직 낮이니까 제 맘대로 할거예요/\n일단 데이트부터 해요, 우리\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C035A",
+          "label": "아니, 낮져밤이가 그게 아닌... 알겠어요.",
+          "outcome": "continue",
+          "nextSceneId": "S031"
+        },
+        {
+          "id": "C035B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S037",
+      "name": "씬 37",
+      "content": "\"히익. 호랑님이 노하세요!!!\"\n\n역시 옷이 마음에 안 들었던 거였어...\n나는 그렇게 강남역 한복판에 호랑이와 함께 남겨진 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C037A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C037B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-37",
+        "title": "엔딩 37",
+        "summary": "\"히익. 호랑님이 노하세요!!!\"\n\n역시 옷이 마음에 안 들었던 거였어...\n나는 그렇게 강남역 한복판에 호랑이와 함께 남겨진 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S038",
+      "name": "씬 38",
+      "content": "카페에서 희수는 라떼를 주문한다.\n\"아, 저는 아아...\"\n내 커피까지 같이 계산하려는데, 먼저 라떼만 계산해버리는 그녀.\n앗 안돼...!!!",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C038A",
+          "label": "에헤이~ 에헤이~를 외치며 내 카드를 무작정 들이민다.",
+          "outcome": "continue",
+          "nextSceneId": "S039"
+        },
+        {
+          "id": "C038B",
+          "label": "자리로 돌아와 조용히 왜 더치페이를 하냐고 묻는다.",
+          "outcome": "continue",
+          "nextSceneId": "S040"
+        }
+      ]
+    },
+    {
+      "id": "S039",
+      "name": "씬 39",
+      "content": "순순히 자리를 비켜주는 그녀.\n더치페이 가오를 지켜냈어! \n뿌듯한 마음에 자리로 돌아왔는데... 어? \n\n그 날 나는 커피 두 잔을 혼자 마시고 잠을 못 이룬 솔로가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C039A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C039B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-39",
+        "title": "엔딩 39",
+        "summary": "순순히 자리를 비켜주는 그녀.\n더치페이 가오를 지켜냈어! \n뿌듯한 마음에 자리로 돌아왔는데... 어? \n\n그 날 나는 커피 두 잔을 혼자 마시고 잠을 못 이룬 솔로가 되었다."
+      }
+    },
+    {
+      "id": "S040",
+      "name": "씬 40",
+      "content": "\"전 더치페이는 친구 사이에서 하는 거라고 생각해요.\"\n\"하지만 전 사귀는 사이에서도 했는데요?\"\n\"그래도 절 친구처럼 생각하는 것 같아서 기분이 안 좋아요.\"\n\"누가 사느냐가 중요한가요? 같이 마시는게 중요하죠.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C040A",
+          "label": "그게 아니고 희수씨가 절 친구처럼 만나는 걸까봐 신경쓰인단 말이에요.",
+          "outcome": "continue",
+          "nextSceneId": "S041"
+        },
+        {
+          "id": "C040B",
+          "label": "그래도 누가 사느냐가 중요하다고 바락바락 우긴다.",
+          "outcome": "continue",
+          "nextSceneId": "S042"
+        }
+      ]
+    },
+    {
+      "id": "S041",
+      "name": "씬 41",
+      "content": "\"누가 친구랑 이렇게 놀아요~\"\n희수씨가 내 손에 깍지를 살포시 낀다. \n흠흠... 기분이 나쁘지 않다. 아니 나쁘다기 보다 기분이 좀...",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C041A",
+          "label": "저... 너무 꼴리는데요.",
+          "outcome": "continue",
+          "nextSceneId": "S043"
+        },
+        {
+          "id": "C041B",
+          "label": "연휴에 같이 있을래요?",
+          "outcome": "continue",
+          "nextSceneId": "S044"
+        }
+      ]
+    },
+    {
+      "id": "S043",
+      "name": "씬 43",
+      "content": "급한대로(?) 근처 모텔에 들어왔다.\n씻고 나오는데 떨림이 멈추지 않는다.\n나... 어떡하지?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C043A",
+          "label": "급할수록 돌아가라는 말을 떠올리며 욕실로 돌아간다.",
+          "outcome": "continue",
+          "nextSceneId": "S045"
+        },
+        {
+          "id": "C043B",
+          "label": "불패신화를 되새기며 자신있게 밀고간다.",
+          "outcome": "continue",
+          "nextSceneId": "S046"
+        }
+      ]
+    },
+    {
+      "id": "S045",
+      "name": "씬 45",
+      "content": "\"연주씨? 어디 가요?\"\n들켰다.\n하는 수 없이 진정을 포기하고 다시 침대로 간다.\n그래! 하던대로 하는 거야! 희수씨도 여자잖아!",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C045A",
+          "label": "신중하게 공식대로 실천한다. 12... 124... 457... 7... 7... ",
+          "outcome": "continue",
+          "nextSceneId": "S046"
+        },
+        {
+          "id": "C045B",
+          "label": "새롭게 변주를 줘 볼까?",
+          "outcome": "continue",
+          "nextSceneId": "S048"
+        }
+      ]
+    },
+    {
+      "id": "S046",
+      "name": "씬 46",
+      "content": "\"음... 으음...... 음...\"\n신음소리가 영 좋지 않은 곳을 건드린다.\n\n설마 못 갔나?",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C046A",
+          "label": "섹스가 안 맞으면 헤어지는 게 낫지 않아요?",
+          "outcome": "continue",
+          "nextSceneId": "S047"
+        },
+        {
+          "id": "C046B",
+          "label": "....... 갔어요?",
+          "outcome": "continue",
+          "nextSceneId": "S049"
+        }
+      ]
+    },
+    {
+      "id": "S048",
+      "name": "씬 48",
+      "content": "여자와는 처음일테니(본인 말로는) 희수씨가 더 긴장했을 수도 있다.\n다정하게 웃으며 긴장을 풀어줘야지.\n\n\"연주씨...? 왜 그렇게 바보같이 웃어요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C048A",
+          "label": "에잇 이런 소리 들을 바엔 하던대로 하자.",
+          "outcome": "continue",
+          "nextSceneId": "S046"
+        },
+        {
+          "id": "C048B",
+          "label": "난 희수씨밖에 모르는 바보니까요.",
+          "outcome": "continue",
+          "nextSceneId": "S050"
+        }
+      ]
+    },
+    {
+      "id": "S050",
+      "name": "씬 50",
+      "content": "\"뭐래ㅎㅎ 이리와요\"\n희수씨가 날 갑자기 끌어당겨 키스를 해 온다.\n기분이 좋아서 나도 모르게 눈이 감긴다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C050A",
+          "label": "이대로 하룻밤을 보낸다.",
+          "outcome": "continue",
+          "nextSceneId": "S051"
+        },
+        {
+          "id": "C050B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S051",
+      "name": "씬 51",
+      "content": "희수씨의 리드에 정신을 차려보니 어느덧 아침이다.\n그녀는 이미 씻고 나와 단정한 모습으로 날 보고 있다.\n\"연주씨, 어제... 괜찮았어요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C051A",
+          "label": "좋았어요!",
+          "outcome": "continue",
+          "nextSceneId": "S052"
+        },
+        {
+          "id": "C051B",
+          "label": "기억이 잘 안 나는데... 한 번 더?",
+          "outcome": "continue",
+          "nextSceneId": "S053"
+        }
+      ]
+    },
+    {
+      "id": "S052",
+      "name": "씬 52",
+      "content": "\"다행이네요. 연주씨가 너무 긴장해서 뚝딱거리길래 걱정했거든요.\"\n그녀가 웃으며 아침 메뉴를 묻는다.\n아침엔 역시...",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C052A",
+          "label": "역시 얼큰한 김치찌개죠.",
+          "outcome": "continue",
+          "nextSceneId": "S054"
+        },
+        {
+          "id": "C052B",
+          "label": "희수씨 스타일대로 브런치 어때요?",
+          "outcome": "continue",
+          "nextSceneId": "S055"
+        }
+      ]
+    },
+    {
+      "id": "S053",
+      "name": "씬 53",
+      "content": "\"어머, 연주씨 되게... 적극적이시네요?\"\n희수의 눈이 반짝인다. \n\n꼬르르륵~~~ \n이 눈치 없는 위장은 가오를 모른다.\n희수씨가 웃으며 아침 메뉴를 묻는다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C053A",
+          "label": "아침은 든든하게 돈가스 먹을까요?",
+          "outcome": "continue",
+          "nextSceneId": "S056"
+        },
+        {
+          "id": "C053B",
+          "label": "희수씨 스타일대로 브런치 어때요?",
+          "outcome": "continue",
+          "nextSceneId": "S055"
+        }
+      ]
+    },
+    {
+      "id": "S054",
+      "name": "씬 54",
+      "content": "얼큰한 김치찌개를 열심히 먹는 나를 희수가 빤히 쳐다본다.\n\"희수씨, 혹시 제가 부끄러운 건 아니죠?\"\n너무 아재같았나 걱정이 된다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C054A",
+          "label": "김치찌개를 김치에 싸서 드셔보세요.",
+          "outcome": "continue",
+          "nextSceneId": "S057"
+        },
+        {
+          "id": "C054B",
+          "label": "미안해요. 너무 배가 고파서 그만...",
+          "outcome": "continue",
+          "nextSceneId": "S058"
+        }
+      ]
+    },
+    {
+      "id": "S057",
+      "name": "씬 57",
+      "content": "희수가 크게 웃음을 터뜨린다.\n\"연주씨 진짜 웃겨요. 우리 소화시킬 겸 근처 공원이라도 걸을까요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C057A",
+          "label": "소화시키려면 차라리 섹스가...",
+          "outcome": "continue",
+          "nextSceneId": "S059"
+        },
+        {
+          "id": "C057B",
+          "label": "좋아요. 우리 커플 아이템도 하나 맞출까요?",
+          "outcome": "continue",
+          "nextSceneId": "S060"
+        }
+      ]
+    },
+    {
+      "id": "S059",
+      "name": "씬 59",
+      "content": "그녀의 표정이 굳어진다.\n\"연주씨, 우리 방금 김치찌개 먹었잖아요... 아무리 밝히는 저라도 그건 좀...\"\n\n그렇게 나는 눈치 없는 김치녀가 되었다.",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C059A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C059B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-59",
+        "title": "엔딩 59",
+        "summary": "그녀의 표정이 굳어진다.\n\"연주씨, 우리 방금 김치찌개 먹었잖아요... 아무리 밝히는 저라도 그건 좀...\"\n\n그렇게 나는 눈치 없는 김치녀가 되었다."
+      }
+    },
+    {
+      "id": "S060",
+      "name": "씬 60",
+      "content": "근처 소품샵에 들어왔다. \n희수가 귀여운 커플 머리띠를 집어서 내 머리에 씌운다.\n\"연주씨, 이거 진짜 잘 어울려요! 호피무늬예요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C060A",
+          "label": "어흥! 희수씨도 하나 써봐요.",
+          "outcome": "continue",
+          "nextSceneId": "S061"
+        },
+        {
+          "id": "C060B",
+          "label": "아, 이런 건 좀...",
+          "outcome": "continue",
+          "nextSceneId": "S062"
+        }
+      ]
+    },
+    {
+      "id": "S061",
+      "name": "씬 61",
+      "content": "\"푸하하! 연주씨 진짜 귀여워요.\"\n희수가 내 볼을 살짝 꼬집고 기분이 좋아졌는지 먼저 제안한다.\n\"우리 저기 오락실 가서 내기 할래요? 지는 사람이 디저트 사기!\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C061A",
+          "label": "간식 말고 소원 들어주기는 어때요?",
+          "outcome": "continue",
+          "nextSceneId": "S063"
+        },
+        {
+          "id": "C061B",
+          "label": "좋아요. 저 농구게임 진짜 잘해요.",
+          "outcome": "continue",
+          "nextSceneId": "S064"
+        }
+      ]
+    },
+    {
+      "id": "S062",
+      "name": "씬 62",
+      "content": "가오를 챙기느라 머리띠를 거부했더니 희수가 한숨을 쉰다.\n\"연주씨는 아직 저랑 노는 게 어색한가봐요. 오늘은 이만 돌아갈까요?\"\n\n데이트의 흐름을 끊어버린 나는 그렇게 집이 아닌 솔로로 돌아갔다.\n",
+      "isEnding": true,
+      "choices": [
+        {
+          "id": "C062A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C062B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ],
+      "endingInfo": {
+        "code": "END-62",
+        "title": "엔딩 62",
+        "summary": "가오를 챙기느라 머리띠를 거부했더니 희수가 한숨을 쉰다.\n\"연주씨는 아직 저랑 노는 게 어색한가봐요. 오늘은 이만 돌아갈까요?\"\n\n데이트의 흐름을 끊어버린 나는 그렇게 집이 아닌 솔로로 돌아갔다.\n"
+      }
+    },
+    {
+      "id": "S063",
+      "name": "씬 63",
+      "content": "\"소원? 좋아요.\"\n희수가 승부욕에 불타올라 펌프 기계 위에 올라가\n당연한 듯 HARD 모드를 밟는다.\n현란한 그녀의 발놀림에 입이 떡 벌어진다.",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C063A",
+          "label": "으아아! (필사적으로 발을 놀린다)",
+          "outcome": "continue",
+          "nextSceneId": "S067"
+        },
+        {
+          "id": "C063B",
+          "label": "와, 희수씨 진짜 못 하는 게 뭐예요?",
+          "outcome": "continue",
+          "nextSceneId": "S068"
+        }
+      ]
+    },
+    {
+      "id": "S064",
+      "name": "씬 64",
+      "content": "오락실 농구 게임기 앞.\n실력이 단단히 녹슬었는지 점수가 처참하다.\n\"연주씨, 아까 큰소리친 거 치고는 점수가 좀...\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C064A",
+          "label": "기계가 이상하네요. 다시 해요.",
+          "outcome": "continue",
+          "nextSceneId": "S065"
+        },
+        {
+          "id": "C064B",
+          "label": "희수씨한테 어떻게 이겨요. 제가 봐드린 거예요.",
+          "outcome": "continue",
+          "nextSceneId": "S066"
+        }
+      ]
+    },
+    {
+      "id": "S066",
+      "name": "씬 66",
+      "content": "공원 벤치에 나란히 앉아 아이스크림을 먹는다.\n희수가 내 어깨에 머리를 살짝 기댄다.\n\"연주씨랑 있으면 너무 재밌어요. 시간 아까워요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C066A",
+          "label": "저도요. 희수씨랑은 하루가 너무 짧아요.",
+          "outcome": "continue",
+          "nextSceneId": "S073"
+        },
+        {
+          "id": "C066B",
+          "label": "옷도 재밌게 입죠?",
+          "outcome": "continue",
+          "nextSceneId": "S074"
+        }
+      ]
+    },
+    {
+      "id": "S067",
+      "name": "씬 67",
+      "content": "결국 게임에서 지고 말았다. \n희수가 승리의 미소를 지으며 편의점으로 나를 이끈다.\n\"연주씨, 약속한대로 아이스크림 사주기예요!\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C067A",
+          "label": "먹고 싶은 거 다 골라요!",
+          "outcome": "continue",
+          "nextSceneId": "S069"
+        },
+        {
+          "id": "C067B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    },
+    {
+      "id": "S068",
+      "name": "씬 68",
+      "content": "게임을 마치고 나오니 목이 마르다.\n희수가 어느새 근처 편의점에서 음료수를 골라들고 혼자 계산하려는데...\n\"어머, 연주씨. 제가 아까 소품샵에 지갑을 두고 왔나봐요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C068A",
+          "label": "제가 다시 가서 찾아올게요!",
+          "outcome": "continue",
+          "nextSceneId": "S070"
+        },
+        {
+          "id": "C068B",
+          "label": "괜찮아요. 일단 제가 살테니 나중에 찾으러 가요.",
+          "outcome": "continue",
+          "nextSceneId": "S066"
+        }
+      ]
+    },
+    {
+      "id": "S070",
+      "name": "씬 70",
+      "content": "소품샵으로 달려가 지갑을 찾아왔다.\n헉헉거리며 지갑을 건네자 희수가 감동한 표정이다.\n\"연주씨, 저 때문에 이렇게 뛰어 오고... 진짜 감동이에요.\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C070A",
+          "label": "희수씨 일이라면 어디든 달려갈 수 있죠.",
+          "outcome": "continue",
+          "nextSceneId": "S071"
+        },
+        {
+          "id": "C070B",
+          "label": "(땀을 닦으며) 이 정도는 뛴 것도 아니죠.",
+          "outcome": "continue",
+          "nextSceneId": "S072"
+        }
+      ]
+    },
+    {
+      "id": "S074",
+      "name": "씬 74",
+      "content": "\"완전 가오가이거야!\"\n희수가 웃으며 내 옆구리를 찌른다.\n\"오늘 재밌었으니까 제가 맛있는 거 해줄게요. 우리집으로 갈래요?\"",
+      "isEnding": false,
+      "choices": [
+        {
+          "id": "C074A",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        },
+        {
+          "id": "C074B",
+          "label": "",
+          "outcome": "continue",
+          "nextSceneId": ""
+        }
+      ]
+    }
+  ]
+}
