@@ -884,11 +884,44 @@
             content: "🔚 엔딩: ";
         }
 
-        .path-count {
-            text-align: center;
-            color: #666;
-            font-size: 12px;
+        .path-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .path-nav-btn {
+            padding: 8px 16px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .path-nav-btn:hover:not(:disabled) {
+            background: #5b4cdb;
+        }
+
+        .path-nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .path-nav-info {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
         }
 
         /* Incognito Theme */
@@ -954,6 +987,18 @@
 
         body.incognito .path-choices-container {
             border-left-color: #ccc;
+        }
+
+        body.incognito .path-nav {
+            background: #e0e0e0;
+        }
+
+        body.incognito .path-nav-btn {
+            background: #6c757d;
+        }
+
+        body.incognito .path-nav-btn:hover:not(:disabled) {
+            background: #5a6268;
         }
 
         body.incognito .path-ending {
@@ -3010,57 +3055,83 @@
             return paths;
         }
 
-        // 스토리 경로를 HTML로 렌더링
+        // 현재 보고 있는 경로 인덱스
+        let currentPathIndex = 0;
+
+        // 스토리 경로를 HTML로 렌더링 (한 경로씩)
         function renderStoryPreview(paths) {
             if (paths.length === 0) {
                 return '<div style="color:#666;text-align:center;padding:30px;">경로를 찾을 수 없습니다. 씬 1부터 시작하세요.</div>';
             }
 
+            // 인덱스 범위 체크
+            if (currentPathIndex >= paths.length) currentPathIndex = 0;
+            if (currentPathIndex < 0) currentPathIndex = paths.length - 1;
+
+            const path = paths[currentPathIndex];
+            const endingTag = path.ending.code === 'INCOMPLETE'
+                ? '<span class="path-ending-tag incomplete">미완성</span>'
+                : `<span class="path-ending-tag">${path.ending.code}</span>`;
+
             let html = '';
 
-            paths.forEach((path, idx) => {
-                const endingTag = path.ending.code === 'INCOMPLETE'
-                    ? '<span class="path-ending-tag incomplete">미완성</span>'
-                    : `<span class="path-ending-tag">${path.ending.code}</span>`;
+            // 네비게이션 바
+            html += `<div class="path-nav">
+                <button class="path-nav-btn" onclick="prevPath()" ${paths.length <= 1 ? 'disabled' : ''}>◀ 이전</button>
+                <span class="path-nav-info">경로 ${currentPathIndex + 1} / ${paths.length}</span>
+                <button class="path-nav-btn" onclick="nextPath()" ${paths.length <= 1 ? 'disabled' : ''}>다음 ▶</button>
+            </div>`;
 
-                html += `<div class="story-path">`;
-                html += `<div class="path-header">📍 경로 ${idx + 1} ${endingTag}</div>`;
+            html += `<div class="story-path">`;
+            html += `<div class="path-header">📍 경로 ${currentPathIndex + 1} ${endingTag}</div>`;
 
-                path.steps.forEach(step => {
-                    html += `<div class="path-scene">`;
-                    html += `<div class="path-scene-header">
-                        [씬${step.sceneNum}] ${step.scene.name || ''}
-                        <button class="preview-edit-btn" onclick="openPreviewEdit('scene', ${step.sceneNum})">✏️</button>
-                    </div>`;
-                    html += `<div class="path-scene-content" id="preview-scene-${step.sceneNum}">${escapeHtml(step.scene.content || '')}</div>`;
+            path.steps.forEach(step => {
+                html += `<div class="path-scene">`;
+                html += `<div class="path-scene-header">
+                    [씬${step.sceneNum}] ${step.scene.name || ''}
+                    <button class="preview-edit-btn" onclick="openPreviewEdit('scene', ${step.sceneNum})">✏️</button>
+                </div>`;
+                html += `<div class="path-scene-content">${escapeHtml(step.scene.content || '')}</div>`;
 
-                    // 모든 선택지 표시 (선택된 것은 강조, 미선택은 흐리게)
-                    const allChoices = step.scene.choices || [];
-                    if (allChoices.length > 0 && allChoices.some(c => c.text)) {
-                        html += `<div class="path-choices-container">`;
-                        allChoices.forEach((choice, cIdx) => {
-                            if (!choice.text) return;
-                            const isSelected = (step.choiceIndex === cIdx);
-                            const choiceClass = isSelected ? 'path-choice selected' : 'path-choice unselected';
-                            html += `<div class="${choiceClass}">
-                                <span class="choice-num">${cIdx + 1}</span>
-                                <span class="choice-text">"${escapeHtml(choice.text)}"</span>
-                                <button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${step.sceneNum}, ${cIdx})">✏️</button>
-                            </div>`;
-                        });
-                        html += `</div>`;
-                    }
+                // 모든 선택지 표시 (선택된 것은 강조, 미선택은 흐리게)
+                const allChoices = step.scene.choices || [];
+                if (allChoices.length > 0 && allChoices.some(c => c.text)) {
+                    html += `<div class="path-choices-container">`;
+                    allChoices.forEach((choice, cIdx) => {
+                        if (!choice.text) return;
+                        const isSelected = (step.choiceIndex === cIdx);
+                        const choiceClass = isSelected ? 'path-choice selected' : 'path-choice unselected';
+                        html += `<div class="${choiceClass}">
+                            <span class="choice-num">${cIdx + 1}</span>
+                            <span class="choice-text">"${escapeHtml(choice.text)}"</span>
+                            <button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${step.sceneNum}, ${cIdx})">✏️</button>
+                        </div>`;
+                    });
                     html += `</div>`;
-                });
-
-                html += `<div class="path-ending">${escapeHtml(path.ending.summary || '')}</div>`;
+                }
                 html += `</div>`;
             });
 
-            const limitMsg = paths.length >= MAX_PATHS ? ` (최대 ${MAX_PATHS}개 표시)` : '';
-            html += `<div class="path-count">총 ${paths.length}개 경로${limitMsg}</div>`;
+            html += `<div class="path-ending">${escapeHtml(path.ending.summary || '')}</div>`;
+            html += `</div>`;
 
             return html;
+        }
+
+        // 다음 경로
+        function nextPath() {
+            currentPathIndex++;
+            if (currentPathIndex >= allStoryPaths.length) currentPathIndex = 0;
+            const container = document.getElementById('storyPreviewContent');
+            container.innerHTML = renderStoryPreview(allStoryPaths);
+        }
+
+        // 이전 경로
+        function prevPath() {
+            currentPathIndex--;
+            if (currentPathIndex < 0) currentPathIndex = allStoryPaths.length - 1;
+            const container = document.getElementById('storyPreviewContent');
+            container.innerHTML = renderStoryPreview(allStoryPaths);
         }
 
         // HTML 이스케이프 함수
