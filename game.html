@@ -31,40 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* ==================== Utility Bar ==================== */
-        .utility-bar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .utility-bar button,
-        .utility-bar label {
-            padding: 8px 15px;
-            background: white;
-            border: 2px solid #E64398;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #E64398;
-            transition: all 0.2s;
-            font-family: 'Lato', sans-serif;
-        }
-
-        .utility-bar button:hover,
-        .utility-bar label:hover {
-            background: #E64398;
-            color: white;
-        }
-
-        .utility-bar input[type="file"] {
-            display: none;
-        }
-
         /* ==================== Common ==================== */
         .screen {
             display: none;
@@ -906,289 +872,6 @@
             font-size: 12px;
         }
 
-        /* ==================== Incognito Mode ==================== */
-        .incognito-btn {
-            padding: 8px 15px;
-            background: white;
-            border: 2px solid #666;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.2s;
-            font-family: 'Lato', sans-serif;
-        }
-
-        .incognito-btn:hover {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        .incognito-btn.active {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        /* Incognito Mode Styles - 흑백 업무용 테마 */
-        body.incognito #main-screen {
-            background: #f5f5f5;
-        }
-
-        body.incognito .wave-decoration {
-            display: none;
-        }
-
-        body.incognito .game-title {
-            color: #333;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        body.incognito .header::before,
-        body.incognito .header::after {
-            display: none;
-        }
-
-        body.incognito .scene-container {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .scene-image-placeholder {
-            background: #e0e0e0;
-            border-radius: 4px;
-            height: 150px;
-        }
-
-        body.incognito .scene-image-placeholder::before {
-            background: #ccc;
-        }
-
-        body.incognito .scene-text {
-            background: #fafafa;
-            border-left: 3px solid #666;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        body.incognito .choice-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: none;
-        }
-
-        body.incognito .choice-card:nth-child(1),
-        body.incognito .choice-card:nth-child(2) {
-            border-color: #ccc;
-        }
-
-        body.incognito .choice-card:hover {
-            border-color: #666;
-            transform: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .choice-card::before {
-            display: none;
-        }
-
-        body.incognito .choice-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") !important;
-            width: 32px;
-            height: 32px;
-        }
-
-        body.incognito .choice-label {
-            color: #666;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        body.incognito .choice-text {
-            color: #333;
-            font-size: 14px;
-        }
-
-        body.incognito .choice-card:hover .choice-text {
-            color: #000;
-        }
-
-        /* Incognito - Panel styles */
-        body.incognito .panel {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        body.incognito .panel-header {
-            background: #666;
-            font-size: 14px;
-            padding: 10px 15px;
-        }
-
-        body.incognito .panel-tab {
-            border-color: #999;
-            color: #666;
-        }
-
-        body.incognito .panel-tab:hover,
-        body.incognito .panel-tab.active {
-            background: #666;
-            color: white;
-        }
-
-        body.incognito .expand-btn {
-            background: #666;
-        }
-
-        body.incognito .expand-btn:hover {
-            background: #444;
-        }
-
-        body.incognito .preview-tab {
-            background: #eee;
-            color: #666;
-        }
-
-        body.incognito .preview-tab:hover,
-        body.incognito .preview-tab.active {
-            background: #666;
-            color: white;
-        }
-
-        body.incognito .story-path {
-            background: #fafafa;
-            border-left: 3px solid #666;
-            border-radius: 4px;
-        }
-
-        body.incognito .path-header {
-            color: #333;
-        }
-
-        body.incognito .path-ending-tag {
-            background: #666;
-        }
-
-        body.incognito .path-scene-id {
-            color: #333;
-        }
-
-        body.incognito .path-choice::before {
-            color: #666;
-        }
-
-        body.incognito .path-ending {
-            color: #333;
-            background: rgba(0,0,0,0.05);
-        }
-
-        body.incognito .nav-btn {
-            background: #999;
-        }
-
-        body.incognito .nav-btn:hover {
-            background: #666;
-        }
-
-        body.incognito .scene-select {
-            border-color: #999;
-        }
-
-        body.incognito .current-scene-id {
-            color: #333;
-        }
-
-        body.incognito .ending-code {
-            background: #666;
-        }
-
-        /* Incognito - Utility bar */
-        body.incognito .utility-bar button,
-        body.incognito .utility-bar label {
-            border-color: #666;
-            color: #666;
-        }
-
-        body.incognito .utility-bar button:hover,
-        body.incognito .utility-bar label:hover {
-            background: #666;
-            color: white;
-        }
-
-        /* Incognito - Ending screens */
-        body.incognito #ending-success-screen,
-        body.incognito #ending-failure-screen {
-            background: #e0e0e0;
-        }
-
-        body.incognito .wave-celebration,
-        body.incognito .wave-background {
-            display: none;
-        }
-
-        body.incognito .ending-container {
-            border-color: #999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .ending-container::before,
-        body.incognito .ending-container::after {
-            display: none;
-        }
-
-        body.incognito .icon-container {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") !important;
-            width: 60px;
-            height: 60px;
-            animation: none;
-        }
-
-        body.incognito .story-text-area {
-            background: #fafafa;
-            border-color: #ccc;
-        }
-
-        body.incognito .story-text-area::before {
-            color: #999;
-        }
-
-        body.incognito .ending-message {
-            color: #333;
-            font-size: 36px;
-        }
-
-        body.incognito .congratulations,
-        body.incognito .encouragement {
-            color: #666;
-        }
-
-        body.incognito .success-decoration {
-            background: #999;
-        }
-
-        body.incognito .retry-hint {
-            background: #666;
-        }
-
-        body.incognito .hearts-row {
-            display: none;
-        }
-
-        body.incognito .restart-button {
-            background: #666;
-        }
-
-        body.incognito .restart-button:hover {
-            background: #444;
-            box-shadow: none;
-        }
-
         .wave-background {
             position: absolute;
             width: 100%;
@@ -1381,29 +1064,34 @@
             50% { transform: translateY(-20px); }
         }
 
-        .mode-buttons {
+        .mode-toggle-container {
             margin-top: 50px;
+            background: white;
+            border-radius: 25px;
+            padding: 8px;
             display: flex;
-            gap: 20px;
-            justify-content: center;
+            gap: 0;
+            box-shadow: 0 10px 30px rgba(230, 67, 152, 0.2);
+            border: 3px solid #F172A1;
         }
 
         .mode-btn {
-            padding: 15px 30px;
+            padding: 15px 35px;
             background: transparent;
             border: none;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 400;
-            color: #A1C3D1;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #B39BC8;
             font-family: 'Lato', sans-serif;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            border-radius: 18px;
+            transition: all 0.3s ease;
         }
 
-        .mode-btn:hover {
-            color: #E64398;
-            transform: scale(1.05);
+        .mode-btn.active {
+            background: #E64398;
+            color: white;
         }
 
         /* Back Button in Scene Container */
@@ -1431,68 +1119,14 @@
             display: block;
         }
 
-        body.incognito #mode-select-screen {
-            background: #f5f5f5;
-        }
-
-        body.incognito .intro-wave-layer,
-        body.incognito .intro-floating-heart {
-            display: none;
-        }
-
-        body.incognito .intro-title-wrapper {
-            border-color: #ccc;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .intro-title-wrapper::before,
-        body.incognito .intro-title-wrapper::after {
-            display: none;
-        }
-
-        body.incognito .intro-title {
-            color: #333;
-            font-size: 36px;
-        }
-
-        body.incognito .intro-subtitle {
-            color: #666;
-        }
-
-        body.incognito .mode-btn {
-            color: #666;
-        }
-
-        body.incognito .mode-btn:hover {
-            color: #333;
-        }
-
-        body.incognito .back-btn {
-            background: #999;
-        }
-
-        body.incognito .back-btn:hover {
-            background: #666;
-        }
-
         @media (max-width: 768px) {
             .intro-title { font-size: 48px; }
             .intro-title-wrapper { padding: 40px 50px; }
-            .mode-buttons { flex-direction: column; }
+            .mode-toggle-container { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <!-- Utility Bar -->
-    <div class="utility-bar">
-        <button class="incognito-btn" id="btn-incognito" aria-label="Incognito Mode">🕶️ Work Mode</button>
-        <button id="btn-export" aria-label="JSON 내보내기">💾 Export</button>
-        <label aria-label="JSON 불러오기">
-            📂 Import
-            <input type="file" id="input-import" accept=".json">
-        </label>
-    </div>
-
     <!-- Mode Selection Screen (Intro Design) -->
     <div id="mode-select-screen" class="screen active">
         <div class="intro-wave-layer">
@@ -1513,8 +1147,8 @@
                 <h1 class="intro-title">CATCH! LOVE</h1>
                 <div class="intro-subtitle">A ROMANTIC ADVENTURE AWAITS</div>
             </div>
-            <div class="mode-buttons">
-                <button class="mode-btn" id="mode-real">인생은 실전</button>
+            <div class="mode-toggle-container">
+                <button class="mode-btn active" id="mode-real">인생은 실전</button>
                 <button class="mode-btn" id="mode-retry">미워도 한번 더</button>
             </div>
         </div>
@@ -1751,60 +1385,14 @@
             return errors;
         }
 
-        function mergeStory(base, incoming) {
-            if (incoming.title) base.title = incoming.title;
-            if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
-
-            if (incoming.scenes && Array.isArray(incoming.scenes)) {
-                incoming.scenes.forEach(inScene => {
-                    const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
-
-                    if (existingIdx >= 0) {
-                        const existing = base.scenes[existingIdx];
-
-                        if (inScene.name) existing.name = inScene.name;
-                        if (inScene.content !== undefined) existing.content = inScene.content;
-                        if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
-                        if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
-
-                        if (inScene.choices && Array.isArray(inScene.choices)) {
-                            inScene.choices.forEach((inChoice, idx) => {
-                                if (idx < 2) {
-                                    const existingChoice = existing.choices[idx];
-                                    if (existingChoice && existingChoice.id === inChoice.id) {
-                                        if (inChoice.label) existingChoice.label = inChoice.label;
-                                        if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
-                                        if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
-                                    } else {
-                                        existing.choices[idx] = inChoice;
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        base.scenes.push(inScene);
-                    }
-                });
-            }
-
-            return base;
-        }
-
-        function downloadJSON(obj, filename) {
-            const json = JSON.stringify(obj, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
         // ==================== GAME LOGIC ====================
         function selectMode(mode) {
             gameMode = mode;
             sceneHistory = [];
+
+            // 토글 버튼 active 상태 변경
+            qs('#mode-real').classList.toggle('active', mode === 'real');
+            qs('#mode-retry').classList.toggle('active', mode === 'retry');
 
             // 미워도 한번 더 모드일 때만 뒤로가기 버튼 표시
             const backBtn = qs('#back-btn');
@@ -1904,34 +1492,6 @@
             crumbs = [];
             sceneHistory = [];
             showScreen('mode-select-screen');
-        }
-
-        // ==================== EXPORT/IMPORT ====================
-        function exportJSON() {
-            const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
-            downloadJSON(STORY, filename);
-            alert('JSON을 내보냈습니다.');
-        }
-
-        function importJSON(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const incoming = JSON.parse(e.target.result);
-
-                    const errors = validate(incoming);
-                    if (errors.length > 0) {
-                        alert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
-                        return;
-                    }
-
-                    STORY = mergeStory(STORY, incoming);
-                    alert('JSON을 성공적으로 병합했습니다.');
-                } catch (err) {
-                    alert('JSON 파싱 실패: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
         }
 
         // ==================== STORY PREVIEW SYSTEM ====================
@@ -2304,31 +1864,6 @@
             // Restart buttons
             qs('#restart-success').addEventListener('click', restartGame);
             qs('#restart-failure').addEventListener('click', restartGame);
-
-            // Export button
-            qs('#btn-export').addEventListener('click', exportJSON);
-
-            // Incognito mode toggle
-            qs('#btn-incognito').addEventListener('click', function() {
-                document.body.classList.toggle('incognito');
-                this.classList.toggle('active');
-                if (document.body.classList.contains('incognito')) {
-                    this.textContent = '💼 Work Mode';
-                } else {
-                    this.textContent = '🕶️ Work Mode';
-                }
-            });
-
-            // Import button
-            qs('#input-import').addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    importJSON(e.target.files[0]);
-                    e.target.value = '';
-                }
-            });
-
-            // Initialize preview system
-            initPreviewSystem();
 
             // 모드 선택 화면에서 시작 (startGame은 모드 선택 후 호출됨)
         }
