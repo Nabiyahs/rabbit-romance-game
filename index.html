@@ -924,6 +924,168 @@
             font-size: 14px;
         }
 
+        /* Tree View Styles */
+        .tree-controls {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tree-ctrl-btn {
+            padding: 8px 14px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .tree-ctrl-btn:hover {
+            background: #5b4cdb;
+        }
+
+        .story-tree {
+            font-size: 13px;
+        }
+
+        .tree-scene {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #6c5ce7;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .tree-scene-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tree-scene-num {
+            color: #6c5ce7;
+            font-weight: bold;
+        }
+
+        .tree-scene-content {
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .tree-choices {
+            margin-top: 10px;
+        }
+
+        .tree-choice-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 0;
+            flex-wrap: wrap;
+        }
+
+        .tree-line {
+            color: #999;
+            font-family: monospace;
+            width: 24px;
+            flex-shrink: 0;
+        }
+
+        .tree-choice-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #00b894;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .tree-toggle {
+            cursor: pointer;
+            color: #6c5ce7;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            user-select: none;
+        }
+
+        .tree-toggle:hover {
+            background: #e8e6ff;
+        }
+
+        .tree-choice-text {
+            color: #00b894;
+            font-weight: 500;
+        }
+
+        .tree-arrow {
+            color: #666;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .tree-arrow.tree-incomplete {
+            color: #e17055;
+        }
+
+        .branch-count {
+            color: #6c5ce7;
+            font-size: 11px;
+            background: #e8e6ff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        .tree-ending {
+            color: #e17055;
+            font-weight: bold;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(225, 112, 85, 0.1);
+            border-radius: 5px;
+        }
+
+        .tree-branch-content {
+            margin-left: 20px;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #e0e0e0;
+        }
+
+        .tree-incomplete-notice {
+            color: #e17055;
+            font-size: 12px;
+            padding: 8px;
+            background: rgba(225, 112, 85, 0.1);
+            border-radius: 5px;
+            margin-top: 8px;
+        }
+
+        .tree-loop, .tree-empty {
+            color: #999;
+            font-style: italic;
+        }
+
         /* Incognito Theme */
         body.incognito {
             background: #f5f5f5;
@@ -1004,6 +1166,57 @@
         body.incognito .path-ending {
             background: rgba(108, 117, 125, 0.1);
             color: #495057;
+        }
+
+        /* Tree View Incognito */
+        body.incognito .tree-controls {
+            background: #e0e0e0;
+        }
+
+        body.incognito .tree-ctrl-btn {
+            background: #6c757d;
+        }
+
+        body.incognito .tree-ctrl-btn:hover {
+            background: #5a6268;
+        }
+
+        body.incognito .tree-scene {
+            border-left-color: #6c757d;
+        }
+
+        body.incognito .tree-scene-num {
+            color: #495057;
+        }
+
+        body.incognito .tree-choice-num {
+            background: #6c757d;
+        }
+
+        body.incognito .tree-toggle {
+            color: #6c757d;
+        }
+
+        body.incognito .tree-toggle:hover {
+            background: #e0e0e0;
+        }
+
+        body.incognito .tree-choice-text {
+            color: #495057;
+        }
+
+        body.incognito .branch-count {
+            background: #e0e0e0;
+            color: #495057;
+        }
+
+        body.incognito .tree-ending {
+            background: rgba(108, 117, 125, 0.1);
+            color: #495057;
+        }
+
+        body.incognito .tree-branch-content {
+            border-left-color: #ccc;
         }
 
         body.incognito .scene-card {
@@ -2995,143 +3208,188 @@
             return paths;
         }
 
-        // ==================== STORY PREVIEW SYSTEM ====================
-        let allStoryPaths = [];
+        // ==================== STORY PREVIEW SYSTEM (트리 뷰) ====================
 
-        // 모든 스토리 경로 찾기 (DFS)
-        const MAX_PATHS = 100; // 최대 경로 수 제한
-        function findAllStoryPaths() {
-            const paths = [];
+        // 펼쳐진 분기 추적 (Set of "sceneNum-choiceIdx")
+        let expandedBranches = new Set();
 
-            function dfs(sceneNum, path, visited) {
-                // 최대 경로 수 도달 시 중단
-                if (paths.length >= MAX_PATHS) return;
-                if (visited.has(sceneNum) && path.length > 30) return;
+        // 특정 선택지에서 도달 가능한 엔딩/분기 수 계산
+        function countBranches(sceneNum, visited = new Set()) {
+            if (visited.has(sceneNum)) return { endings: 0, incomplete: 0 };
 
-                const scene = gameData[sceneNum];
-                if (!scene || !scene.content) return;
+            const scene = gameData[sceneNum];
+            if (!scene || !scene.content) return { endings: 0, incomplete: 1 };
 
-                const newPath = [...path, { sceneNum, scene, choiceText: null }];
+            if (scene.isEnding) return { endings: 1, incomplete: 0 };
 
-                // 엔딩 체크
-                if (scene.isEnding) {
-                    paths.push({
-                        steps: newPath,
-                        ending: scene.endingInfo || { code: `END-${sceneNum}`, summary: scene.content }
-                    });
-                    return;
-                }
+            const validChoices = (scene.choices || []).filter(c => c.text && c.next);
+            if (validChoices.length === 0) return { endings: 0, incomplete: 1 };
 
-                const validChoices = (scene.choices || []).filter(c => c.text && c.next);
+            const newVisited = new Set(visited);
+            newVisited.add(sceneNum);
 
-                if (validChoices.length === 0) {
-                    paths.push({
-                        steps: newPath,
-                        ending: { code: 'INCOMPLETE', summary: '이 경로는 아직 완성되지 않았습니다.' }
-                    });
-                    return;
-                }
-
-                validChoices.forEach((choice, choiceIdx) => {
-                    // 원본 choices 배열에서 실제 인덱스 찾기
-                    const originalIdx = (scene.choices || []).findIndex(c => c.text === choice.text && c.next === choice.next);
-                    const stepWithChoice = [...newPath];
-                    stepWithChoice[stepWithChoice.length - 1] = {
-                        ...stepWithChoice[stepWithChoice.length - 1],
-                        choiceText: choice.text,
-                        choiceIndex: originalIdx >= 0 ? originalIdx : choiceIdx
-                    };
-
-                    const newVisited = new Set(visited);
-                    newVisited.add(sceneNum);
-                    dfs(choice.next, stepWithChoice, newVisited);
-                });
-            }
-
-            if (gameData[1] && gameData[1].content) {
-                dfs(1, [], new Set());
-            }
-
-            return paths;
+            let total = { endings: 0, incomplete: 0 };
+            validChoices.forEach(choice => {
+                const sub = countBranches(choice.next, newVisited);
+                total.endings += sub.endings;
+                total.incomplete += sub.incomplete;
+            });
+            return total;
         }
 
-        // 현재 보고 있는 경로 인덱스
-        let currentPathIndex = 0;
-
-        // 스토리 경로를 HTML로 렌더링 (한 경로씩)
-        function renderStoryPreview(paths) {
-            if (paths.length === 0) {
-                return '<div style="color:#666;text-align:center;padding:30px;">경로를 찾을 수 없습니다. 씬 1부터 시작하세요.</div>';
+        // 씬을 트리 형태로 렌더링
+        function renderSceneTree(sceneNum, depth = 0, visited = new Set()) {
+            if (visited.has(sceneNum) && depth > 20) {
+                return `<div class="tree-node" style="margin-left:${depth * 20}px"><span class="tree-loop">↩️ 순환 참조 (씬${sceneNum})</span></div>`;
             }
 
-            // 인덱스 범위 체크
-            if (currentPathIndex >= paths.length) currentPathIndex = 0;
-            if (currentPathIndex < 0) currentPathIndex = paths.length - 1;
+            const scene = gameData[sceneNum];
+            if (!scene || !scene.content) {
+                return `<div class="tree-node" style="margin-left:${depth * 20}px"><span class="tree-empty">⚠️ 씬${sceneNum} 없음</span></div>`;
+            }
 
-            const path = paths[currentPathIndex];
-            const endingTag = path.ending.code === 'INCOMPLETE'
-                ? '<span class="path-ending-tag incomplete">미완성</span>'
-                : `<span class="path-ending-tag">${path.ending.code}</span>`;
+            const newVisited = new Set(visited);
+            newVisited.add(sceneNum);
 
-            let html = '';
+            let html = `<div class="tree-scene" style="margin-left:${depth * 20}px">`;
 
-            // 네비게이션 바
-            html += `<div class="path-nav">
-                <button class="path-nav-btn" onclick="prevPath()" ${paths.length <= 1 ? 'disabled' : ''}>◀ 이전</button>
-                <span class="path-nav-info">경로 ${currentPathIndex + 1} / ${paths.length}</span>
-                <button class="path-nav-btn" onclick="nextPath()" ${paths.length <= 1 ? 'disabled' : ''}>다음 ▶</button>
+            // 씬 헤더와 내용
+            html += `<div class="tree-scene-header">
+                <span class="tree-scene-num">[씬${sceneNum}]</span> ${scene.name || ''}
+                <button class="preview-edit-btn" onclick="openPreviewEdit('scene', ${sceneNum})">✏️</button>
             </div>`;
+            html += `<div class="tree-scene-content">${escapeHtml(scene.content || '')}</div>`;
 
-            html += `<div class="story-path">`;
-            html += `<div class="path-header">📍 경로 ${currentPathIndex + 1} ${endingTag}</div>`;
-
-            path.steps.forEach(step => {
-                html += `<div class="path-scene">`;
-                html += `<div class="path-scene-header">
-                    [씬${step.sceneNum}] ${step.scene.name || ''}
-                    <button class="preview-edit-btn" onclick="openPreviewEdit('scene', ${step.sceneNum})">✏️</button>
-                </div>`;
-                html += `<div class="path-scene-content">${escapeHtml(step.scene.content || '')}</div>`;
-
-                // 모든 선택지 표시 (선택된 것은 강조, 미선택은 흐리게)
-                const allChoices = step.scene.choices || [];
-                if (allChoices.length > 0 && allChoices.some(c => c.text)) {
-                    html += `<div class="path-choices-container">`;
-                    allChoices.forEach((choice, cIdx) => {
-                        if (!choice.text) return;
-                        const isSelected = (step.choiceIndex === cIdx);
-                        const choiceClass = isSelected ? 'path-choice selected' : 'path-choice unselected';
-                        html += `<div class="${choiceClass}">
-                            <span class="choice-num">${cIdx + 1}</span>
-                            <span class="choice-text">"${escapeHtml(choice.text)}"</span>
-                            <button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${step.sceneNum}, ${cIdx})">✏️</button>
-                        </div>`;
-                    });
-                    html += `</div>`;
-                }
+            // 엔딩인 경우
+            if (scene.isEnding) {
+                const endingInfo = scene.endingInfo || {};
+                html += `<div class="tree-ending">🔚 ${endingInfo.code || 'END-' + sceneNum}</div>`;
                 html += `</div>`;
-            });
+                return html;
+            }
 
-            html += `<div class="path-ending">${escapeHtml(path.ending.summary || '')}</div>`;
+            // 선택지들
+            const choices = scene.choices || [];
+            if (choices.length > 0 && choices.some(c => c.text)) {
+                html += `<div class="tree-choices">`;
+                choices.forEach((choice, cIdx) => {
+                    if (!choice.text) return;
+
+                    const branchKey = `${sceneNum}-${cIdx}`;
+                    const isExpanded = expandedBranches.has(branchKey);
+                    const nextScene = gameData[choice.next];
+                    const isEnding = nextScene?.isEnding;
+                    const hasNext = choice.next && nextScene?.content;
+
+                    // 분기 수 계산
+                    let branchInfo = '';
+                    if (hasNext && !isEnding) {
+                        const counts = countBranches(choice.next, newVisited);
+                        const total = counts.endings + counts.incomplete;
+                        if (total > 1) {
+                            branchInfo = `<span class="branch-count">(${total}개 분기)</span>`;
+                        }
+                    }
+
+                    // 선택지 라인
+                    const lastChoice = cIdx === choices.filter(c => c.text).length - 1;
+                    const lineChar = lastChoice ? '└─' : '├─';
+
+                    html += `<div class="tree-choice-row">`;
+                    html += `<span class="tree-line">${lineChar}</span>`;
+                    html += `<span class="tree-choice-num">${cIdx + 1}</span>`;
+
+                    if (hasNext && !isEnding) {
+                        // 펼칠 수 있는 선택지
+                        html += `<span class="tree-toggle" onclick="toggleBranch('${branchKey}')">${isExpanded ? '▼' : '▶'}</span>`;
+                    }
+
+                    html += `<span class="tree-choice-text">"${escapeHtml(choice.text)}"</span>`;
+                    html += `<button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${sceneNum}, ${cIdx})">✏️</button>`;
+
+                    if (isEnding) {
+                        const endInfo = nextScene.endingInfo || {};
+                        html += `<span class="tree-arrow">→ 🔚 씬${choice.next}</span>`;
+                    } else if (hasNext) {
+                        html += `<span class="tree-arrow">→ 씬${choice.next}</span>`;
+                        html += branchInfo;
+                    } else if (choice.next) {
+                        html += `<span class="tree-arrow tree-incomplete">→ 씬${choice.next} (미작성)</span>`;
+                    }
+
+                    html += `</div>`;
+
+                    // 펼쳐진 경우 하위 씬 표시
+                    if (isExpanded && hasNext && !isEnding) {
+                        html += `<div class="tree-branch-content">`;
+                        html += renderSceneTree(choice.next, depth + 1, newVisited);
+                        html += `</div>`;
+                    }
+                });
+                html += `</div>`;
+            } else {
+                html += `<div class="tree-incomplete-notice">⚠️ 선택지 없음 (미완성)</div>`;
+            }
+
             html += `</div>`;
-
             return html;
         }
 
-        // 다음 경로
-        function nextPath() {
-            currentPathIndex++;
-            if (currentPathIndex >= allStoryPaths.length) currentPathIndex = 0;
-            const container = document.getElementById('storyPreviewContent');
-            container.innerHTML = renderStoryPreview(allStoryPaths);
+        // 분기 펼치기/접기
+        function toggleBranch(branchKey) {
+            if (expandedBranches.has(branchKey)) {
+                expandedBranches.delete(branchKey);
+            } else {
+                expandedBranches.add(branchKey);
+            }
+            updateStoryPreview();
         }
 
-        // 이전 경로
-        function prevPath() {
-            currentPathIndex--;
-            if (currentPathIndex < 0) currentPathIndex = allStoryPaths.length - 1;
-            const container = document.getElementById('storyPreviewContent');
-            container.innerHTML = renderStoryPreview(allStoryPaths);
+        // 전체 펼치기
+        function expandAllBranches() {
+            function addAllBranches(sceneNum, visited = new Set()) {
+                if (visited.has(sceneNum)) return;
+                const scene = gameData[sceneNum];
+                if (!scene || !scene.content || scene.isEnding) return;
+
+                visited.add(sceneNum);
+                (scene.choices || []).forEach((choice, cIdx) => {
+                    if (choice.text && choice.next) {
+                        expandedBranches.add(`${sceneNum}-${cIdx}`);
+                        addAllBranches(choice.next, visited);
+                    }
+                });
+            }
+            addAllBranches(1);
+            updateStoryPreview();
+        }
+
+        // 전체 접기
+        function collapseAllBranches() {
+            expandedBranches.clear();
+            updateStoryPreview();
+        }
+
+        // 스토리 프리뷰 렌더링
+        function renderStoryPreview() {
+            if (!gameData[1] || !gameData[1].content) {
+                return '<div style="color:#666;text-align:center;padding:30px;">씬 1부터 시작하세요.</div>';
+            }
+
+            let html = '';
+
+            // 컨트롤 바
+            html += `<div class="tree-controls">
+                <button class="tree-ctrl-btn" onclick="expandAllBranches()">📂 전체 펼치기</button>
+                <button class="tree-ctrl-btn" onclick="collapseAllBranches()">📁 전체 접기</button>
+            </div>`;
+
+            // 트리 렌더링
+            html += `<div class="story-tree">`;
+            html += renderSceneTree(1, 0, new Set());
+            html += `</div>`;
+
+            return html;
         }
 
         // HTML 이스케이프 함수
@@ -3220,14 +3478,9 @@
                 return;
             }
 
-            container.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">경로 계산 중...</div>';
-
-            // 비동기로 경로 계산 (UI 블로킹 방지)
-            setTimeout(() => {
-                allStoryPaths = findAllStoryPaths();
-                container.innerHTML = renderStoryPreview(allStoryPaths);
-                previewNeedsUpdate = false;
-            }, 10);
+            // 트리 뷰 렌더링 (즉시 렌더링, 매우 빠름)
+            container.innerHTML = renderStoryPreview();
+            previewNeedsUpdate = false;
         }
 
         // 프리뷰 토글
