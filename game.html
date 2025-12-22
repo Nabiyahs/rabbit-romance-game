@@ -1242,50 +1242,168 @@
             box-shadow: 0 10px 25px rgba(230, 67, 152, 0.3);
         }
 
-        /* ==================== Mode Selection Screen ==================== */
+        /* ==================== Mode Selection Screen (Intro Design) ==================== */
         #mode-select-screen {
             background: #F0EBF4;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            overflow: hidden;
             position: relative;
         }
 
-        .mode-title {
-            font-size: 42px;
+        .intro-wave-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .intro-wave {
+            position: absolute;
+            width: 150%;
+            height: 200px;
+            left: -25%;
+        }
+
+        .intro-wave-1 {
+            background: #A1C3D1;
+            top: 0;
+            border-radius: 0 0 50% 50%;
+            transform: rotate(-2deg);
+        }
+
+        .intro-wave-2 {
+            background: #F172A1;
+            top: 15%;
+            border-radius: 50%;
+            height: 180px;
+            transform: rotate(1deg);
+        }
+
+        .intro-wave-3 {
+            background: #B39BC8;
+            top: 30%;
+            border-radius: 50%;
+            height: 160px;
+            transform: rotate(-1deg);
+        }
+
+        .intro-wave-4 {
+            background: #E64398;
+            top: 45%;
+            border-radius: 50%;
+            height: 140px;
+            transform: rotate(2deg);
+        }
+
+        .intro-wave-5 {
+            background: #A1C3D1;
+            bottom: 0;
+            border-radius: 50% 50% 0 0;
+            height: 220px;
+            transform: rotate(-1deg);
+        }
+
+        .intro-container {
+            text-align: center;
+            z-index: 10;
+            padding: 40px;
+        }
+
+        .intro-title-wrapper {
+            background: white;
+            padding: 80px 100px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(230, 67, 152, 0.3);
+            border: 4px solid #F172A1;
+            position: relative;
+        }
+
+        .intro-title-wrapper::before,
+        .intro-title-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .intro-title-wrapper::before {
+            top: 20px;
+            left: 30px;
+        }
+
+        .intro-title-wrapper::after {
+            bottom: 20px;
+            right: 30px;
+        }
+
+        .intro-title {
+            font-size: 84px;
             color: #E64398;
-            margin-bottom: 60px;
+            margin-bottom: 0;
+            letter-spacing: 8px;
             font-weight: 900;
-            letter-spacing: 4px;
             text-transform: uppercase;
         }
 
+        .intro-subtitle {
+            font-size: 18px;
+            color: #B39BC8;
+            margin-top: 20px;
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        .intro-floating-heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            animation: introFloat 3s ease-in-out infinite;
+        }
+
+        .intro-floating-heart:nth-child(2) { top: 10%; left: 15%; animation-delay: 0s; }
+        .intro-floating-heart:nth-child(3) { top: 20%; right: 10%; width: 30px; height: 30px; animation-delay: 1s; }
+        .intro-floating-heart:nth-child(4) { bottom: 15%; left: 10%; width: 35px; height: 35px; animation-delay: 2s; }
+        .intro-floating-heart:nth-child(5) { bottom: 25%; right: 20%; animation-delay: 1.5s; }
+
+        @keyframes introFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
         .mode-buttons {
+            margin-top: 50px;
             display: flex;
-            gap: 30px;
+            gap: 20px;
+            justify-content: center;
         }
 
         .mode-btn {
-            padding: 25px 50px;
-            background: white;
-            border: 4px solid #F172A1;
-            border-radius: 20px;
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
             cursor: pointer;
-            font-size: 20px;
-            font-weight: 700;
-            color: #E64398;
+            font-size: 16px;
+            font-weight: 400;
+            color: #A1C3D1;
             transition: all 0.3s ease;
             font-family: 'Lato', sans-serif;
+            letter-spacing: 2px;
         }
 
         .mode-btn:hover {
-            background: #E64398;
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(230, 67, 152, 0.3);
+            color: #E64398;
+            transform: scale(1.05);
         }
 
         /* Back Button in Scene Container */
@@ -1313,21 +1431,40 @@
             display: block;
         }
 
-        body.incognito .mode-btn {
+        body.incognito #mode-select-screen {
+            background: #f5f5f5;
+        }
+
+        body.incognito .intro-wave-layer,
+        body.incognito .intro-floating-heart {
+            display: none;
+        }
+
+        body.incognito .intro-title-wrapper {
             border-color: #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        body.incognito .intro-title-wrapper::before,
+        body.incognito .intro-title-wrapper::after {
+            display: none;
+        }
+
+        body.incognito .intro-title {
             color: #333;
+            font-size: 36px;
+        }
+
+        body.incognito .intro-subtitle {
+            color: #666;
+        }
+
+        body.incognito .mode-btn {
+            color: #666;
         }
 
         body.incognito .mode-btn:hover {
-            background: #666;
-            color: white;
-            border-color: #666;
-            box-shadow: none;
-        }
-
-        body.incognito .mode-title {
             color: #333;
-            font-size: 24px;
         }
 
         body.incognito .back-btn {
@@ -1339,9 +1476,9 @@
         }
 
         @media (max-width: 768px) {
-            .mode-buttons {
-                flex-direction: column;
-            }
+            .intro-title { font-size: 48px; }
+            .intro-title-wrapper { padding: 40px 50px; }
+            .mode-buttons { flex-direction: column; }
         }
     </style>
 </head>
@@ -1356,12 +1493,30 @@
         </label>
     </div>
 
-    <!-- Mode Selection Screen -->
+    <!-- Mode Selection Screen (Intro Design) -->
     <div id="mode-select-screen" class="screen active">
-        <h1 class="mode-title">💕 CATCH! LOVE 💕</h1>
-        <div class="mode-buttons">
-            <button class="mode-btn" id="mode-real">인생은 실전</button>
-            <button class="mode-btn" id="mode-retry">미워도 한번 더</button>
+        <div class="intro-wave-layer">
+            <div class="intro-wave intro-wave-1"></div>
+            <div class="intro-wave intro-wave-2"></div>
+            <div class="intro-wave intro-wave-3"></div>
+            <div class="intro-wave intro-wave-4"></div>
+            <div class="intro-wave intro-wave-5"></div>
+        </div>
+
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+
+        <div class="intro-container">
+            <div class="intro-title-wrapper">
+                <h1 class="intro-title">CATCH! LOVE</h1>
+                <div class="intro-subtitle">A ROMANTIC ADVENTURE AWAITS</div>
+            </div>
+            <div class="mode-buttons">
+                <button class="mode-btn" id="mode-real">인생은 실전</button>
+                <button class="mode-btn" id="mode-retry">미워도 한번 더</button>
+            </div>
         </div>
     </div>
 
