@@ -615,370 +615,45 @@
         }
 
         /* ==================== Story Preview Panel ==================== */
-        .preview-panel-container {
-            background: #fff;
-            border-bottom: 2px solid #ddd;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .preview-panel-container.collapsed {
-            max-height: 0;
-            border: none;
-        }
-
-        .preview-panel-container.expanded {
-            max-height: 600px;
-        }
-
-        .preview-header {
+        .story-preview-bar {
             display: flex;
             align-items: center;
-            padding: 10px 15px;
-            background: #6c5ce7;
-            color: white;
-            gap: 10px;
-        }
-
-        .preview-header-title {
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .preview-tabs {
-            display: flex;
-            gap: 5px;
-            margin-left: 10px;
-        }
-
-        .preview-tab {
-            padding: 5px 12px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 15px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .preview-tab:hover, .preview-tab.active {
-            background: white;
-            color: #6c5ce7;
-        }
-
-        .preview-toggle-btn {
-            margin-left: auto;
-            padding: 5px 10px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .preview-toggle-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .preview-content {
-            padding: 15px;
-            max-height: 350px;
-            overflow-y: auto;
-            background: #f8f9fa;
-        }
-
-        .preview-panel-container.expanded .preview-content {
-            max-height: 500px;
-        }
-
-        .story-path {
-            background: white;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #6c5ce7;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .path-header {
-            font-weight: bold;
-            color: #6c5ce7;
-            margin-bottom: 8px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .path-ending-tag {
-            background: #e17055;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .path-ending-tag.incomplete {
-            background: #636e72;
-        }
-
-        .path-step {
-            padding: 6px 0;
-            border-bottom: 1px dashed #ddd;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .path-step:last-child {
-            border-bottom: none;
-        }
-
-        .path-scene-id {
-            color: #6c5ce7;
-            font-weight: bold;
-            margin-right: 6px;
-        }
-
-        .path-scene-content {
-            color: #666;
-            display: block;
-            margin: 3px 0;
-            padding-left: 8px;
-            border-left: 2px solid #74b9ff;
-            font-size: 11px;
-        }
-
-        .path-choice {
-            color: #00b894;
-            font-style: italic;
-            display: block;
-            margin-top: 3px;
-            padding-left: 15px;
-            font-size: 11px;
-        }
-
-        .path-choice::before {
-            content: "↳ ";
-            color: #6c5ce7;
-        }
-
-        .path-ending {
-            color: #e17055;
-            font-weight: 600;
-            margin-top: 6px;
-            padding: 6px;
-            background: rgba(225,112,85,0.1);
-            border-radius: 5px;
-            font-size: 11px;
-        }
-
-        .ending-summary {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .ending-summary-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .ending-code {
-            background: #e17055;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .ending-title {
-            font-weight: bold;
-            color: #333;
-            font-size: 13px;
-        }
-
-        .ending-paths-count {
-            color: #666;
-            font-size: 11px;
-        }
-
-        /* Current Scene Panel */
-        .current-scene-panel {
-            background: #fff;
-            border-bottom: 2px solid #ddd;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .current-scene-panel.collapsed {
-            max-height: 0;
-            border: none;
-        }
-
-        .current-scene-header {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            background: #00b894;
-            color: white;
-            gap: 10px;
-        }
-
-        .current-scene-content {
-            padding: 15px;
-            background: #f8f9fa;
-        }
-
-        .current-scene-id {
-            font-size: 16px;
-            color: #00b894;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .current-scene-text {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.5;
-            color: #555;
-            margin-bottom: 12px;
-            white-space: pre-wrap;
-            border-left: 3px solid #00b894;
-        }
-
-        .current-choices-display {
-            display: flex;
-            gap: 10px;
-        }
-
-        .choice-preview-card {
-            flex: 1;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .choice-preview-label {
-            color: #6c5ce7;
-            font-weight: bold;
-            font-size: 11px;
-            margin-bottom: 4px;
-        }
-
-        .choice-preview-text {
-            color: #333;
-            margin-bottom: 4px;
-        }
-
-        .choice-preview-next {
-            color: #00b894;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .scene-navigator {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .nav-btn {
-            padding: 6px 12px;
-            background: #74b9ff;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .nav-btn:hover {
-            background: #0984e3;
-        }
-
-        .scene-select {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        /* Panel Toggle Bar */
-        .panel-toggle-bar {
-            display: flex;
-            gap: 5px;
             padding: 8px 15px;
             background: #f1f2f6;
             border-bottom: 1px solid #ddd;
+            gap: 10px;
         }
 
-        .panel-toggle {
+        .preview-toggle {
             padding: 6px 12px;
-            background: white;
-            border: 1px solid #ddd;
+            background: #6c5ce7;
+            border: none;
             border-radius: 5px;
+            color: white;
             font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.2s;
         }
 
-        .panel-toggle:hover {
-            background: #f8f9fa;
+        .preview-toggle:hover {
+            background: #5b4cdb;
         }
 
-        .panel-toggle.active {
-            background: #6c5ce7;
-            color: white;
-            border-color: #6c5ce7;
-        }
-
-        .panel-toggle .toggle-icon {
+        .preview-toggle .toggle-icon {
             font-size: 10px;
         }
 
-        .expand-all-btn {
-            margin-left: auto;
-            padding: 6px 10px;
-            background: #e17055;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .expand-all-btn:hover {
-            background: #d63031;
-        }
-
-        /* ==================== Incognito Mode ==================== */
         .incognito-btn {
-            padding: 8px 12px;
+            margin-left: auto;
+            padding: 6px 12px;
             background: #2d3436;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.2s;
         }
 
         .incognito-btn:hover {
@@ -989,13 +664,123 @@
             background: #00b894;
         }
 
+        .story-preview-container {
+            background: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease;
+        }
+
+        .story-preview-container.collapsed {
+            max-height: 0;
+            border: none;
+            overflow: hidden;
+        }
+
+        .story-preview-container.expanded {
+            max-height: 70vh;
+        }
+
+        .story-preview-content {
+            padding: 15px;
+        }
+
+        .story-path {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #6c5ce7;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .path-header {
+            font-weight: bold;
+            color: #6c5ce7;
+            font-size: 14px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .path-ending-tag {
+            background: #e17055;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .path-ending-tag.incomplete {
+            background: #636e72;
+        }
+
+        .path-scene {
+            margin-bottom: 12px;
+        }
+
+        .path-scene-header {
+            color: #6c5ce7;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .path-scene-content {
+            color: #333;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+
+        .path-choice {
+            color: #00b894;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 0 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .path-choice::before {
+            content: "↳";
+            color: #6c5ce7;
+            font-weight: bold;
+        }
+
+        .path-ending {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(225, 112, 85, 0.1);
+            border-radius: 5px;
+            color: #e17055;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .path-ending::before {
+            content: "🔚 엔딩: ";
+        }
+
+        .path-count {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            padding: 10px;
+        }
+
         /* Incognito Theme */
         body.incognito {
             background: #f5f5f5;
-        }
-
-        body.incognito .container {
-            background: white;
         }
 
         body.incognito .title {
@@ -1006,22 +791,9 @@
             content: "📊 ";
         }
 
-        body.incognito .header {
-            background: #f8f9fa;
-        }
-
-        body.incognito .btn-primary {
-            background: #6c757d;
-        }
-
-        body.incognito .btn-success {
-            background: #6c757d;
-        }
-
-        body.incognito .btn-danger {
-            background: #6c757d;
-        }
-
+        body.incognito .btn-primary,
+        body.incognito .btn-success,
+        body.incognito .btn-danger,
         body.incognito .btn-info {
             background: #6c757d;
         }
@@ -1030,56 +802,37 @@
             background: #6c757d !important;
         }
 
-        body.incognito .preview-header {
+        body.incognito .preview-toggle {
             background: #495057;
-        }
-
-        body.incognito .preview-tab.active {
-            color: #495057;
-        }
-
-        body.incognito .current-scene-header {
-            background: #6c757d;
-        }
-
-        body.incognito .panel-toggle.active {
-            background: #495057;
-            border-color: #495057;
-        }
-
-        body.incognito .expand-all-btn {
-            background: #6c757d;
-        }
-
-        body.incognito .path-header,
-        body.incognito .path-scene-id,
-        body.incognito .current-scene-id {
-            color: #495057;
         }
 
         body.incognito .story-path {
             border-left-color: #6c757d;
         }
 
-        body.incognito .path-ending-tag,
-        body.incognito .ending-code {
-            background: #6c757d;
-        }
-
-        body.incognito .current-scene-text {
-            border-left-color: #6c757d;
-        }
-
-        body.incognito .choice-preview-label {
+        body.incognito .path-header {
             color: #495057;
         }
 
-        body.incognito .choice-preview-next {
+        body.incognito .path-ending-tag {
+            background: #6c757d;
+        }
+
+        body.incognito .path-scene-header {
+            color: #495057;
+        }
+
+        body.incognito .path-choice {
+            color: #495057;
+        }
+
+        body.incognito .path-choice::before {
             color: #6c757d;
         }
 
-        body.incognito .nav-btn {
-            background: #6c757d;
+        body.incognito .path-ending {
+            background: rgba(108, 117, 125, 0.1);
+            color: #495057;
         }
 
         body.incognito .scene-card {
@@ -1110,7 +863,6 @@
         <div class="header">
             <h1 class="title">🎮 Game Tree Editor</h1>
             <div class="buttons">
-                <button class="incognito-btn" id="incognitoBtn" onclick="toggleIncognito()">🕶️ Work</button>
                 <button class="btn-primary" onclick="saveToLocal()">💾 저장</button>
                 <button class="btn-primary" onclick="loadFromLocal()">📂 열기</button>
                 <button class="btn-success" onclick="exportJSON()">📤 JSON</button>
@@ -1129,57 +881,18 @@
             <button onclick="appendToCurrentVersion()" style="padding: 6px 12px; background: #fd7e14; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px;">📎 이어붙이기</button>
         </div>
 
-        <!-- Panel Toggle Bar -->
-        <div class="panel-toggle-bar">
-            <button class="panel-toggle active" id="togglePreview" onclick="togglePreviewPanel()">
+        <!-- Story Preview Bar -->
+        <div class="story-preview-bar">
+            <button class="preview-toggle" id="previewToggle" onclick="toggleStoryPreview()">
                 <span class="toggle-icon">▼</span> 📖 스토리 프리뷰
             </button>
-            <button class="panel-toggle active" id="toggleCurrent" onclick="toggleCurrentPanel()">
-                <span class="toggle-icon">▼</span> 🎬 현재 씬
-            </button>
-            <button class="expand-all-btn" id="expandBtn" onclick="toggleExpand()">⬆ 확장</button>
+            <button class="incognito-btn" id="incognitoBtn" onclick="toggleIncognito()">🕶️ Work</button>
         </div>
 
-        <!-- Story Preview Panel -->
-        <div class="preview-panel-container" id="previewPanel">
-            <div class="preview-header">
-                <span class="preview-header-title">📖 스토리 프리뷰</span>
-                <div class="preview-tabs">
-                    <button class="preview-tab active" data-view="paths" onclick="switchPreviewView('paths')">전체 경로</button>
-                    <button class="preview-tab" data-view="endings" onclick="switchPreviewView('endings')">엔딩별</button>
-                    <button class="preview-tab" data-view="map" onclick="switchPreviewView('map')">씬 맵</button>
-                </div>
-            </div>
-            <div class="preview-content" id="previewContent">
+        <!-- Story Preview Container -->
+        <div class="story-preview-container" id="storyPreviewContainer">
+            <div class="story-preview-content" id="storyPreviewContent">
                 <div style="color:#666;text-align:center;padding:20px;">로딩 중...</div>
-            </div>
-        </div>
-
-        <!-- Current Scene Panel -->
-        <div class="current-scene-panel" id="currentScenePanel">
-            <div class="current-scene-header">
-                <span>🎬 현재 씬 보기</span>
-            </div>
-            <div class="current-scene-content">
-                <div class="current-scene-id" id="currentSceneId">씬을 선택하세요</div>
-                <div class="current-scene-text" id="currentSceneText">트리에서 씬을 선택하면 여기에 내용이 표시됩니다.</div>
-                <div class="current-choices-display">
-                    <div class="choice-preview-card">
-                        <div class="choice-preview-label">Option A</div>
-                        <div class="choice-preview-text" id="currentChoiceA">(없음)</div>
-                        <div class="choice-preview-next" id="currentChoiceANext"></div>
-                    </div>
-                    <div class="choice-preview-card">
-                        <div class="choice-preview-label">Option B</div>
-                        <div class="choice-preview-text" id="currentChoiceB">(없음)</div>
-                        <div class="choice-preview-next" id="currentChoiceBNext"></div>
-                    </div>
-                </div>
-                <div class="scene-navigator">
-                    <button class="nav-btn" id="navPrev" onclick="navigatePrevScene()">◀ 이전</button>
-                    <select class="scene-select" id="sceneSelect" onchange="navigateToScene(this.value)"></select>
-                    <button class="nav-btn" id="navNext" onclick="navigateNextScene()">다음 ▶</button>
-                </div>
             </div>
         </div>
 
@@ -3110,29 +2823,25 @@
         }
 
         // ==================== STORY PREVIEW SYSTEM ====================
-        let currentPreviewView = 'paths';
-        let previewSceneIndex = 0;
-        let expandedPanel = null;
         let allStoryPaths = [];
 
         // 모든 스토리 경로 찾기 (DFS)
         function findAllStoryPaths() {
             const paths = [];
 
-            function dfs(sceneNum, path, choices, visited) {
-                if (visited.has(sceneNum) && path.length > 20) return;
+            function dfs(sceneNum, path, visited) {
+                if (visited.has(sceneNum) && path.length > 30) return;
 
                 const scene = gameData[sceneNum];
                 if (!scene || !scene.content) return;
 
-                const newPath = [...path, { sceneNum, scene, choiceLabel: null }];
+                const newPath = [...path, { sceneNum, scene, choiceText: null }];
 
                 // 엔딩 체크
                 if (scene.isEnding) {
                     paths.push({
                         steps: newPath,
-                        choices: choices,
-                        ending: scene.endingInfo || { code: `END-${sceneNum}`, title: scene.name || `씬 ${sceneNum}`, summary: scene.content }
+                        ending: scene.endingInfo || { code: `END-${sceneNum}`, summary: scene.content }
                     });
                     return;
                 }
@@ -3142,275 +2851,82 @@
                 if (validChoices.length === 0) {
                     paths.push({
                         steps: newPath,
-                        choices: choices,
-                        ending: { code: 'INCOMPLETE', title: '미완성', summary: '이 경로는 아직 완성되지 않았습니다.' }
+                        ending: { code: 'INCOMPLETE', summary: '이 경로는 아직 완성되지 않았습니다.' }
                     });
                     return;
                 }
 
-                validChoices.forEach((choice, idx) => {
-                    newPath[newPath.length - 1].choiceLabel = choice.text;
-                    newPath[newPath.length - 1].choiceIdx = idx;
+                validChoices.forEach(choice => {
+                    const stepWithChoice = [...newPath];
+                    stepWithChoice[stepWithChoice.length - 1] = {
+                        ...stepWithChoice[stepWithChoice.length - 1],
+                        choiceText: choice.text
+                    };
 
                     const newVisited = new Set(visited);
                     newVisited.add(sceneNum);
-                    dfs(choice.nextScene, [...newPath], [...choices, choice.text], newVisited);
+                    dfs(choice.nextScene, stepWithChoice, newVisited);
                 });
             }
 
-            // 씬 1부터 시작
             if (gameData[1] && gameData[1].content) {
-                dfs(1, [], [], new Set());
+                dfs(1, [], new Set());
             }
 
             return paths;
         }
 
-        // 경로를 HTML로 렌더링
-        function renderStoryPaths(paths) {
+        // 스토리 경로를 HTML로 렌더링
+        function renderStoryPreview(paths) {
             if (paths.length === 0) {
-                return '<div style="color:#666;text-align:center;padding:20px;">경로를 찾을 수 없습니다. 씬 1부터 시작하세요.</div>';
+                return '<div style="color:#666;text-align:center;padding:30px;">경로를 찾을 수 없습니다. 씬 1부터 시작하세요.</div>';
             }
 
-            return paths.map((path, idx) => {
-                const stepsHtml = path.steps.map(step => {
-                    const contentPreview = (step.scene.content || '').substring(0, 50) + (step.scene.content?.length > 50 ? '...' : '');
-                    let html = `
-                        <div class="path-step">
-                            <span class="path-scene-id">씬 ${step.sceneNum}</span>
-                            <span class="path-scene-content">${contentPreview}</span>
-                    `;
-                    if (step.choiceLabel) {
-                        html += `<span class="path-choice">"${step.choiceLabel}"</span>`;
-                    }
-                    html += '</div>';
-                    return html;
-                }).join('');
+            let html = '';
 
+            paths.forEach((path, idx) => {
                 const endingTag = path.ending.code === 'INCOMPLETE'
                     ? '<span class="path-ending-tag incomplete">미완성</span>'
                     : `<span class="path-ending-tag">${path.ending.code}</span>`;
 
-                return `
-                    <div class="story-path">
-                        <div class="path-header">
-                            📍 경로 ${idx + 1}
-                            ${endingTag}
-                        </div>
-                        ${stepsHtml}
-                        <div class="path-ending">🔚 ${path.ending.summary?.substring(0, 80) || '엔딩'}${path.ending.summary?.length > 80 ? '...' : ''}</div>
-                    </div>
-                `;
-            }).join('');
-        }
+                html += `<div class="story-path">`;
+                html += `<div class="path-header">📍 경로 ${idx + 1} ${endingTag}</div>`;
 
-        // 엔딩별 그룹화
-        function renderByEndings(paths) {
-            const endingGroups = {};
+                path.steps.forEach(step => {
+                    html += `<div class="path-scene">`;
+                    html += `<div class="path-scene-header">[씬${step.sceneNum}] ${step.scene.name || ''}</div>`;
+                    html += `<div class="path-scene-content">${step.scene.content || ''}</div>`;
 
-            paths.forEach(path => {
-                const code = path.ending.code;
-                if (!endingGroups[code]) {
-                    endingGroups[code] = { ending: path.ending, paths: [] };
-                }
-                endingGroups[code].paths.push(path);
+                    if (step.choiceText) {
+                        html += `<div class="path-choice">"${step.choiceText}"</div>`;
+                    }
+                    html += `</div>`;
+                });
+
+                html += `<div class="path-ending">${path.ending.summary || ''}</div>`;
+                html += `</div>`;
             });
 
-            return Object.values(endingGroups).map(group => {
-                const pathsHtml = group.paths.map((path, idx) => {
-                    const route = path.steps.map(s => `씬${s.sceneNum}`).join(' → ');
-                    return `<div style="font-size:11px;color:#666;margin:4px 0;">경로 ${idx + 1}: ${route}</div>`;
-                }).join('');
-
-                const tagClass = group.ending.code === 'INCOMPLETE' ? 'incomplete' : '';
-
-                return `
-                    <div class="ending-summary">
-                        <div class="ending-summary-header">
-                            <span class="ending-code ${tagClass}">${group.ending.code}</span>
-                            <span class="ending-title">${group.ending.title || ''}</span>
-                            <span class="ending-paths-count">(${group.paths.length}개 경로)</span>
-                        </div>
-                        <div style="font-size:11px;color:#666;margin-bottom:6px;">${group.ending.summary?.substring(0, 100) || ''}${group.ending.summary?.length > 100 ? '...' : ''}</div>
-                        ${pathsHtml}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // 씬 맵 렌더링
-        function renderSceneMap() {
-            const scenes = Object.keys(gameData).filter(k => gameData[k]?.content).map(Number).sort((a,b) => a-b);
-            const endingScenes = scenes.filter(n => gameData[n]?.isEnding);
-
-            let connections = 0;
-            scenes.forEach(n => {
-                const scene = gameData[n];
-                if (scene.choices) {
-                    connections += scene.choices.filter(c => c.nextScene).length;
-                }
-            });
-
-            let html = `
-                <div style="margin-bottom:12px;font-size:13px;">
-                    <strong>총 씬:</strong> ${scenes.length}개 |
-                    <strong>엔딩:</strong> ${endingScenes.length}개 |
-                    <strong>연결:</strong> ${connections}개
-                </div>
-                <div style="margin-bottom:10px;"><strong>엔딩 씬:</strong></div>
-            `;
-
-            endingScenes.forEach(n => {
-                html += `<span style="display:inline-block;background:#e17055;color:white;padding:2px 8px;border-radius:10px;margin:2px;font-size:11px;">씬 ${n}</span>`;
-            });
-
-            html += `<div style="margin:12px 0 8px;"><strong>씬 연결 맵:</strong></div>`;
-
-            const renderTree = (sceneNum, depth = 0, visited = new Set()) => {
-                if (visited.has(sceneNum) || depth > 5) return '';
-                visited.add(sceneNum);
-
-                const scene = gameData[sceneNum];
-                if (!scene || !scene.content) return '';
-
-                const indent = '&nbsp;&nbsp;'.repeat(depth);
-                const isEnding = scene.isEnding;
-                const style = isEnding ? 'color:#e17055;font-weight:bold;' : '';
-
-                let result = `<div style="${style}">${indent}${depth > 0 ? '└─ ' : ''}씬 ${sceneNum} ${isEnding ? '🔚' : ''}</div>`;
-
-                if (!isEnding && scene.choices) {
-                    scene.choices.forEach(choice => {
-                        if (choice.nextScene && !visited.has(choice.nextScene)) {
-                            result += renderTree(choice.nextScene, depth + 1, new Set(visited));
-                        }
-                    });
-                }
-
-                return result;
-            };
-
-            html += `<div style="font-family:monospace;font-size:11px;line-height:1.7;max-height:200px;overflow-y:auto;">${renderTree(1)}</div>`;
+            html += `<div class="path-count">총 ${paths.length}개 경로</div>`;
 
             return html;
         }
 
-        // 프리뷰 콘텐츠 업데이트
-        function updatePreviewContent() {
-            const container = document.getElementById('previewContent');
-
-            if (currentPreviewView === 'paths') {
-                allStoryPaths = findAllStoryPaths();
-                container.innerHTML = renderStoryPaths(allStoryPaths);
-            } else if (currentPreviewView === 'endings') {
-                if (allStoryPaths.length === 0) allStoryPaths = findAllStoryPaths();
-                container.innerHTML = renderByEndings(allStoryPaths);
-            } else if (currentPreviewView === 'map') {
-                container.innerHTML = renderSceneMap();
-            }
+        // 스토리 프리뷰 업데이트
+        function updateStoryPreview() {
+            const container = document.getElementById('storyPreviewContent');
+            allStoryPaths = findAllStoryPaths();
+            container.innerHTML = renderStoryPreview(allStoryPaths);
         }
 
-        // 프리뷰 뷰 전환
-        function switchPreviewView(view) {
-            currentPreviewView = view;
-            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.preview-tab[data-view="${view}"]`).classList.add('active');
-            updatePreviewContent();
-        }
+        // 프리뷰 토글
+        function toggleStoryPreview() {
+            const container = document.getElementById('storyPreviewContainer');
+            const btn = document.getElementById('previewToggle');
+            const icon = btn.querySelector('.toggle-icon');
 
-        // 현재 씬 패널 업데이트
-        function updateCurrentScenePanel(sceneNum) {
-            const scene = gameData[sceneNum];
-            if (!scene) return;
-
-            document.getElementById('currentSceneId').textContent = `씬 ${sceneNum}: ${scene.name || ''}`;
-            document.getElementById('currentSceneText').textContent = scene.content || '(내용 없음)';
-
-            const choices = scene.choices || [];
-            document.getElementById('currentChoiceA').textContent = choices[0]?.text || '(없음)';
-            document.getElementById('currentChoiceANext').textContent = choices[0]?.nextScene ? `→ 씬 ${choices[0].nextScene}` : '';
-            document.getElementById('currentChoiceB').textContent = choices[1]?.text || '(없음)';
-            document.getElementById('currentChoiceBNext').textContent = choices[1]?.nextScene ? `→ 씬 ${choices[1].nextScene}` : '';
-
-            // 씬 선택 드롭다운 업데이트
-            const select = document.getElementById('sceneSelect');
-            const scenes = Object.keys(gameData).filter(k => gameData[k]?.content).map(Number).sort((a,b) => a-b);
-
-            select.innerHTML = scenes.map(n =>
-                `<option value="${n}" ${n === sceneNum ? 'selected' : ''}>씬 ${n}</option>`
-            ).join('');
-
-            previewSceneIndex = scenes.indexOf(sceneNum);
-        }
-
-        // 씬 네비게이션
-        function navigatePrevScene() {
-            const scenes = Object.keys(gameData).filter(k => gameData[k]?.content).map(Number).sort((a,b) => a-b);
-            if (previewSceneIndex > 0) {
-                previewSceneIndex--;
-                updateCurrentScenePanel(scenes[previewSceneIndex]);
-            }
-        }
-
-        function navigateNextScene() {
-            const scenes = Object.keys(gameData).filter(k => gameData[k]?.content).map(Number).sort((a,b) => a-b);
-            if (previewSceneIndex < scenes.length - 1) {
-                previewSceneIndex++;
-                updateCurrentScenePanel(scenes[previewSceneIndex]);
-            }
-        }
-
-        function navigateToScene(sceneNum) {
-            updateCurrentScenePanel(parseInt(sceneNum));
-        }
-
-        // 패널 토글
-        function togglePreviewPanel() {
-            const panel = document.getElementById('previewPanel');
-            const btn = document.getElementById('togglePreview');
-
-            panel.classList.toggle('collapsed');
-            btn.classList.toggle('active');
-            btn.querySelector('.toggle-icon').textContent = panel.classList.contains('collapsed') ? '▶' : '▼';
-        }
-
-        function toggleCurrentPanel() {
-            const panel = document.getElementById('currentScenePanel');
-            const btn = document.getElementById('toggleCurrent');
-
-            panel.classList.toggle('collapsed');
-            btn.classList.toggle('active');
-            btn.querySelector('.toggle-icon').textContent = panel.classList.contains('collapsed') ? '▶' : '▼';
-        }
-
-        function toggleExpand() {
-            const previewPanel = document.getElementById('previewPanel');
-            const currentPanel = document.getElementById('currentScenePanel');
-            const expandBtn = document.getElementById('expandBtn');
-
-            if (expandedPanel === null) {
-                if (!previewPanel.classList.contains('collapsed')) {
-                    previewPanel.classList.add('expanded');
-                    currentPanel.classList.add('collapsed');
-                    document.getElementById('toggleCurrent').classList.remove('active');
-                    expandedPanel = 'preview';
-                } else if (!currentPanel.classList.contains('collapsed')) {
-                    currentPanel.classList.add('expanded');
-                    previewPanel.classList.add('collapsed');
-                    document.getElementById('togglePreview').classList.remove('active');
-                    expandedPanel = 'current';
-                }
-                expandBtn.textContent = '⬇ 축소';
-            } else {
-                previewPanel.classList.remove('expanded', 'collapsed');
-                currentPanel.classList.remove('expanded', 'collapsed');
-                document.getElementById('togglePreview').classList.add('active');
-                document.getElementById('toggleCurrent').classList.add('active');
-                document.getElementById('togglePreview').querySelector('.toggle-icon').textContent = '▼';
-                document.getElementById('toggleCurrent').querySelector('.toggle-icon').textContent = '▼';
-                expandedPanel = null;
-                expandBtn.textContent = '⬆ 확장';
-            }
+            container.classList.toggle('collapsed');
+            icon.textContent = container.classList.contains('collapsed') ? '▶' : '▼';
         }
 
         // Incognito 모드 토글
@@ -3430,10 +2946,7 @@
 
         // 프리뷰 시스템 초기화
         function initPreviewSystem() {
-            updatePreviewContent();
-            if (gameData[1] && gameData[1].content) {
-                updateCurrentScenePanel(1);
-            }
+            updateStoryPreview();
         }
 
         // 초기화
