@@ -118,6 +118,39 @@
             max-height: 400px;
             display: flex;
             flex-direction: column;
+            transition: max-height 0.3s ease;
+        }
+
+        .tree-panel.collapsed {
+            max-height: 0;
+            overflow: hidden;
+            border: none;
+        }
+
+        .tree-panel-bar {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: #f1f2f6;
+            border-bottom: 1px solid #ddd;
+            gap: 10px;
+        }
+
+        .tree-panel-toggle {
+            padding: 6px 12px;
+            background: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tree-panel-toggle:hover {
+            background: #2980b9;
         }
 
         .tree-panel-header {
@@ -1107,6 +1140,16 @@
             color: #fff;
         }
 
+        body.incognito .tree-panel-toggle {
+            background: #5f6368;
+            color: #fff;
+        }
+
+        body.incognito .tree-panel-bar {
+            background: #f1f3f4;
+            border-bottom-color: #e8eaed;
+        }
+
         body.incognito .story-preview-container {
             background: #f8f9fa;
             border-bottom-color: #e8eaed;
@@ -1342,6 +1385,13 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="switchTab('tree')">🌳 트리</button>
             <button class="tab-btn" onclick="switchTab('editor')">✏️ 편집</button>
+        </div>
+
+        <!-- Tree Panel Toggle Bar -->
+        <div class="tree-panel-bar">
+            <button class="tree-panel-toggle" id="treePanelToggle" onclick="toggleTreePanel()">
+                <span class="toggle-icon">▼</span> 🌳 씬 트리
+            </button>
         </div>
 
         <div class="main-content">
@@ -3609,6 +3659,17 @@
             if (!isCollapsed && previewNeedsUpdate) {
                 updateStoryPreview();
             }
+        }
+
+        // 씬 트리 패널 토글
+        function toggleTreePanel() {
+            const panel = document.getElementById('treePanel');
+            const btn = document.getElementById('treePanelToggle');
+            const icon = btn.querySelector('.toggle-icon');
+
+            panel.classList.toggle('collapsed');
+            const isCollapsed = panel.classList.contains('collapsed');
+            icon.textContent = isCollapsed ? '▶' : '▼';
         }
 
         // Incognito 모드 토글
