@@ -772,6 +772,26 @@
             flex: 1;
         }
 
+        .path-choices-container {
+            margin-top: 8px;
+            border-left: 2px solid #e0e0e0;
+            margin-left: 10px;
+        }
+
+        .path-choice.unselected {
+            color: #999;
+            opacity: 0.5;
+        }
+
+        .path-choice.unselected .choice-num {
+            background: #bbb;
+        }
+
+        .path-choice.selected {
+            color: #00b894;
+            opacity: 1;
+        }
+
         .preview-edit-btn {
             padding: 2px 6px;
             background: #f0f0f0;
@@ -921,6 +941,19 @@
 
         body.incognito .path-choice .choice-num {
             background: #6c757d;
+        }
+
+        body.incognito .path-choice.unselected {
+            opacity: 0.3;
+            color: #aaa;
+        }
+
+        body.incognito .path-choice.unselected .choice-num {
+            background: #ccc;
+        }
+
+        body.incognito .path-choices-container {
+            border-left-color: #ccc;
         }
 
         body.incognito .path-ending {
@@ -2921,10 +2954,13 @@
         let allStoryPaths = [];
 
         // 모든 스토리 경로 찾기 (DFS)
+        const MAX_PATHS = 100; // 최대 경로 수 제한
         function findAllStoryPaths() {
             const paths = [];
 
             function dfs(sceneNum, path, visited) {
+                // 최대 경로 수 도달 시 중단
+                if (paths.length >= MAX_PATHS) return;
                 if (visited.has(sceneNum) && path.length > 30) return;
 
                 const scene = gameData[sceneNum];
@@ -2998,13 +3034,21 @@
                     </div>`;
                     html += `<div class="path-scene-content" id="preview-scene-${step.sceneNum}">${escapeHtml(step.scene.content || '')}</div>`;
 
-                    if (step.choiceText) {
-                        const choiceNum = step.choiceIndex + 1;
-                        html += `<div class="path-choice">
-                            <span class="choice-num">${choiceNum}</span>
-                            <span class="choice-text" id="preview-choice-${step.sceneNum}-${step.choiceIndex}">"${escapeHtml(step.choiceText)}"</span>
-                            <button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${step.sceneNum}, ${step.choiceIndex})">✏️</button>
-                        </div>`;
+                    // 모든 선택지 표시 (선택된 것은 강조, 미선택은 흐리게)
+                    const allChoices = step.scene.choices || [];
+                    if (allChoices.length > 0 && allChoices.some(c => c.text)) {
+                        html += `<div class="path-choices-container">`;
+                        allChoices.forEach((choice, cIdx) => {
+                            if (!choice.text) return;
+                            const isSelected = (step.choiceIndex === cIdx);
+                            const choiceClass = isSelected ? 'path-choice selected' : 'path-choice unselected';
+                            html += `<div class="${choiceClass}">
+                                <span class="choice-num">${cIdx + 1}</span>
+                                <span class="choice-text">"${escapeHtml(choice.text)}"</span>
+                                <button class="preview-edit-btn" onclick="openPreviewEdit('choice', ${step.sceneNum}, ${cIdx})">✏️</button>
+                            </div>`;
+                        });
+                        html += `</div>`;
                     }
                     html += `</div>`;
                 });
@@ -3013,7 +3057,8 @@
                 html += `</div>`;
             });
 
-            html += `<div class="path-count">총 ${paths.length}개 경로</div>`;
+            const limitMsg = paths.length >= MAX_PATHS ? ` (최대 ${MAX_PATHS}개 표시)` : '';
+            html += `<div class="path-count">총 ${paths.length}개 경로${limitMsg}</div>`;
 
             return html;
         }
@@ -3093,10 +3138,25 @@
         }
 
         // 스토리 프리뷰 업데이트
+        let previewNeedsUpdate = true;
         function updateStoryPreview() {
             const container = document.getElementById('storyPreviewContent');
-            allStoryPaths = findAllStoryPaths();
-            container.innerHTML = renderStoryPreview(allStoryPaths);
+            const previewContainer = document.getElementById('storyPreviewContainer');
+
+            // 프리뷰가 닫혀있으면 나중에 업데이트
+            if (previewContainer.classList.contains('collapsed')) {
+                previewNeedsUpdate = true;
+                return;
+            }
+
+            container.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">경로 계산 중...</div>';
+
+            // 비동기로 경로 계산 (UI 블로킹 방지)
+            setTimeout(() => {
+                allStoryPaths = findAllStoryPaths();
+                container.innerHTML = renderStoryPreview(allStoryPaths);
+                previewNeedsUpdate = false;
+            }, 10);
         }
 
         // 프리뷰 토글
@@ -3106,7 +3166,13 @@
             const icon = btn.querySelector('.toggle-icon');
 
             container.classList.toggle('collapsed');
-            icon.textContent = container.classList.contains('collapsed') ? '▶' : '▼';
+            const isCollapsed = container.classList.contains('collapsed');
+            icon.textContent = isCollapsed ? '▶' : '▼';
+
+            // 열릴 때 업데이트 필요하면 계산
+            if (!isCollapsed && previewNeedsUpdate) {
+                updateStoryPreview();
+            }
         }
 
         // Incognito 모드 토글
@@ -3126,7 +3192,11 @@
 
         // 프리뷰 시스템 초기화
         function initPreviewSystem() {
-            updateStoryPreview();
+            // 프리뷰는 닫힌 상태로 시작, 열 때 계산
+            const container = document.getElementById('storyPreviewContainer');
+            container.classList.add('collapsed');
+            document.querySelector('#previewToggle .toggle-icon').textContent = '▶';
+            previewNeedsUpdate = true;
         }
 
         // 초기화
