@@ -1392,7 +1392,9 @@
                         convertedData[num] = {
                             content: scene.content || '',
                             isEnding: scene.isEnding || false,
-                            choices: []
+                            choices: [],
+                            name: scene.name || '',
+                            endingInfo: scene.endingInfo || null
                         };
 
                         if (!scene.isEnding && scene.choices) {
@@ -2846,7 +2848,7 @@
                     return;
                 }
 
-                const validChoices = (scene.choices || []).filter(c => c.text && c.nextScene);
+                const validChoices = (scene.choices || []).filter(c => c.text && c.next);
 
                 if (validChoices.length === 0) {
                     paths.push({
@@ -2865,7 +2867,7 @@
 
                     const newVisited = new Set(visited);
                     newVisited.add(sceneNum);
-                    dfs(choice.nextScene, stepWithChoice, newVisited);
+                    dfs(choice.next, stepWithChoice, newVisited);
                 });
             }
 
