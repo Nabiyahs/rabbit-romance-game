@@ -31,40 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* ==================== Utility Bar ==================== */
-        .utility-bar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .utility-bar button,
-        .utility-bar label {
-            padding: 8px 15px;
-            background: white;
-            border: 2px solid #E64398;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #E64398;
-            transition: all 0.2s;
-            font-family: 'Lato', sans-serif;
-        }
-
-        .utility-bar button:hover,
-        .utility-bar label:hover {
-            background: #E64398;
-            color: white;
-        }
-
-        .utility-bar input[type="file"] {
-            display: none;
-        }
-
         /* ==================== Common ==================== */
         .screen {
             display: none;
@@ -192,11 +158,11 @@
         }
 
         .scene-text {
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1.8;
             color: #5a5a5a;
             text-align: center;
-            padding: 30px;
+            padding: 25px 40px;
             background: #F0EBF4;
             border-radius: 15px;
             border-left: 6px solid #E64398;
@@ -906,289 +872,6 @@
             font-size: 12px;
         }
 
-        /* ==================== Incognito Mode ==================== */
-        .incognito-btn {
-            padding: 8px 15px;
-            background: white;
-            border: 2px solid #666;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.2s;
-            font-family: 'Lato', sans-serif;
-        }
-
-        .incognito-btn:hover {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        .incognito-btn.active {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        /* Incognito Mode Styles - 흑백 업무용 테마 */
-        body.incognito #main-screen {
-            background: #f5f5f5;
-        }
-
-        body.incognito .wave-decoration {
-            display: none;
-        }
-
-        body.incognito .game-title {
-            color: #333;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        body.incognito .header::before,
-        body.incognito .header::after {
-            display: none;
-        }
-
-        body.incognito .scene-container {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .scene-image-placeholder {
-            background: #e0e0e0;
-            border-radius: 4px;
-            height: 150px;
-        }
-
-        body.incognito .scene-image-placeholder::before {
-            background: #ccc;
-        }
-
-        body.incognito .scene-text {
-            background: #fafafa;
-            border-left: 3px solid #666;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        body.incognito .choice-card {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: none;
-        }
-
-        body.incognito .choice-card:nth-child(1),
-        body.incognito .choice-card:nth-child(2) {
-            border-color: #ccc;
-        }
-
-        body.incognito .choice-card:hover {
-            border-color: #666;
-            transform: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .choice-card::before {
-            display: none;
-        }
-
-        body.incognito .choice-icon {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") !important;
-            width: 32px;
-            height: 32px;
-        }
-
-        body.incognito .choice-label {
-            color: #666;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        body.incognito .choice-text {
-            color: #333;
-            font-size: 14px;
-        }
-
-        body.incognito .choice-card:hover .choice-text {
-            color: #000;
-        }
-
-        /* Incognito - Panel styles */
-        body.incognito .panel {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        body.incognito .panel-header {
-            background: #666;
-            font-size: 14px;
-            padding: 10px 15px;
-        }
-
-        body.incognito .panel-tab {
-            border-color: #999;
-            color: #666;
-        }
-
-        body.incognito .panel-tab:hover,
-        body.incognito .panel-tab.active {
-            background: #666;
-            color: white;
-        }
-
-        body.incognito .expand-btn {
-            background: #666;
-        }
-
-        body.incognito .expand-btn:hover {
-            background: #444;
-        }
-
-        body.incognito .preview-tab {
-            background: #eee;
-            color: #666;
-        }
-
-        body.incognito .preview-tab:hover,
-        body.incognito .preview-tab.active {
-            background: #666;
-            color: white;
-        }
-
-        body.incognito .story-path {
-            background: #fafafa;
-            border-left: 3px solid #666;
-            border-radius: 4px;
-        }
-
-        body.incognito .path-header {
-            color: #333;
-        }
-
-        body.incognito .path-ending-tag {
-            background: #666;
-        }
-
-        body.incognito .path-scene-id {
-            color: #333;
-        }
-
-        body.incognito .path-choice::before {
-            color: #666;
-        }
-
-        body.incognito .path-ending {
-            color: #333;
-            background: rgba(0,0,0,0.05);
-        }
-
-        body.incognito .nav-btn {
-            background: #999;
-        }
-
-        body.incognito .nav-btn:hover {
-            background: #666;
-        }
-
-        body.incognito .scene-select {
-            border-color: #999;
-        }
-
-        body.incognito .current-scene-id {
-            color: #333;
-        }
-
-        body.incognito .ending-code {
-            background: #666;
-        }
-
-        /* Incognito - Utility bar */
-        body.incognito .utility-bar button,
-        body.incognito .utility-bar label {
-            border-color: #666;
-            color: #666;
-        }
-
-        body.incognito .utility-bar button:hover,
-        body.incognito .utility-bar label:hover {
-            background: #666;
-            color: white;
-        }
-
-        /* Incognito - Ending screens */
-        body.incognito #ending-success-screen,
-        body.incognito #ending-failure-screen {
-            background: #e0e0e0;
-        }
-
-        body.incognito .wave-celebration,
-        body.incognito .wave-background {
-            display: none;
-        }
-
-        body.incognito .ending-container {
-            border-color: #999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        body.incognito .ending-container::before,
-        body.incognito .ending-container::after {
-            display: none;
-        }
-
-        body.incognito .icon-container {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") !important;
-            width: 60px;
-            height: 60px;
-            animation: none;
-        }
-
-        body.incognito .story-text-area {
-            background: #fafafa;
-            border-color: #ccc;
-        }
-
-        body.incognito .story-text-area::before {
-            color: #999;
-        }
-
-        body.incognito .ending-message {
-            color: #333;
-            font-size: 36px;
-        }
-
-        body.incognito .congratulations,
-        body.incognito .encouragement {
-            color: #666;
-        }
-
-        body.incognito .success-decoration {
-            background: #999;
-        }
-
-        body.incognito .retry-hint {
-            background: #666;
-        }
-
-        body.incognito .hearts-row {
-            display: none;
-        }
-
-        body.incognito .restart-button {
-            background: #666;
-        }
-
-        body.incognito .restart-button:hover {
-            background: #444;
-            box-shadow: none;
-        }
-
         .wave-background {
             position: absolute;
             width: 100%;
@@ -1241,21 +924,238 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(230, 67, 152, 0.3);
         }
+
+        /* ==================== Mode Selection Screen (Intro Design) ==================== */
+        #mode-select-screen {
+            background: #F0EBF4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .intro-wave-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .intro-wave {
+            position: absolute;
+            width: 150%;
+            height: 200px;
+            left: -25%;
+        }
+
+        .intro-wave-1 {
+            background: #A1C3D1;
+            top: 0;
+            border-radius: 0 0 50% 50%;
+            transform: rotate(-2deg);
+        }
+
+        .intro-wave-2 {
+            background: #F172A1;
+            top: 15%;
+            border-radius: 50%;
+            height: 180px;
+            transform: rotate(1deg);
+        }
+
+        .intro-wave-3 {
+            background: #B39BC8;
+            top: 30%;
+            border-radius: 50%;
+            height: 160px;
+            transform: rotate(-1deg);
+        }
+
+        .intro-wave-4 {
+            background: #E64398;
+            top: 45%;
+            border-radius: 50%;
+            height: 140px;
+            transform: rotate(2deg);
+        }
+
+        .intro-wave-5 {
+            background: #A1C3D1;
+            bottom: 0;
+            border-radius: 50% 50% 0 0;
+            height: 220px;
+            transform: rotate(-1deg);
+        }
+
+        .intro-container {
+            text-align: center;
+            z-index: 10;
+            padding: 40px;
+        }
+
+        .intro-title-wrapper {
+            background: white;
+            padding: 80px 100px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(230, 67, 152, 0.3);
+            border: 4px solid #F172A1;
+            position: relative;
+        }
+
+        .intro-title-wrapper::before,
+        .intro-title-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E64398'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .intro-title-wrapper::before {
+            top: 20px;
+            left: 30px;
+        }
+
+        .intro-title-wrapper::after {
+            bottom: 20px;
+            right: 30px;
+        }
+
+        .intro-title {
+            font-size: 84px;
+            color: #E64398;
+            margin-bottom: 0;
+            letter-spacing: 8px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .intro-subtitle {
+            font-size: 18px;
+            color: #B39BC8;
+            margin-top: 20px;
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        .intro-floating-heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F172A1'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            animation: introFloat 3s ease-in-out infinite;
+        }
+
+        .intro-floating-heart:nth-child(2) { top: 10%; left: 15%; animation-delay: 0s; }
+        .intro-floating-heart:nth-child(3) { top: 20%; right: 10%; width: 30px; height: 30px; animation-delay: 1s; }
+        .intro-floating-heart:nth-child(4) { bottom: 15%; left: 10%; width: 35px; height: 35px; animation-delay: 2s; }
+        .intro-floating-heart:nth-child(5) { bottom: 25%; right: 20%; animation-delay: 1.5s; }
+
+        @keyframes introFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .mode-toggle-container {
+            margin-top: 50px;
+            background: white;
+            border-radius: 25px;
+            padding: 8px;
+            display: flex;
+            gap: 0;
+            box-shadow: 0 10px 30px rgba(230, 67, 152, 0.2);
+            border: 3px solid #F172A1;
+        }
+
+        .mode-btn {
+            padding: 15px 35px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #B39BC8;
+            font-family: 'Lato', sans-serif;
+            letter-spacing: 1px;
+            border-radius: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: #E64398;
+            color: white;
+        }
+
+        /* Back Button in Scene Container */
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            background: #B39BC8;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .back-btn:hover {
+            background: #E64398;
+        }
+
+        .back-btn.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .intro-title { font-size: 48px; }
+            .intro-title-wrapper { padding: 40px 50px; }
+            .mode-toggle-container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <!-- Utility Bar -->
-    <div class="utility-bar">
-        <button class="incognito-btn" id="btn-incognito" aria-label="Incognito Mode">🕶️ Work Mode</button>
-        <button id="btn-export" aria-label="JSON 내보내기">💾 Export</button>
-        <label aria-label="JSON 불러오기">
-            📂 Import
-            <input type="file" id="input-import" accept=".json">
-        </label>
+    <!-- Mode Selection Screen (Intro Design) -->
+    <div id="mode-select-screen" class="screen active">
+        <div class="intro-wave-layer">
+            <div class="intro-wave intro-wave-1"></div>
+            <div class="intro-wave intro-wave-2"></div>
+            <div class="intro-wave intro-wave-3"></div>
+            <div class="intro-wave intro-wave-4"></div>
+            <div class="intro-wave intro-wave-5"></div>
+        </div>
+
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+        <div class="intro-floating-heart"></div>
+
+        <div class="intro-container">
+            <div class="intro-title-wrapper">
+                <h1 class="intro-title">CATCH! LOVE</h1>
+                <div class="intro-subtitle">A ROMANTIC ADVENTURE AWAITS</div>
+            </div>
+            <div class="mode-toggle-container">
+                <button class="mode-btn active" id="mode-real">인생은 실전</button>
+                <button class="mode-btn" id="mode-retry">미워도 한번 더</button>
+            </div>
+        </div>
     </div>
 
     <!-- Main Game Screen -->
-    <div id="main-screen" class="screen active">
+    <div id="main-screen" class="screen">
         <div class="wave-decoration wave-top-left"></div>
         <div class="wave-decoration wave-bottom-right"></div>
 
@@ -1322,7 +1222,8 @@
                 </div>
             </div>
 
-            <div class="scene-container">
+            <div class="scene-container" style="position: relative;">
+                <button class="back-btn" id="back-btn">< 이전</button>
                 <div class="scene-image-placeholder">
                     <span>SCENE IMAGE</span>
                 </div>
@@ -1412,353 +1313,31 @@
 
     <script>
         // ==================== STORY DATA ====================
-        let STORY = {
-            title: "Catch! Love",
-            startSceneId: "S001",
-            scenes: [
-                {
-                    id: "S001",
-                    name: "씬 1",
-                    content: "오늘도 지겨운 회사... 담타를 가지러 이동하던 중 새로 온 통역사를 봤다. \n내 스타일인데?",
-                    isEnding: false,
-                    choices: [
-                        { id: "C001A", label: "얼른 자기소개를 한다.", outcome: "continue", nextSceneId: "S002" },
-                        { id: "C001B", label: "제 스타일이시네요. 저랑 잘래요?", outcome: "continue", nextSceneId: "S003" }
-                    ]
-                },
-                {
-                    id: "S002",
-                    name: "씬 2",
-                    content: "\"안녕하세요, 성연주입니다.\"\n\"안녕하세요? 조희수예요.\"\n\n조희수... 이 사람과 가까워지고 싶다.",
-                    isEnding: false,
-                    choices: [
-                        { id: "C002A", label: "마음이 급하니 빠르게 다가간다.", outcome: "continue", nextSceneId: "S006" },
-                        { id: "C002B", label: "뭘 좋아하는지 조용히 관찰한다.", outcome: "continue", nextSceneId: "S004" }
-                    ]
-                },
-                {
-                    id: "S003",
-                    name: "씬 3",
-                    content: "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-3", title: "엔딩 3", summary: "\"하하... 이상형 만나신 거 축하드려요.\"\n\n나는 너무 서두르다가 솔로가 되었다." },
-                    choices: [
-                        { id: "C003A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C003B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S004",
-                    name: "씬 4",
-                    content: "아침마다 콜드브루를 마시는 그녀 주위를 기웃거리다가 \n얼결에 커피를 몇 번 얻어마셨다.\n명색이 그래도 온깁인데... 커피깁만 받을 순 없지!",
-                    isEnding: false,
-                    choices: [
-                        { id: "C004A", label: "통 크게 커피 한 병을 선물한다.", outcome: "continue", nextSceneId: "S005" },
-                        { id: "C004B", label: "카페에서 만나자고 한다.", outcome: "continue", nextSceneId: "S006" }
-                    ]
-                },
-                {
-                    id: "S005",
-                    name: "씬 5",
-                    content: "그녀가 부담스러워하지만 일단 받아준다.\n한 발 더 다가가본다.",
-                    isEnding: false,
-                    choices: [
-                        { id: "C005A", label: "주말에 맛있는 커피 마시러 카페 갈까요?", outcome: "continue", nextSceneId: "S007" },
-                        { id: "C005B", label: "자전거 타고 용산 가서 영화 본 다음에 시원한 커피 마셔요.", outcome: "continue", nextSceneId: "S008" }
-                    ]
-                },
-                {
-                    id: "S006",
-                    name: "씬 6",
-                    content: "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-6", title: "엔딩 6", summary: "\"우리 주말에 커피 한 잔 할래요? 아, 물론 제가 깁... 아니 살게요.\"\n어라, 그녀가 웃는다. \n계속 웃으며 조용히 멀어져가는 그녀... \n\n나는 그녀를 부담스럽게 해서 솔로가 되었다." },
-                    choices: [
-                        { id: "C006A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C006B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S007",
-                    name: "씬 7",
-                    content: "그녀의 눈이 반짝인다. 대체 커피를 얼마나 좋아하는 거야...\n부지런히 음식점과 카페를 검색해서 약속을 잡았다.\n그런데 만나서 무슨 대화를 하지?",
-                    isEnding: false,
-                    choices: [
-                        { id: "C007A", label: "커밍아웃을 한다.", outcome: "continue", nextSceneId: "S009" },
-                        { id: "C007B", label: "좋아한다고 고백한다.", outcome: "continue", nextSceneId: "S010" }
-                    ]
-                },
-                {
-                    id: "S008",
-                    name: "씬 8",
-                    content: "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n",
-                    isEnding: true,
-                    endingInfo: { code: "END-8", title: "엔딩 8", summary: "\"아, 저는 사람 많은 곳은 좀...\"\n\n나는 집합금지규정을 안 지키는 솔로가 되었다.\n코로나 시국이었다.\n" },
-                    choices: [
-                        { id: "C008A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C008B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S009",
-                    name: "씬 9",
-                    content: "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍이다.\n",
-                    isEnding: false,
-                    choices: [
-                        { id: "C009A", label: "저, 여자 좋아해요...", outcome: "continue", nextSceneId: "S011" },
-                        { id: "C009B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S010",
-                    name: "씬 10",
-                    content: "타파스를 즐기고 카페에 왔다. \n맛난 커피를 마셔서 그런지 기분이 좋아보이는 그녀.\n바로 지금이 타이밍인데... 죽어도 입이 떨어지지 않는다.\n그녀가 날 의아하게 바라본다. 무슨 말이라도 해야 하는데...",
-                    isEnding: false,
-                    choices: [
-                        { id: "C010A", label: "저, 희... 희... 그냥 여자 좋아해요.", outcome: "continue", nextSceneId: "S011" },
-                        { id: "C010B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S011",
-                    name: "씬 11",
-                    content: "그녀가 싱긋 웃는다. \n이어지는 말에 난 그만 정신이 혼미해지고 말았다.\n\n\"저도 호감있어요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C011A", label: "어... 그... 네??? 나는 그만 고장나고 말았다.", outcome: "continue", nextSceneId: "S012" },
-                        { id: "C011B", label: "감사합니다.", outcome: "continue", nextSceneId: "S013" }
-                    ]
-                },
-                {
-                    id: "S012",
-                    name: "씬 12",
-                    content: "나도 호감이 있다니? 내가 고백을 했었나?\n혼란스러운 가운데 환하게 웃는 그녀의 얼굴만 눈에 들어온다.\n아차, 내가 또 멍하니 있었네.",
-                    isEnding: false,
-                    choices: [
-                        { id: "C012A", label: "혹시나 해서 말씀드리는데, 저 희수씨 몸 보고 좋아하는 거 아닙니다.", outcome: "continue", nextSceneId: "S014" },
-                        { id: "C012B", label: "제가 낮져밤이거든요.", outcome: "continue", nextSceneId: "S015" }
-                    ]
-                },
-                {
-                    id: "S013",
-                    name: "씬 13",
-                    content: "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-13", title: "엔딩 13", summary: "잠깐, 지금 나도 모르게 거절... 한 건가?\n\n미동 없이 차분하게 내 얘기를 듣는 그녀 앞에서\n나는 그렇게 예의바르게 솔로가 되었다." },
-                    choices: [
-                        { id: "C013A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C013B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S014",
-                    name: "씬 14",
-                    content: "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-14", title: "엔딩 14", summary: "\"아... 진짜요?\"\n왠지 실망스러워보이는 그녀. 난 선비같은 매력을 발산했는데 왜 실망하지?\n\n그녀는 침대에선 선비보다 돌쇠를 선호한다는 사실을 모른 채 \n난 어안이 벙벙한 솔로가 되었다." },
-                    choices: [
-                        { id: "C014A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C014B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S015",
-                    name: "씬 15",
-                    content: "\"아, 네...\"\n방금 눈이 반짝인 것 같은데... 기분 탓이겠지. \n당황해서 아무 말이나 짖는 내게 그녀가 제안해온다.\n\"우리 만나봐요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C015A", label: "네, 좋아요.", outcome: "continue", nextSceneId: "S016" },
-                        { id: "C015B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S016",
-                    name: "씬 16",
-                    content: "희수씨가 내 썸녀라니!\n하지만 아직 얼떨떨하다. \n한참을 더 횡설수설하자 그녀가 의아하다는 듯 다시 물어본다.\n\"우리 만나보자니까요?\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C016A", label: "네!!! 좋아요......???", outcome: "continue", nextSceneId: "S017" },
-                        { id: "C016B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S017",
-                    name: "씬 17",
-                    content: "\"연주씨... 지금 제가 한 말 이해하는 거 맞아요?\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C017A", label: "사실 무슨 말인지 잘 모르겠어요.", outcome: "continue", nextSceneId: "S018" },
-                        { id: "C017B", label: "왜 자꾸 물어보지...? 일단 이해했다고 가오를 잡는다.", outcome: "continue", nextSceneId: "S019" }
-                    ]
-                },
-                {
-                    id: "S018",
-                    name: "씬 18",
-                    content: "\"사실... 무슨 말인지 모르겠어요.\"\n솔직하게 말하자 그녀가 피식 웃는다.\n\"마지막으로 말할게요. 연주씨, 저랑 사귀자는 말이에요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C018A", label: "좋아요! 저도... 희수씨 좋아해요.", outcome: "continue", nextSceneId: "S020" },
-                        { id: "C018B", label: "...좋아요. (쿨하게 대답한다)", outcome: "continue", nextSceneId: "S021" }
-                    ]
-                },
-                {
-                    id: "S019",
-                    name: "씬 19",
-                    content: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-19", title: "엔딩 19", summary: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다." },
-                    choices: [
-                        { id: "C019A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C019B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S020",
-                    name: "씬 20",
-                    content: "\"알아요.\" 희수가 당연하다는 듯이 말한다.\n\"다 티 났거든요. 귀여웠어요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C020A", label: "어떻게 티가 났어요?", outcome: "continue", nextSceneId: "S032" },
-                        { id: "C020B", label: "일부러 티 낸 거예요. (가오를 지킨다)", outcome: "continue", nextSceneId: "S023" }
-                    ]
-                },
-                {
-                    id: "S021",
-                    name: "씬 21",
-                    content: "\"연주씨는 정말 거짓말을 못 하네요. \n말은 퉁명스러워도 좋아하는 게 눈빛에 다 티나요. \n그것마저도 귀여워요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C021A", label: "어떻게 티가 났어요?", outcome: "continue", nextSceneId: "S032" },
-                        { id: "C021B", label: "일부러 티 낸 거예요.", outcome: "continue", nextSceneId: "S023" }
-                    ]
-                },
-                {
-                    id: "S023",
-                    name: "씬 23",
-                    content: "\"정말요?\"\n희수가 더 가까이 다가온다. 심장이 미친 듯이 뛴다.\n\"그럼 지금 두근거리는 티 나는 것도 다 계산된 거예요?\"\n\n이 눈빛... 거짓말하면 안 될 것 같다.",
-                    isEnding: false,
-                    choices: [
-                        { id: "C023A", label: "아뇨, 지금은 진짜 떨려요...", outcome: "continue", nextSceneId: "S024" },
-                        { id: "C023B", label: "당연하죠. (끝까지 간다)", outcome: "continue", nextSceneId: "S025" }
-                    ]
-                },
-                {
-                    id: "S024",
-                    name: "씬 24",
-                    content: "\"저도요.\"\n희수가 자기 가슴에 내 손을 가져다 댄다. 심장이 빠르게 뛰고 있다.\n\"우리 둘 다 빠르게 뛰네요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C024A", label: "앞으로도 같이 뛰었으면 좋겠어요.", outcome: "continue", nextSceneId: "S026" },
-                        { id: "C024B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S025",
-                    name: "씬 25",
-                    content: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다.",
-                    isEnding: true,
-                    endingInfo: { code: "END-25", title: "엔딩 25", summary: "\"연주씨... 왜 거짓말을 하는 거예요?\"\n\n가오를 선택한 나는 솔로 가오가이거가 되었다." },
-                    choices: [
-                        { id: "C025A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C025B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S026",
-                    name: "씬 26",
-                    content: "\"같이 뛰자구요? 연주씨도 달리기 해요?\"\n희수의 눈이 또 반짝인다. \n뭔진 모르지만 실수한 기분이 든다.",
-                    isEnding: false,
-                    choices: [
-                        { id: "C026A", label: "네, 얼마 전부터 달리고 있어요. (이따가 바로 운동화 주문해야지)", outcome: "continue", nextSceneId: "S027" },
-                        { id: "C026B", label: "아뇨, 전 달리기는 정말 싫어요.", outcome: "continue", nextSceneId: "S028" }
-                    ]
-                },
-                {
-                    id: "S027",
-                    name: "씬 27",
-                    content: "\"그럼 첫 데이트로 용산역까지 달린 다음에 영화 보는 게 어때요?\"\n희수가 이상한 기시감이 드는 제안을 했다.\n아니, 근데 기시감이 문제가 아니잖아?",
-                    isEnding: false,
-                    choices: [
-                        { id: "C027A", label: "미안하지만 첫 데이트부터 땀 흘리는 건 아닌 것 같아요.", outcome: "continue", nextSceneId: "S029" },
-                        { id: "C027B", label: "좋죠. (가오가이거 출동!)", outcome: "continue", nextSceneId: "S030" }
-                    ]
-                },
-                {
-                    id: "S028",
-                    name: "씬 28",
-                    content: "\"연주씨는 정말 솔직한 게 매력이에요. 귀여워요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C028A", label: "귀여운 거 티났어요?", outcome: "continue", nextSceneId: "S032" },
-                        { id: "C028B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S029",
-                    name: "씬 29",
-                    content: "\"당연하죠. 그냥 장난쳐 본 거예요. 다음 주말에 정식으로 첫 데이트 해요.\"\n",
-                    isEnding: false,
-                    choices: [
-                        { id: "C029A", label: "좋아요. 그 전에 내일도 회사에서 만나요", outcome: "continue", nextSceneId: "S031" },
-                        { id: "C029B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S030",
-                    name: "씬 30",
-                    content: "\"연주씨는 정말 거짓말을 못 하네요. \n싫은 게 눈빛에 다 티나요. 그것마저도 귀여워요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C030A", label: "귀여운 거 티 났어요?", outcome: "continue", nextSceneId: "S032" },
-                        { id: "C030B", label: "휴, 정말 뛰어야 하는 줄 알았어요.", outcome: "continue", nextSceneId: "S033" }
-                    ]
-                },
-                {
-                    id: "S031",
-                    name: "씬 31",
-                    content: "[추가]데이트 하려고 만나는 장면",
-                    isEnding: false,
-                    choices: [
-                        { id: "C031A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C031B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S032",
-                    name: "씬 32",
-                    content: "\"여기에 티 났어요.\"\n희수가 내 볼을 손가락으로 콕 찍더니 뽀뽀를 한다.\n이 여자는 왜 귀엽기까지 한거지?",
-                    isEnding: false,
-                    choices: [
-                        { id: "C032A", label: "헤헤, 우리 재밌게 데이트 해요.", outcome: "continue", nextSceneId: "S031" },
-                        { id: "C032B", label: "너무 귀여워서 못 참겠어요. 우리 잘래요?", outcome: "continue", nextSceneId: "S035" }
-                    ]
-                },
-                {
-                    id: "S033",
-                    name: "씬 33",
-                    content: "\"당연하죠. 그냥 장난쳐 본 거예요. 다음 주말에 정식으로 첫 데이트 해요.\"",
-                    isEnding: false,
-                    choices: [
-                        { id: "C033A", label: "좋아요. 그 전에 내일도 회사에서 만나요", outcome: "continue", nextSceneId: "S031" },
-                        { id: "C033B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
-                },
-                {
-                    id: "S035",
-                    name: "씬 35",
-                    content: "아직 낮인",
-                    isEnding: false,
-                    choices: [
-                        { id: "C035A", label: "", outcome: "continue", nextSceneId: "" },
-                        { id: "C035B", label: "", outcome: "continue", nextSceneId: "" }
-                    ]
+        // JSON 파일에서 로드됨
+        let STORY = null;
+
+        // JSON 파일 로드
+        async function loadStoryData() {
+            try {
+                const response = await fetch('./Catch!-Love.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            ]
-        };
+                STORY = await response.json();
+                return true;
+            } catch (error) {
+                console.error('스토리 데이터 로드 실패:', error);
+                alert('스토리 데이터를 불러오는데 실패했습니다.\n' + error.message);
+                return false;
+            }
+        }
 
         // ==================== STATE ====================
         let currentSceneId = null;
         let crumbs = [];
+        let sceneHistory = []; // 이전 씬 기록 (되돌아가기 기능용)
+        let gameMode = 'real'; // 'real' (인생은 실전) 또는 'retry' (미워도 한번 더)
+
 
         // ==================== HELPERS ====================
         function qs(sel) {
@@ -1806,60 +1385,39 @@
             return errors;
         }
 
-        function mergeStory(base, incoming) {
-            if (incoming.title) base.title = incoming.title;
-            if (incoming.startSceneId) base.startSceneId = incoming.startSceneId;
+        // ==================== GAME LOGIC ====================
+        function selectMode(mode) {
+            gameMode = mode;
+            sceneHistory = [];
 
-            if (incoming.scenes && Array.isArray(incoming.scenes)) {
-                incoming.scenes.forEach(inScene => {
-                    const existingIdx = base.scenes.findIndex(s => s.id === inScene.id);
+            // 토글 버튼 active 상태 변경
+            qs('#mode-real').classList.toggle('active', mode === 'real');
+            qs('#mode-retry').classList.toggle('active', mode === 'retry');
 
-                    if (existingIdx >= 0) {
-                        const existing = base.scenes[existingIdx];
-
-                        if (inScene.name) existing.name = inScene.name;
-                        if (inScene.content !== undefined) existing.content = inScene.content;
-                        if (inScene.isEnding !== undefined) existing.isEnding = inScene.isEnding;
-                        if (inScene.endingInfo) existing.endingInfo = { ...existing.endingInfo, ...inScene.endingInfo };
-
-                        if (inScene.choices && Array.isArray(inScene.choices)) {
-                            inScene.choices.forEach((inChoice, idx) => {
-                                if (idx < 2) {
-                                    const existingChoice = existing.choices[idx];
-                                    if (existingChoice && existingChoice.id === inChoice.id) {
-                                        if (inChoice.label) existingChoice.label = inChoice.label;
-                                        if (inChoice.outcome) existingChoice.outcome = inChoice.outcome;
-                                        if (inChoice.nextSceneId !== undefined) existingChoice.nextSceneId = inChoice.nextSceneId;
-                                    } else {
-                                        existing.choices[idx] = inChoice;
-                                    }
-                                }
-                            });
-                        }
-                    } else {
-                        base.scenes.push(inScene);
-                    }
-                });
+            // 미워도 한번 더 모드일 때만 뒤로가기 버튼 표시
+            const backBtn = qs('#back-btn');
+            if (mode === 'retry') {
+                backBtn.classList.add('visible');
+            } else {
+                backBtn.classList.remove('visible');
             }
 
-            return base;
+            startGame();
         }
 
-        function downloadJSON(obj, filename) {
-            const json = JSON.stringify(obj, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
+        function goBack() {
+            if (sceneHistory.length > 1) {
+                // 현재 씬을 제거하고 이전 씬으로
+                sceneHistory.pop();
+                const prevSceneId = sceneHistory.pop();
+                showScene(prevSceneId);
+            }
         }
 
-        // ==================== GAME LOGIC ====================
         function startGame() {
             currentSceneId = STORY.startSceneId;
             crumbs = [];
+            sceneHistory = [];
             showScene(currentSceneId);
         }
 
@@ -1873,6 +1431,7 @@
 
             currentSceneId = sceneId;
             crumbs.push(scene.name);
+            sceneHistory.push(sceneId);
 
             // Check if ending scene
             if (scene.isEnding) {
@@ -1931,35 +1490,8 @@
         function restartGame() {
             currentSceneId = null;
             crumbs = [];
-            startGame();
-        }
-
-        // ==================== EXPORT/IMPORT ====================
-        function exportJSON() {
-            const filename = `${STORY.title.replace(/\s+/g, '-')}-${Date.now()}.json`;
-            downloadJSON(STORY, filename);
-            alert('JSON을 내보냈습니다.');
-        }
-
-        function importJSON(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const incoming = JSON.parse(e.target.result);
-
-                    const errors = validate(incoming);
-                    if (errors.length > 0) {
-                        alert('JSON 유효성 검사 실패:\n' + errors.join('\n'));
-                        return;
-                    }
-
-                    STORY = mergeStory(STORY, incoming);
-                    alert('JSON을 성공적으로 병합했습니다.');
-                } catch (err) {
-                    alert('JSON 파싱 실패: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
+            sceneHistory = [];
+            showScreen('mode-select-screen');
         }
 
         // ==================== STORY PREVIEW SYSTEM ====================
@@ -2300,12 +1832,25 @@
         }
 
         // ==================== EVENT HANDLERS ====================
-        function init() {
+        async function init() {
+            // JSON 파일에서 스토리 데이터 로드
+            const loaded = await loadStoryData();
+            if (!loaded) {
+                return;
+            }
+
             const errors = validate(STORY);
             if (errors.length > 0) {
                 alert('초기 스토리 유효성 검사 실패:\n' + errors.join('\n'));
                 return;
             }
+
+            // Mode selection handlers
+            qs('#mode-real').addEventListener('click', () => selectMode('real'));
+            qs('#mode-retry').addEventListener('click', () => selectMode('retry'));
+
+            // Back button handler
+            qs('#back-btn').addEventListener('click', goBack);
 
             // Choice handlers
             qs('#choice-a').addEventListener('click', function() {
@@ -2320,33 +1865,7 @@
             qs('#restart-success').addEventListener('click', restartGame);
             qs('#restart-failure').addEventListener('click', restartGame);
 
-            // Export button
-            qs('#btn-export').addEventListener('click', exportJSON);
-
-            // Incognito mode toggle
-            qs('#btn-incognito').addEventListener('click', function() {
-                document.body.classList.toggle('incognito');
-                this.classList.toggle('active');
-                if (document.body.classList.contains('incognito')) {
-                    this.textContent = '💼 Work Mode';
-                } else {
-                    this.textContent = '🕶️ Work Mode';
-                }
-            });
-
-            // Import button
-            qs('#input-import').addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    importJSON(e.target.files[0]);
-                    e.target.value = '';
-                }
-            });
-
-            // Initialize preview system
-            initPreviewSystem();
-
-            // Start game automatically
-            startGame();
+            // 모드 선택 화면에서 시작 (startGame은 모드 선택 후 호출됨)
         }
 
         document.addEventListener('DOMContentLoaded', init);
