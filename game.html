@@ -192,11 +192,11 @@
         }
 
         .scene-text {
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1.8;
             color: #5a5a5a;
             text-align: center;
-            padding: 30px;
+            padding: 25px 40px;
             background: #F0EBF4;
             border-radius: 15px;
             border-left: 6px solid #E64398;
@@ -1241,6 +1241,108 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(230, 67, 152, 0.3);
         }
+
+        /* ==================== Mode Selection Screen ==================== */
+        #mode-select-screen {
+            background: #F0EBF4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .mode-title {
+            font-size: 42px;
+            color: #E64398;
+            margin-bottom: 60px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 30px;
+        }
+
+        .mode-btn {
+            padding: 25px 50px;
+            background: white;
+            border: 4px solid #F172A1;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: 700;
+            color: #E64398;
+            transition: all 0.3s ease;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .mode-btn:hover {
+            background: #E64398;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(230, 67, 152, 0.3);
+        }
+
+        /* Back Button in Scene Container */
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            background: #B39BC8;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .back-btn:hover {
+            background: #E64398;
+        }
+
+        .back-btn.visible {
+            display: block;
+        }
+
+        body.incognito .mode-btn {
+            border-color: #ccc;
+            color: #333;
+        }
+
+        body.incognito .mode-btn:hover {
+            background: #666;
+            color: white;
+            border-color: #666;
+            box-shadow: none;
+        }
+
+        body.incognito .mode-title {
+            color: #333;
+            font-size: 24px;
+        }
+
+        body.incognito .back-btn {
+            background: #999;
+        }
+
+        body.incognito .back-btn:hover {
+            background: #666;
+        }
+
+        @media (max-width: 768px) {
+            .mode-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1254,8 +1356,17 @@
         </label>
     </div>
 
+    <!-- Mode Selection Screen -->
+    <div id="mode-select-screen" class="screen active">
+        <h1 class="mode-title">💕 CATCH! LOVE 💕</h1>
+        <div class="mode-buttons">
+            <button class="mode-btn" id="mode-real">인생은 실전</button>
+            <button class="mode-btn" id="mode-retry">미워도 한번 더</button>
+        </div>
+    </div>
+
     <!-- Main Game Screen -->
-    <div id="main-screen" class="screen active">
+    <div id="main-screen" class="screen">
         <div class="wave-decoration wave-top-left"></div>
         <div class="wave-decoration wave-bottom-right"></div>
 
@@ -1322,7 +1433,8 @@
                 </div>
             </div>
 
-            <div class="scene-container">
+            <div class="scene-container" style="position: relative;">
+                <button class="back-btn" id="back-btn">< 이전</button>
                 <div class="scene-image-placeholder">
                     <span>SCENE IMAGE</span>
                 </div>
@@ -1435,6 +1547,7 @@
         let currentSceneId = null;
         let crumbs = [];
         let sceneHistory = []; // 이전 씬 기록 (되돌아가기 기능용)
+        let gameMode = 'real'; // 'real' (인생은 실전) 또는 'retry' (미워도 한번 더)
 
 
         // ==================== HELPERS ====================
@@ -1534,9 +1647,34 @@
         }
 
         // ==================== GAME LOGIC ====================
+        function selectMode(mode) {
+            gameMode = mode;
+            sceneHistory = [];
+
+            // 미워도 한번 더 모드일 때만 뒤로가기 버튼 표시
+            const backBtn = qs('#back-btn');
+            if (mode === 'retry') {
+                backBtn.classList.add('visible');
+            } else {
+                backBtn.classList.remove('visible');
+            }
+
+            startGame();
+        }
+
+        function goBack() {
+            if (sceneHistory.length > 1) {
+                // 현재 씬을 제거하고 이전 씬으로
+                sceneHistory.pop();
+                const prevSceneId = sceneHistory.pop();
+                showScene(prevSceneId);
+            }
+        }
+
         function startGame() {
             currentSceneId = STORY.startSceneId;
             crumbs = [];
+            sceneHistory = [];
             showScene(currentSceneId);
         }
 
@@ -1550,6 +1688,7 @@
 
             currentSceneId = sceneId;
             crumbs.push(scene.name);
+            sceneHistory.push(sceneId);
 
             // Check if ending scene
             if (scene.isEnding) {
@@ -1608,7 +1747,8 @@
         function restartGame() {
             currentSceneId = null;
             crumbs = [];
-            startGame();
+            sceneHistory = [];
+            showScreen('mode-select-screen');
         }
 
         // ==================== EXPORT/IMPORT ====================
@@ -1990,6 +2130,13 @@
                 return;
             }
 
+            // Mode selection handlers
+            qs('#mode-real').addEventListener('click', () => selectMode('real'));
+            qs('#mode-retry').addEventListener('click', () => selectMode('retry'));
+
+            // Back button handler
+            qs('#back-btn').addEventListener('click', goBack);
+
             // Choice handlers
             qs('#choice-a').addEventListener('click', function() {
                 handleChoice(this);
@@ -2028,8 +2175,7 @@
             // Initialize preview system
             initPreviewSystem();
 
-            // Start game automatically
-            startGame();
+            // 모드 선택 화면에서 시작 (startGame은 모드 선택 후 호출됨)
         }
 
         document.addEventListener('DOMContentLoaded', init);
