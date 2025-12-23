@@ -3107,7 +3107,7 @@
                 if (scene.isEnding) {
                     sceneObj.endingInfo = {
                         code: `END-${num}`,
-                        title: `엔딩 ${num}`,
+                        title: scene.endingTitle || `엔딩 ${num}`,
                         summary: scene.content || ''
                     };
                     // 엔딩 씬도 빈 선택지 2개 필요 (game.html 형식)
