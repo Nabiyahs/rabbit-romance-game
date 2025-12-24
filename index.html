@@ -1866,7 +1866,7 @@
         // JSON 파일에서 데이터 로드
         async function loadFromJSON() {
             try {
-                const response = await fetch('./Catch%21-Love.json');
+                const response = await fetch('./catch-love.json');
                 if (!response.ok) throw new Error('Failed to load JSON');
                 const story = await response.json();
 
@@ -3828,7 +3828,7 @@
             // 스토리 프리뷰 시스템 초기화
             initPreviewSystem();
 
-            updateStatus('Catch!-Love.json에서 데이터를 불러왔습니다.');
+            updateStatus('catch-love.json에서 데이터를 불러왔습니다.');
         };
 
         // 페이지를 떠날 때 저장
