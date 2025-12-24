@@ -1866,9 +1866,12 @@
         // JSON 파일에서 데이터 로드
         async function loadFromJSON() {
             try {
+                console.log('JSON 로드 시작...');
                 const response = await fetch('./catch-love.json');
-                if (!response.ok) throw new Error('Failed to load JSON');
+                console.log('fetch 응답:', response.status, response.statusText);
+                if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + response.statusText);
                 const story = await response.json();
+                console.log('JSON 파싱 완료, 씬 개수:', story.scenes?.length);
 
                 const convertedData = {};
                 for (let i = 1; i <= 1000; i++) {
@@ -1921,6 +1924,7 @@
                 return true;
             } catch (e) {
                 console.error('JSON 로드 실패:', e);
+                alert('JSON 로드 실패: ' + e.message);
                 return false;
             }
         }
@@ -3779,8 +3783,12 @@
 
         // 초기화
         window.onload = async function() {
+            console.log('페이지 로드 시작...');
+            document.getElementById('statusMessage').textContent = 'JSON 데이터 로딩 중...';
+
             // 먼저 JSON 파일에서 데이터 로드 시도
             const jsonLoaded = await loadFromJSON();
+            console.log('JSON 로드 결과:', jsonLoaded);
 
             if (!jsonLoaded) {
                 // JSON 로드 실패 시 로컬 스토리지에서 로드
