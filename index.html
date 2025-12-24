@@ -3295,56 +3295,45 @@
             const CHARS_PER_MINUTE = 200; // 한국어 읽기 속도
             const CHOICE_THINKING_SECONDS = 4; // 선택지당 고민 시간
 
-            // 모든 경로 탐색하여 평균 경로 길이 계산
-            const paths = findAllPaths();
+            // 간단한 추정: 사용된 씬들의 총 글자 수 기반으로 계산
+            let totalChars = 0;
+            let totalChoices = 0;
+            let sceneCount = 0;
 
-            if (paths.length === 0) {
-                return '0분';
+            for (const num of usedSceneNumbers) {
+                const scene = gameData[num];
+                if (scene && scene.content) {
+                    totalChars += scene.content.length;
+                    sceneCount++;
+                    if (scene.choices && !scene.isEnding) {
+                        scene.choices.forEach(choice => {
+                            if (choice.text) {
+                                totalChars += choice.text.length;
+                                totalChoices++;
+                            }
+                        });
+                    }
+                }
             }
 
-            // 각 경로의 플레이 시간 계산
-            const pathTimes = paths.map(path => {
-                let totalChars = 0;
-                let totalChoices = 0;
+            if (sceneCount === 0) return '0분';
 
-                path.forEach(sceneNum => {
-                    const scene = gameData[sceneNum];
-                    if (scene) {
-                        // 씬 내용 글자 수
-                        totalChars += (scene.content || '').length;
+            // 평균 경로 길이 추정 (씬 수의 약 40%를 평균 경로로 가정)
+            const avgPathLength = Math.max(1, Math.floor(sceneCount * 0.4));
+            const avgCharsPerScene = totalChars / sceneCount;
+            const estimatedChars = avgCharsPerScene * avgPathLength;
 
-                        // 선택지 글자 수 및 개수
-                        if (scene.choices && !scene.isEnding) {
-                            scene.choices.forEach(choice => {
-                                if (choice.text) {
-                                    totalChars += choice.text.length;
-                                    totalChoices++;
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // 읽기 시간(분) + 선택 고민 시간(분)
-                const readingMinutes = totalChars / CHARS_PER_MINUTE;
-                const thinkingMinutes = (totalChoices * CHOICE_THINKING_SECONDS) / 60;
-
-                return readingMinutes + thinkingMinutes;
-            });
-
-            // 최소, 최대, 평균 계산
-            const minTime = Math.min(...pathTimes);
-            const maxTime = Math.max(...pathTimes);
-            const avgTime = pathTimes.reduce((a, b) => a + b, 0) / pathTimes.length;
+            // 읽기 시간(분) + 선택 고민 시간(분)
+            const readingMinutes = estimatedChars / CHARS_PER_MINUTE;
+            const thinkingMinutes = (avgPathLength * CHOICE_THINKING_SECONDS) / 60;
+            const totalMinutes = readingMinutes + thinkingMinutes;
 
             // 포맷팅
-            if (avgTime < 1) {
-                const seconds = Math.round(avgTime * 60);
+            if (totalMinutes < 1) {
+                const seconds = Math.round(totalMinutes * 60);
                 return `${seconds}초`;
-            } else if (minTime === maxTime) {
-                return `약 ${Math.round(avgTime)}분`;
             } else {
-                return `${Math.round(minTime)}-${Math.round(maxTime)}분`;
+                return `약 ${Math.round(totalMinutes)}분`;
             }
         }
 
