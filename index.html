@@ -2930,9 +2930,17 @@
 
         // 씬 저장
         function saveScene(sceneNum) {
+            console.log('저장 전 gameData[' + sceneNum + ']:', JSON.stringify(gameData[sceneNum]));
+
             const content = document.getElementById('sceneContent').value;
             const isEnding = document.getElementById('isEnding').checked;
             const endingTitleEl = document.getElementById('endingTitle');
+
+            console.log('입력값 - content:', content, 'isEnding:', isEnding);
+
+            if (!gameData[sceneNum]) {
+                gameData[sceneNum] = { content: '', isEnding: false, choices: [] };
+            }
 
             gameData[sceneNum].content = content;
             gameData[sceneNum].isEnding = isEnding;
@@ -2952,11 +2960,16 @@
                 });
             }
             
+            console.log('저장 후 gameData[' + sceneNum + ']:', JSON.stringify(gameData[sceneNum]));
+
             updateUsedScenes();
             renderTree();
             saveToLocal();
+
+            console.log('saveToLocal 후 storyVersions:', JSON.stringify(storyVersions[currentVersionIndex].data[sceneNum]));
+
             updateStatus('씬 ' + sceneNum + ' 저장됨');
-            
+
             if (isMobile) {
                 setTimeout(() => switchTab('tree'), 500);
             }
