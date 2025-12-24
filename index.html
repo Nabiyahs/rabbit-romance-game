@@ -1891,7 +1891,8 @@
                             isEnding: scene.isEnding || false,
                             choices: [],
                             name: scene.name || '',
-                            endingInfo: scene.endingInfo || null
+                            endingInfo: scene.endingInfo || null,
+                            endingTitle: scene.endingInfo?.title || ''
                         };
 
                         if (!scene.isEnding && scene.choices) {
